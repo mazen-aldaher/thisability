@@ -8,7 +8,7 @@ import {
   Box,
   Button,
   Container,
-  Drawer,
+  SwipeableDrawer,
   Fab,
   IconButton,
   List,
@@ -70,7 +70,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
     const selectedLanguage = event.target.value;
     i18n.changeLanguage(selectedLanguage);
     if (onLanguageChange) {
-      onLanguageChange(selectedLanguage); // Call the function only if it's defined
+      onLanguageChange(selectedLanguage);
     }
   };
 
@@ -83,9 +83,9 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: { xs: 1, sm: 2 }, // Reduce gap for xs screens
-            flexDirection: { xs: "row", sm: "row" }, // Stack items vertically on xs screens
-            width: { xs: "100%", sm: "auto" }, // Full width for xs screens
+            gap: { xs: 1, sm: 2 },
+            flexDirection: { xs: "row", sm: "row" },
+            width: { xs: "100%", sm: "auto" },
           }}
         >
           <Select
@@ -94,7 +94,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
             sx={{
               color: "inherit",
               bgcolor: "background.paper",
-              width: { xs: "100%", sm: "auto", md: "110px" }, // Full width on xs screens
+              width: { xs: "100%", sm: "auto", md: "110px" },
               height: "40px",
             }}
           >
@@ -130,24 +130,24 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
                 sx={{
                   display: "flex",
                   gap: 1,
-                  flexDirection: { xs: "row", sm: "row" }, // Stack buttons vertically on xs screens
+                  flexDirection: { xs: "row", sm: "row" },
                   width: "100%",
                 }}
               >
                 <Button
                   color="inherit"
-                  fullWidth // Full width on xs screens
+                  fullWidth
                   onClick={() => navigate("/signin")}
                 >
-                  Sign In
+                  {t`Sign In`}
                 </Button>
                 <Button
                   variant="outlined"
                   color="inherit"
-                  fullWidth // Full width on xs screens
+                  fullWidth
                   onClick={() => navigate("/register")}
                 >
-                  Register
+                  {t`Register`}
                 </Button>
               </Box>
             )}
@@ -208,18 +208,18 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
               {isAuthenticated ? (
                 <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
                   U
-                </Avatar> // Replace "U" with the user's initial or actual avatar
+                </Avatar>
               ) : (
                 <Box sx={{ display: "flex", gap: 1 }}>
                   <Button color="inherit" onClick={() => navigate("/signin")}>
-                    Sign In
+                    {t`Sign In`}
                   </Button>
                   <Button
                     variant="outlined"
                     color="inherit"
                     onClick={() => navigate("/register")}
                   >
-                    Register
+                    {t`Register`}
                   </Button>
                 </Box>
               )}
@@ -237,44 +237,72 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
         </Container>
       </AppBar>
 
-      <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
-        <List>
-          {data.map((item, index) => (
-            <ListItem
-              button
-              key={index}
-              onClick={() => {
-                navigate(item.link);
-                handleDrawerToggle();
-              }}
-            >
-              <ListItemText primary={item.title} />
-            </ListItem>
-          ))}
-          {!isAuthenticated && (
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/signin");
-                handleDrawerToggle();
-              }}
-            >
-              <ListItemText primary="Sign In" />
-            </ListItem>
-          )}
-          {!isAuthenticated && (
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/register");
-                handleDrawerToggle();
-              }}
-            >
-              <ListItemText primary="Register" />
-            </ListItem>
-          )}
-        </List>
-      </Drawer>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        onOpen={handleDrawerToggle}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "250px",
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: "0px 0px 5px rgba(0,0,0,0.2)",
+            borderRadius: "0 10px 10px 0", // Rounded edge
+            visibility: drawerOpen ? "visible" : "hidden", // Make the drawer edge visible
+          },
+        }}
+        PaperProps={{
+          style: {
+            overflow: "hidden", // Hide the drawer's edge until it's opened
+          },
+        }}
+      >
+        <Box
+          sx={{
+            width: "250px",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <List>
+            {data.map((item, index) => (
+              <ListItem
+                button
+                key={index}
+                onClick={() => {
+                  navigate(item.link);
+                  handleDrawerToggle();
+                }}
+              >
+                <ListItemText primary={item.title} />
+              </ListItem>
+            ))}
+            {!isAuthenticated && (
+              <ListItem
+                button
+                onClick={() => {
+                  navigate("/signin");
+                  handleDrawerToggle();
+                }}
+              >
+                <ListItemText primary={t`Sign In`} />
+              </ListItem>
+            )}
+            {!isAuthenticated && (
+              <ListItem
+                button
+                onClick={() => {
+                  navigate("/register");
+                  handleDrawerToggle();
+                }}
+              >
+                <ListItemText primary={t`Register`} />
+              </ListItem>
+            )}
+          </List>
+        </Box>
+      </SwipeableDrawer>
 
       {showBackToTop && (
         <Fab
