@@ -32,7 +32,7 @@ const ThemeToggleBar = ({ onThemeChange }) => {
   };
 
   return (
-    <Box gap={1} sx={{ display: "flex" }}>
+    <Box gap={1} sx={{ display: "flex", justifyContent: "center" }}>
       <ThemeToggleButton
         themeName="light"
         activeTheme={activeTheme}
