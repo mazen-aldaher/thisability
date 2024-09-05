@@ -28,10 +28,14 @@
         "unnamedComponents": "function-expression"
       }
     ],
-    "linebreak-style": ["error", "unix"],
-    "prettier/prettier": ["error", {
-      "endOfLine": "lf"
-    }]  },
+    "linebreak-style": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "lf"
+      }
+    ]
+  },
   "settings": {
     "react": {
       "version": "detect"

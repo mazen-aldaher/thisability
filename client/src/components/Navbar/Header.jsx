@@ -275,7 +275,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
                   handleDrawerToggle();
                 }}
               >
-                <ListItemText primary={item.title} />
+                <ListItemText primary={t(item.title)} />
               </ListItem>
             ))}
             {!isAuthenticated && (

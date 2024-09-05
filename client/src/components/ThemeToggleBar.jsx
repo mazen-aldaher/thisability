@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
@@ -5,6 +6,7 @@ import { Box } from "@mui/material";
 import LightIcon from "@mui/icons-material/Light";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
+import { toast } from "react-toastify";
 import ThemeToggleButton from "./Button/ThemeToggleButton";
 import { autismTheme, darkTheme, lightTheme } from "../theme";
 
@@ -29,6 +31,19 @@ const ThemeToggleBar = ({ onThemeChange }) => {
 
     onThemeChange(selectedTheme);
     setActiveTheme(themeName);
+    // Notify theme change
+    toast.success(
+      `Theme changed to ${
+        themeName === "dark"
+          ? "Dark"
+          : themeName === "light"
+            ? "Light"
+            : themeName === "autism"
+              ? "Comfort"
+              : themeName
+      }!`,
+      { position: "bottom-left" }
+    );
   };
 
   return (
