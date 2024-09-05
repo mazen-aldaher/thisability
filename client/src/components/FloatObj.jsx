@@ -17,7 +17,7 @@ const float = keyframes`
 
 const FlippingCardContainer = styled(Box)(({ theme }) => ({
   perspective: "1000px",
-  width: "400px",
+  width: "300px",
   height: "400px",
   animation: `${float} 4s ease-in-out infinite`,
   display: "flex",
@@ -34,7 +34,6 @@ const FlippingCardInner = styled(Box)(({ isFlipped }) => ({
   transformStyle: "preserve-3d",
   transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
   backfaceVisibility: "hidden",
-
 }));
 
 const FlippingCardFace = styled(Box)(({ theme, back }) => ({
@@ -71,14 +70,24 @@ const FloatObj = ({ front, back }) => {
         <FlippingCardFace>
           <Box>
             <Box sx={{ paddingY: "20px" }}>
-              <Box component="img" src={front} alt="Front Side" sx={{width:"100%"}} />
+              <Box
+                component="img"
+                src={front}
+                alt="Front Side"
+                sx={{ width: { xl: "250px", md: "200px" } }}
+              />
             </Box>
           </Box>
         </FlippingCardFace>
         {/* Back Face */}
         <FlippingCardFace back>
           <Box>
-            <Box component="img" src={back} alt="Back Side" sx={{width:"100%"}} />
+            <Box
+              component="img"
+              src={back}
+              alt="Back Side"
+              sx={{ width: { xl: "250px", md: "200px" } }}
+            />
           </Box>
         </FlippingCardFace>
       </FlippingCardInner>

@@ -27,9 +27,7 @@ const Section = ({ id, backgroundImage, children }) => {
         alignItems: "center",
       }}
     >
-      <Typography sx={{ textAlign: "center" }} variant="h3">
-        {children}
-      </Typography>
+      <Box sx={{ textAlign: "center" }}>{children}</Box>
     </Box>
   );
 };
