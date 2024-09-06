@@ -25,7 +25,7 @@ const CTABTN = ({ link, title }) => {
   };
 
   return (
-    <Box sx={{ my: 2 }}>
+    <Box>
       <NavLink to={link} style={{ textDecoration: "none" }}>
         <Button variant="CTA" sx={{ p: 2, minWidth: "200px" }}>
           <Typography variant="navtext" color={getColorByTheme()}>

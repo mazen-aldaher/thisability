@@ -14,7 +14,7 @@ import Footer from "./components/Navbar/Footer";
 import Landing from "./pages/Landing/Landing";
 
 const App = () => {
-  const [theme, setTheme] = useState(lightTheme);
+  const [theme, setTheme] = useState(darkTheme);
   const { i18n } = useTranslation(); // Hook to use translation
 
   const handleLanguageChange = (language) => {

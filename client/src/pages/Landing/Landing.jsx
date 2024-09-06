@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /* eslint-disable import/newline-after-import */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
@@ -6,6 +7,8 @@ import { Box } from "@mui/material";
 import VerticalDotsNavigation from "../../components/VerticalDotsNavigation";
 import Section from "../../components/Section";
 import HeroSection from "./components/HeroSection";
+import CtaSection from "./components/CtaSection";
+import ItemsSlider from "../../components/ItemsSlider";
 const sections = ["section-1", "section-2", "section-3"];
 const Landing = () => {
   const [activeSection, setActiveSection] = useState("section-1");
@@ -60,10 +63,10 @@ const Landing = () => {
       <Section id="section-1">
         <HeroSection />
       </Section>
-
-      <Section id="section-2">Section-2</Section>
-
-      <Section id="section-3">Section-3</Section>
+      <Section id="section-2">
+        <CtaSection />
+      </Section>
+      <Section id="section-3">Empty</Section>
     </Box>
   );
 };

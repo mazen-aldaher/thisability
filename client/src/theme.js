@@ -46,7 +46,6 @@ const buttonStyles = (theme) => ({
       letterSpacing: "0.05em",
       boxShadow:
         "0 3px 5px -1px rgba(0, 0, 0, 0.5), 0 4px 25px 0 rgba(0, 0, 0, 0.1)",
-        
     },
   },
 });
@@ -56,7 +55,10 @@ const lightTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#3498db",
+      main: "#07bc0c",
+    },
+    secondary: {
+      main: "#f36c00",
     },
     colortext: {
       main: "#fff",
@@ -87,12 +89,12 @@ const lightTheme = createTheme({
   components: {
     MuiTooltip: tooltipStyles({
       palette: {
-        primary: { main: "#3498db" },
+        primary: { main: "#07bc0d" },
       },
     }),
     MuiButton: buttonStyles({
       palette: {
-        primary: { main: "#3498db",colortext:"#fff" },
+        primary: { main: "orange", colortext: "#07bc0c" },
       },
     }),
   },
@@ -103,6 +105,9 @@ const darkTheme = createTheme({
     mode: "dark",
     primary: {
       main: "#2c3e50",
+    },
+    secondary: {
+      main: "#eded",
     },
     colortext: {
       main: "#fff",
@@ -134,13 +139,13 @@ const darkTheme = createTheme({
     MuiTooltip: tooltipStyles({
       palette: {
         primary: { main: "#2c3e50" },
-        colortext:{main:"#fff"}
+        colortext: { main: "#fff" },
       },
     }),
     MuiButton: buttonStyles({
       palette: {
-        primary: { main: "#2c3e50" },
-        colortext:{main:"#fff"}
+        primary: { main: "#2c3e60" },
+        colortext: { main: "#fff" },
       },
     }),
   },
@@ -151,6 +156,9 @@ const autismTheme = createTheme({
     mode: "light",
     primary: {
       main: "#00796b",
+    },
+    secondary: {
+      main: "#07bc0c",
     },
     colortext: {
       main: "#fff",
@@ -172,7 +180,6 @@ const autismTheme = createTheme({
       fontSize: "0.875rem",
       letterSpacing: "0.1em",
       fontFamily: "Helvetica",
-      
     },
     body1: {
       fontSize: "1rem",
@@ -187,12 +194,11 @@ const autismTheme = createTheme({
     }),
     MuiButton: buttonStyles({
       palette: {
-        primary: { main: "#00796b" },
-        colortext:{main:"#fff"}
+        primary: { main: "#00797b" },
+        colortext: { main: "#fff" },
       },
     }),
   },
 });
 
 export { lightTheme, darkTheme, autismTheme };
-

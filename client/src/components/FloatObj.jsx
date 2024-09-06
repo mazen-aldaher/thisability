@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* eslint-disable prettier/prettier */
@@ -17,12 +18,27 @@ const float = keyframes`
 
 const FlippingCardContainer = styled(Box)(({ theme }) => ({
   perspective: "1000px",
-  width: "300px",
   height: "400px",
   animation: `${float} 4s ease-in-out infinite`,
   display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  alignItems: "flex-start",
+  justifyContent: "space-between",
+  width: "100%",
+  [theme.breakpoints.up("xs")]: {
+    width: "250px",
+  },
+  [theme.breakpoints.up("sm")]: {
+    width: "300px",
+  },
+  [theme.breakpoints.up("md")]: {
+    width: "250px",
+  },
+  [theme.breakpoints.up("lg")]: {
+    width: "250px",
+  },
+  [theme.breakpoints.up("xl")]: {
+    width: "300px",
+  },
 }));
 
 const FlippingCardInner = styled(Box)(({ isFlipped }) => ({
@@ -49,20 +65,23 @@ const FlippingCardFace = styled(Box)(({ theme, back }) => ({
   transform: back ? "rotateY(180deg)" : "none",
 }));
 
-const FloatObj = ({ front, back }) => {
+const FloatObj = ({ front, back, canFlip = true }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const theme = useTheme(); // Correctly use useTheme inside the component
 
   useEffect(() => {
-    const flipInterval = setInterval(
-      () => {
-        setIsFlipped((prev) => !prev);
-      },
-      Math.random() * (5000 - 2000) + 2000
-    ); // Random interval between 2s and 5s
+    // Only flip if `canFlip` is true
+    if (canFlip) {
+      const flipInterval = setInterval(
+        () => {
+          setIsFlipped((prev) => !prev);
+        },
+        Math.random() * (5000 - 2000) + 2000
+      ); // Random interval between 2s and 5s
 
-    return () => clearInterval(flipInterval); // Clean up interval on component unmount
-  }, []);
+      return () => clearInterval(flipInterval); // Clean up interval on component unmount
+    }
+  }, [canFlip]);
 
   return (
     <FlippingCardContainer>
