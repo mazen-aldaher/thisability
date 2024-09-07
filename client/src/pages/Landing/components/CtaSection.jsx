@@ -7,72 +7,18 @@
 import React from "react";
 import { Box, Container, Typography, useTheme } from "@mui/material";
 import FloatObj from "../../../components/FloatObj";
-import mock1 from "../../../assets/ill/mock-1.png";
-import mock2 from "../../../assets/ill/mock-2.png";
+
 import ItemsSlider from "../../../components/ItemsSlider";
 import CTABTN from "../../../components/Button/CTABTN";
+import PostCardSlider from "../../Blog/components/PostCardSlider";
+import SectionTitle from "../../../components/SectionTitle";
 
 const CtaSection = () => {
   const theme = useTheme();
 
   return (
-    <Box
-      sx={{
-        height: "1000px",
-        top: "-20px",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor: theme.palette.primary.main,
-          width: "100vw",
-          zIndex: 0,
-          alignContent: "center",
-          justifyContent: "center",
-          display: "flex",
-          flexDirection: "column",
-          textAlign: { md: "center", xs: "left" },
-          color: theme.palette.colortext.main,
-        }}
-      >
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "left",
-            }}
-          >
-            <FloatObj front={mock1} canFlip={false} />
-          </Box>
-          <Box sx={{ textAlign: "center", paddingTop: "5%" }}>
-            <Typography
-              variant="h2"
-              gutterBottom
-              sx={{
-                color: "#fff",
-                lineHeight: "5rem",
-              }}
-            >
-              Ready to Discover <br /> Our ThisAbility Artists?
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "right",
-            }}
-          >
-            <FloatObj front={mock2} canFlip={false} />
-          </Box>
-        </Box>
-      </Box>
-
-      <Box>
+    <Box>
+    <SectionTitle/>
         <Container>
           <Box>
             <Typography
@@ -85,8 +31,9 @@ const CtaSection = () => {
             </Typography>
           </Box>
 
-          <Box sx={{ marginBottom: 5 }}>
+          <Box sx={{ marginBottom: 5,display:{md:"flex",xs:"none"} }}>
             <ItemsSlider />
+
           </Box>
 
           <Box sx={{ textAlign: "center" }}>
@@ -104,7 +51,6 @@ const CtaSection = () => {
           </Box>
         </Container>
       </Box>
-    </Box>
   );
 };
 

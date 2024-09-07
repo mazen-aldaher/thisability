@@ -16,7 +16,7 @@ import flipImg from "../assets/ill/art-ist/flip-1.png";
 const categories = [
   { id: 1, title: "paint", color: "orange" },
   { id: 2, title: "handmade", color: "lightBlue" },
-  { id: 3, title: "art", color: "green" }
+  { id: 3, title: "art", color: "green" },
 ];
 
 const data = [
@@ -27,7 +27,7 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen"
+    artistName: "Mazen",
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen"
+    artistName: "Mazen",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen"
+    artistName: "Mazen",
   },
   {
     id: 4,
@@ -54,13 +54,13 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen"
-  }
+    artistName: "Mazen",
+  },
 ];
 
 const ItemsSlider = () => {
   const [products, setProducts] = useState([]); // Initially no products
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
@@ -89,24 +89,24 @@ const ItemsSlider = () => {
           slidesToShow: 3,
           slidesToScroll: 1,
           infinite: true,
-          dots: true
-        }
+          dots: true,
+        },
       },
       {
         breakpoint: 768,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1
-        }
+          slidesToScroll: 1,
+        },
       },
       {
         breakpoint: 480,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   // Function to get color based on category
@@ -116,7 +116,7 @@ const ItemsSlider = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Box>
       {error ? (
         <Box textAlign="center" mt={4}>
           <Typography variant="h6" color="error">
@@ -124,136 +124,141 @@ const ItemsSlider = () => {
           </Typography>
         </Box>
       ) : loading ? (
-  // Show skeletons while loading
-  <Slider {...sliderSettings}>
-    {[...Array(4)].map((_, index) => (
-      <Box key={index} sx={{ px: { xs: 1, sm: 2 } }}>
-        <Box
-          sx={{
-            width: "300px",
-            height: "400px",
-            borderRadius: "25px",
-            overflow: "hidden",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          {/* Skeleton for the entire card */}
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height="100%"
-            sx={{
-              borderRadius: "25px",
-              position: "relative",
-            }}
+        // Show skeletons while loading
+        <Slider {...sliderSettings}>
+          {[...Array(4)].map((_, index) => (
+            <Box key={index} sx={{ px: { xs: 1, sm: 2 } }}>
+              <Box
+                sx={{
+                  width: "300px",
+                  height: "400px",
+                  borderRadius: "25px",
+                  overflow: "hidden",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                {/* Skeleton for the entire card */}
+                <Skeleton
+                  variant="rectangular"
+                  width="100%"
+                  height="100%"
+                  sx={{
+                    borderRadius: "25px",
+                    position: "relative",
+                  }}
+                >
+                  {/* Simulate the chip and title */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "20px",
+                      left: "20px",
+                      width: "100px",
+                      height: "30px",
+                    }}
+                  >
+                    <Skeleton
+                      variant="rounded"
+                      width="100%"
+                      height="100%"
+                      sx={{ backgroundColor: "#eded" }}
+                    />
+                  </Box>
+
+                  {/* Simulate the main image */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "80px",
+                      left: "50px",
+                      width: "200px",
+                      height: "150px",
+                      backgroundColor: "orange",
+                    }}
+                  >
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+
+                  {/* Simulate the title text */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: "80px",
+                      left: "30px",
+                      width: "240px",
+                      height: "40px",
+                    }}
+                  >
+                    <Skeleton variant="text" width="100%" height="100%" />
+                  </Box>
+
+                  {/* Simulate the decorative eyes element */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: "20px",
+                      right: "20px",
+                      width: "60px",
+                      height: "30px",
+                    }}
+                  >
+                    <Skeleton
+                      variant="circular"
+                      width="100%"
+                      height="100%"
+                      sx={{ transform: "rotate(-25deg)" }}
+                    />
+                  </Box>
+                </Skeleton>
+              </Box>
+            </Box>
+          ))}
+        </Slider>
+      ) : products.length > 0 ? (
+        <Slider {...sliderSettings}>
+          {products.map((product) => (
+            <Box key={product.id} sx={{ px: { xs: 1, sm: 2 } }}>
+              <NavLink
+                to={`/products/${product.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <FlippingCard
+                  Category={product.category ? product.category : "Unknown"}
+                  ArtImg={product.artImg}
+                  FrontTitle={product.frontTitle}
+                  ArtistImg={product.artistImg}
+                  BackTitle={product.backTitle}
+                  ArtistName={
+                    product.artistName ? product.artistName : "Unknown Artist"
+                  }
+                  backgroundColor={getCategoryColor(product.category)} // Pass background color
+                />
+              </NavLink>
+            </Box>
+          ))}
+        </Slider>
+      ) : (
+        <Box textAlign="center" mt={4}>
+          <Typography variant="h6" gutterBottom>
+            There are no products available. Please add some from the link
+            below:
+          </Typography>
+          <Button
+            component={Link}
+            to="/products/add-new-product"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
           >
-            {/* Simulate the chip and title */}
-            <Box
-              sx={{
-                position: "absolute",
-                top: "20px",
-                left: "20px",
-                width: "100px",
-                height: "30px",
-              }}
-            >
-              <Skeleton
-                variant="rounded"
-                width="100%"
-                height="100%"
-                sx={{ backgroundColor: "#eded" }}
-              />
-            </Box>
-
-            {/* Simulate the main image */}
-            <Box
-              sx={{
-                position: "absolute",
-                top: "80px",
-                left: "50px",
-                width: "200px",
-                height: "150px",
-                backgroundColor:"orange"
-              }}
-            >
-              <Skeleton variant="rectangular" width="100%" height="100%" />
-            </Box>
-
-            {/* Simulate the title text */}
-            <Box
-              sx={{
-                position: "absolute",
-                bottom: "80px",
-                left: "30px",
-                width: "240px",
-                height: "40px",
-              }}
-            >
-              <Skeleton variant="text" width="100%" height="100%" />
-            </Box>
-
-            {/* Simulate the decorative eyes element */}
-            <Box
-              sx={{
-                position: "absolute",
-                bottom: "20px",
-                right: "20px",
-                width: "60px",
-                height: "30px",
-              }}
-            >
-              <Skeleton
-                variant="circular"
-                width="100%"
-                height="100%"
-                sx={{ transform: "rotate(-25deg)" }}
-              />
-            </Box>
-          </Skeleton>
+            Create Product
+          </Button>
         </Box>
-      </Box>
-    ))}
-  </Slider>
-) : products.length > 0 ? (
-  <Slider {...sliderSettings}>
-    {products.map((product) => (
-      <Box key={product.id} sx={{ px: { xs: 1, sm: 2 } }}>
-        <NavLink
-          to={`/products/${product.id}`}
-          style={{ textDecoration: "none" }}
-        >
-          <FlippingCard
-            Category={product.category ? product.category : "Unknown"}
-            ArtImg={product.artImg}
-            FrontTitle={product.frontTitle}
-            ArtistImg={product.artistImg}
-            BackTitle={product.backTitle}
-            ArtistName={
-              product.artistName ? product.artistName : "Unknown Artist"
-            }
-            backgroundColor={getCategoryColor(product.category)} // Pass background color
-          />
-        </NavLink>
-      </Box>
-    ))}
-  </Slider>
-) : (
-  <Box textAlign="center" mt={4}>
-    <Typography variant="h6" gutterBottom>
-      There are no products available. Please add some from the link below:
-    </Typography>
-    <Button
-      component={Link}
-      to="/products/add-new-product"
-      variant="contained"
-      color="primary"
-      sx={{ mt: 2 }}
-    >
-      Create Product
-    </Button>
-  </Box>
-)}
-    </Container>
+      )}
+    </Box>
   );
 };
 

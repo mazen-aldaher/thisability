@@ -29,7 +29,7 @@ const FlippingCardContainer = styled(Box)({
   borderRadius: "25px",
 });
 
-const FlippingCardInner = styled(Box)(({ isFlipped,backgroundColor }) => ({
+const FlippingCardInner = styled(Box)(({ isFlipped, backgroundColor }) => ({
   position: "relative",
   width: "100%",
   height: "100%",
@@ -41,7 +41,7 @@ const FlippingCardInner = styled(Box)(({ isFlipped,backgroundColor }) => ({
   borderRadius: "25px",
 }));
 
-const FlippingCardFace = styled(Box)(({ back,backgroundColor  }) => ({
+const FlippingCardFace = styled(Box)(({ back, backgroundColor }) => ({
   position: "absolute",
   width: "100%",
   height: "100%",
@@ -66,7 +66,6 @@ const FlippingCard = ({
   ArtistImg = "",
   ArtImg = "",
   backgroundColor = "orange", // Default color if none is passed
-
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -131,7 +130,7 @@ const FlippingCard = ({
         </FlippingCardFace>
 
         {/* Back Face */}
-        <FlippingCardFace back  backgroundColor={backgroundColor}>
+        <FlippingCardFace back backgroundColor={backgroundColor}>
           <Box sx={{ pt: 5 }}>
             <Box>
               <Box component={"img"} src={ArtistImg} alt={ArtistName} />
