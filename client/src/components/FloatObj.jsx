@@ -1,7 +1,4 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-/* eslint-disable prettier/prettier */
+
 import React, { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { styled, keyframes } from "@mui/system";

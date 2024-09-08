@@ -1,7 +1,4 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable prettier/prettier */
-/* eslint-disable react/prop-types */
-// VerticalDotsNavigation.jsx
+
 import React from "react";
 import { Box, IconButton } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";

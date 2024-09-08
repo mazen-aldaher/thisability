@@ -1,7 +1,4 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/no-array-index-key */
+
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 
@@ -12,28 +9,32 @@ import PostCard from "./PostCard";
 const data = [
   {
     id: 1,
-    postImg: "https://images.stockcake.com/public/e/b/8/eb8b0b45-6510-46db-8e16-f26e48427624_large/focused-financial-analyst-stockcake.jpg",
+    postImg:
+      "https://images.stockcake.com/public/e/b/8/eb8b0b45-6510-46db-8e16-f26e48427624_large/focused-financial-analyst-stockcake.jpg",
     date: "15 Feb 2024",
     comments: "10",
     postTitle: "Lorem Ipsum Dolor Sit Amet, Faucibus Consectetur Adipinsj",
   },
   {
     id: 2,
-    postImg: "https://images.stockcake.com/public/8/9/4/8946259c-7d2e-4a7c-8f10-a9410762413a_large/cozy-library-nook-stockcake.jpg",
+    postImg:
+      "https://images.stockcake.com/public/8/9/4/8946259c-7d2e-4a7c-8f10-a9410762413a_large/cozy-library-nook-stockcake.jpg",
     date: "15 Feb 2024",
     comments: "10",
     postTitle: "Lorem Ipsum Dolor Sit Amet, Faucibus Consectetur Adipinsj",
   },
   {
     id: 3,
-    postImg: "https://images.stockcake.com/public/e/b/8/eb8b0b45-6510-46db-8e16-f26e48427624_large/focused-financial-analyst-stockcake.jpg",
+    postImg:
+      "https://images.stockcake.com/public/e/b/8/eb8b0b45-6510-46db-8e16-f26e48427624_large/focused-financial-analyst-stockcake.jpg",
     date: "15 Feb 2024",
     comments: "10",
     postTitle: "Lorem Ipsum Dolor Sit Amet, Faucibus Consectetur Adipinsj ",
   },
   {
     id: 4,
-    postImg: "https://images.stockcake.com/public/8/9/4/8946259c-7d2e-4a7c-8f10-a9410762413a_large/cozy-library-nook-stockcake.jpg",
+    postImg:
+      "https://images.stockcake.com/public/8/9/4/8946259c-7d2e-4a7c-8f10-a9410762413a_large/cozy-library-nook-stockcake.jpg",
     date: "15 Feb 2024",
     comments: "10",
     postTitle: "Lorem Ipsum Dolor Sit Amet, Faucibus Consectetur Adipinsj ",

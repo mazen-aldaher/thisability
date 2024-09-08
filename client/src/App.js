@@ -1,11 +1,7 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/newline-after-import */
-import { Box, CssBaseline, ThemeProvider, Typography } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider} from "@mui/material";
 import React, { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion"; // Correct import
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
 import { ToastContainer, toast } from "react-toastify";
 import { Route, Routes } from "react-router-dom";
 import Header from "./components/Navbar/Header";
@@ -15,17 +11,17 @@ import Landing from "./pages/Landing/Landing";
 
 const App = () => {
   const [theme, setTheme] = useState(darkTheme);
-  const { i18n } = useTranslation(); // Hook to use translation
+  const { i18n, t } = useTranslation(); // Get 't' from useTranslation
 
   const handleLanguageChange = (language) => {
     i18n.changeLanguage(language); // Use i18n to change the language
-    toast.success(`Language changed to ${language}`, {
+    toast.success(t(`Language changed to ${language}`), {  // Use `t` for translations
       position: "bottom-left",
-    }); // Show notification
+    });
   };
 
   const handleThemeChange = (newTheme) => {
-    setTheme(newTheme);
+        setTheme(newTheme);
   };
 
   return (
@@ -73,3 +69,5 @@ const App = () => {
 };
 
 export default App;
+
+

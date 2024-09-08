@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import mock1 from "../assets/ill/mock-1.png";
@@ -20,7 +19,7 @@ const SectionTitle = () => {
       <Box
         sx={{
           backgroundColor: theme.palette.primary.main,
-          width: "100vw",
+          width: "100%",
           zIndex: 0,
           alignContent: "center",
           justifyContent: "center",

@@ -1,22 +1,22 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-unused-vars */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-nested-ternary */
+
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Box, Container, Typography, Button, Skeleton } from "@mui/material";
+import { Box, Container, Typography, Button, Skeleton, Paper, IconButton, InputBase } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
+
 import FlippingCard from "./FlippingCard"; // Assuming this is a custom component
 import cardImg from "../assets/ill/art-ist/card-1.png";
 import flipImg from "../assets/ill/art-ist/flip-1.png";
 
+// Categories data
 const categories = [
-  { id: 1, title: "paint", color: "orange" },
-  { id: 2, title: "handmade", color: "lightBlue" },
-  { id: 3, title: "art", color: "green" },
+  { id: 1, title: "All", color: "gray" }, // Add 'All' category
+  { id: 2, title: "paint", color: "orange" },
+  { id: 3, title: "handmade", color: "lightBlue" },
+  { id: 4, title: "art", color: "green" },
 ];
 
 const data = [
@@ -36,7 +36,7 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen",
+    artistName: "dodo",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen",
+    artistName: "ssn",
   },
   {
     id: 4,
@@ -54,14 +54,36 @@ const data = [
     artistImg: flipImg, // Add URL for the artist image
     artImg: cardImg, // Add URL for the art image
     backTitle: "Back of the card",
-    artistName: "Mazen",
+    artistName: "sssen",
   },
+  {
+    id: 5,
+    category: "art",
+    frontTitle: "Take a look at my Ability",
+    artistImg: flipImg, // Add URL for the artist image
+    artImg: cardImg, // Add URL for the art image
+    backTitle: "Back of the card",
+    artistName: "sssen",
+  },
+  {
+    id: 6,
+    category: "art",
+    frontTitle: "Take a look at my Ability",
+    artistImg: flipImg, // Add URL for the artist image
+    artImg: cardImg, // Add URL for the art image
+    backTitle: "Back of the card",
+    artistName: "sssen",
+  },
+  
 ];
 
 const ItemsSlider = () => {
   const [products, setProducts] = useState([]); // Initially no products
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(false); // Loading state
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   useEffect(() => {
     // Simulate a loading delay
@@ -73,47 +95,54 @@ const ItemsSlider = () => {
     return () => clearTimeout(timer); // Cleanup on unmount
   }, []);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 1000,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    pauseOnHover: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
   };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+  
+    // Filter logic based on category and search
+    const filteredProducts = products.filter((product) =>
+      (selectedCategory === "All" || product.category === selectedCategory) &&
+      (product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       product.artistName.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    const sliderSettings = {
+      dots: true,
+      infinite: true,
+      speed: 1000,
+      slidesToShow: Math.min(filteredProducts.length, 3),
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 1500,
+      pauseOnHover: true,
+      responsive: [
+        {
+          breakpoint: 768, // Mobile screen size
+          settings: {
+            slidesToShow: 1, // Show only 1 card on mobile
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 1024, // Tablet screen size
+          settings: {
+            slidesToShow: 2, // Show 2 cards on tablet
+            slidesToScroll: 1,
+          },
+        },
+      ],
+    };
 
   // Function to get color based on category
   const getCategoryColor = (category) => {
     const foundCategory = categories.find((cat) => cat.title === category);
     return foundCategory ? foundCategory.color : "gray"; // Default to gray if not found
   };
+
+
 
   return (
     <Box>
@@ -218,29 +247,56 @@ const ItemsSlider = () => {
             </Box>
           ))}
         </Slider>
-      ) : products.length > 0 ? (
+      ) : filteredProducts.length > 0 ? (
+        <>
+        {/* Search bar 
+      <Paper component="form" sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 420 }}>
+        <InputBase
+          sx={{ ml: 1, flex: 1 }}
+          placeholder="Search"
+          inputProps={{ "aria-label": "search products" }}
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <IconButton type="button" sx={{ p: "10px" }}>
+          <SearchIcon />
+        </IconButton>
+      </Paper>
+        */}
+
+      {/* Category filter buttons */}
+      <Box sx={{ my: 3,display:"flex",justifyContent:"center" }}>
+        {categories.map((category) => (
+          <Button
+            key={category.id}
+            variant={selectedCategory === category.title ? "contained" : "outlined"}
+            sx={{ mx: 1 }}
+            onClick={() => handleCategoryChange(category.title)}
+          >
+            {category.title}
+          </Button>
+        ))}
+      </Box>
+
         <Slider {...sliderSettings}>
-          {products.map((product) => (
-            <Box key={product.id} sx={{ px: { xs: 1, sm: 2 } }}>
-              <NavLink
-                to={`/products/${product.id}`}
-                style={{ textDecoration: "none" }}
-              >
+        {filteredProducts.map((product) => (
+            <Box key={product.id} sx={{ px: 2 }}>
+              <NavLink to={`/products/${product.id}`} style={{ textDecoration: "none" }}>
                 <FlippingCard
-                  Category={product.category ? product.category : "Unknown"}
+                  Category={product.category}
                   ArtImg={product.artImg}
                   FrontTitle={product.frontTitle}
                   ArtistImg={product.artistImg}
                   BackTitle={product.backTitle}
-                  ArtistName={
-                    product.artistName ? product.artistName : "Unknown Artist"
-                  }
-                  backgroundColor={getCategoryColor(product.category)} // Pass background color
+                  ArtistName={product.artistName}
+                  backgroundColor={categories.find(cat => cat.title === product.category)?.color || "gray"}
                 />
+                
               </NavLink>
             </Box>
           ))}
         </Slider>
+        </>
       ) : (
         <Box textAlign="center" mt={4}>
           <Typography variant="h6" gutterBottom>

@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
+
 import { createTheme } from "@mui/material/styles";
 
 // Define common tooltip styles

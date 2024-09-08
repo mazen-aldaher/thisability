@@ -1,7 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable prettier/prettier */
-/* eslint-disable import/order */
-/* eslint-disable prettier/prettier */
+
 import React from "react";
 import EventIcon from "@mui/icons-material/Event";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -16,7 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const PostCard = ({postImg,date,comments,postTitle}) => {
+const PostCard = ({ postImg, date, comments, postTitle }) => {
   const theme = useTheme();
 
   return (
@@ -27,8 +24,8 @@ const PostCard = ({postImg,date,comments,postTitle}) => {
         boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         backgroundColor: "#000",
         padding: "20px",
-        maxHeight:"60vh",
-        width:"100%"
+        maxHeight: "60vh",
+        width: "100%",
       }}
     >
       {" "}
@@ -37,10 +34,15 @@ const PostCard = ({postImg,date,comments,postTitle}) => {
         <Box
           component="img"
           src={postImg}
-          sx={{ width: "100%", minHeight:"20px",maxHeight:"30vh", transition: "transform 0.3s ease-in-out", // Smooth transition
-    "&:hover": {
-      transform: "scale(1.05)", // Scale up the card when hovered
-    }, }}
+          sx={{
+            width: "100%",
+            minHeight: "20px",
+            maxHeight: "30vh",
+            transition: "transform 0.3s ease-in-out", // Smooth transition
+            "&:hover": {
+              transform: "scale(1.05)", // Scale up the card when hovered
+            },
+          }}
         />
       </Box>
       {/* Card Content Section */}
@@ -76,7 +78,8 @@ const PostCard = ({postImg,date,comments,postTitle}) => {
           color={theme.palette.secondary.main}
           sx={{ mb: 2, textAlign: "left" }}
         >
-{postTitle}        </Typography>
+          {postTitle}{" "}
+        </Typography>
 
         {/* Read More Button */}
         <Button

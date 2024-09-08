@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable prettier/prettier */
-/* eslint-disable react/jsx-curly-brace-presence */
-// BeforeHero.js
+
 import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import FloatObj from "../../../components/FloatObj";
@@ -31,12 +28,12 @@ const BeforeHero = () => {
             justifyContent: { xl: "space-between", md: "space-between" },
             alignItems: "center",
             alignContent: "flex-start",
-            width: { xl: "100vw", md: "auto" },
+            width:"100%",
             margin: "auto",
             height: "100vh",
           }}
         >
-          <Box sx={{ display: {md:"flex",xs:"none"} }}>
+          <Box sx={{ display: { md: "flex", xs: "none" } }}>
             <Box sx={{ paddingRight: { xl: "2%" }, mt: 5 }}>
               <FloatObj front={ill1} back={fli1} />
             </Box>
@@ -75,7 +72,7 @@ const BeforeHero = () => {
               p: 8,
               textAlign: { md: "center", xs: "left" },
               color: theme.palette.colortext.main,
-              top: { xl: "-30%", lg: "-35%", md: "-40%",xs:0 },
+              top: { xl: "-30%", lg: "-35%", md: "-40%", xs: 0 },
               pb: 10,
             }}
           >
@@ -84,10 +81,14 @@ const BeforeHero = () => {
                 Know me for my Ability, not my Disability
               </Typography>
             </Box>
-            
-              <Box sx={{ textAlign: {md:"center",sm:"left",xs:"left"}, paddingTop: 2 }}>
-                  <CTABTN title="Shop Know" link="/" />
 
+            <Box
+              sx={{
+                textAlign: { md: "center", sm: "left", xs: "left" },
+                paddingTop: 2,
+              }}
+            >
+              <CTABTN title="Shop Know" link="/" />
             </Box>
           </Box>
         </Box>

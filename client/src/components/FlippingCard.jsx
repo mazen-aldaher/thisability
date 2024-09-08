@@ -1,8 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable prettier/prettier */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-curly-brace-presence */
+
 import React, { useState } from "react";
 import { Typography, Box, Chip } from "@mui/material";
 import { styled, keyframes } from "@mui/system";

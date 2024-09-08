@@ -1,7 +1,4 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable react/prop-types */
-/* eslint-disable prettier/prettier */
-/* eslint-disable quotes */
+
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { NavLink } from "react-router-dom";
