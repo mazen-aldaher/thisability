@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { styled, keyframes } from "@mui/system";
@@ -38,14 +37,15 @@ const FlippingCardContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const FlippingCardInner = styled(Box)(({ isFlipped }) => ({
+const FlippingCardInner = styled(Box)(({ isflipped }) => ({
   position: "relative",
   width: "100%",
   height: "100%",
   textAlign: "center",
   transition: "transform 0.6s",
+  willChange: "transform",
   transformStyle: "preserve-3d",
-  transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+  transform: isflipped ? "rotateY(180deg)" : "rotateY(0deg)",
   backfaceVisibility: "hidden",
 }));
 
@@ -58,13 +58,13 @@ const FlippingCardFace = styled(Box)(({ theme, back }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: back ? "theme.palette.primary.main" : "transparent",
+  backgroundColor: back ? "transparent":"",
   transform: back ? "rotateY(180deg)" : "none",
 }));
 
-const FloatObj = ({ front, back, canFlip = true }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const theme = useTheme(); // Correctly use useTheme inside the component
+const FloatObj = ({ front, back, canFlip }) => {
+  const [isFlipped, setIsFlipped] = useState(false); // Updated variable names for consistency
+  const theme = useTheme();
 
   useEffect(() => {
     // Only flip if `canFlip` is true
@@ -82,7 +82,7 @@ const FloatObj = ({ front, back, canFlip = true }) => {
 
   return (
     <FlippingCardContainer>
-      <FlippingCardInner isFlipped={isFlipped}>
+      <FlippingCardInner isflipped={isFlipped}>
         <FlippingCardFace>
           <Box>
             <Box sx={{ paddingY: "20px" }}>

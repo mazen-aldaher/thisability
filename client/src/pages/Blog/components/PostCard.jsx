@@ -13,7 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const PostCard = ({ postImg, date, comments, postTitle }) => {
+const PostCard = ({ postImg, date, comments, postTitle,Category}) => {
   const theme = useTheme();
 
   return (
@@ -39,6 +39,7 @@ const PostCard = ({ postImg, date, comments, postTitle }) => {
             minHeight: "20px",
             maxHeight: "30vh",
             transition: "transform 0.3s ease-in-out", // Smooth transition
+            willChange: "transform",
             "&:hover": {
               transform: "scale(1.05)", // Scale up the card when hovered
             },
@@ -57,7 +58,7 @@ const PostCard = ({ postImg, date, comments, postTitle }) => {
               ml={0.5}
             >
               {date}
-            </Typography>
+            </Typography> 
           </Box>
           <Box display="flex" alignItems="center" color="gray">
             <CommentIcon fontSize="small" /> |

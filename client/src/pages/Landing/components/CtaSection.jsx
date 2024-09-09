@@ -1,14 +1,14 @@
 
 import React from "react";
 import { Box, Container, Typography, useTheme } from "@mui/material";
-import ItemsSlider from "../../../components/ItemsSlider";
+import ProductSliderComponent from "./ProductSliderComponent";
 
 const CtaSection = () => {
   const theme = useTheme();
 
   return (
     <Box>
-      <Container>
+      <Container maxWidth="mdxl">
         <Box>
           <Typography
             variant="h5"
@@ -21,7 +21,7 @@ const CtaSection = () => {
         </Box>
 
         <Box sx={{ my: 5 }}>
-          <ItemsSlider />
+          <ProductSliderComponent/>
         </Box>
 
         <Box sx={{ textAlign: "center" }}>

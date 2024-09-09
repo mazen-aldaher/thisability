@@ -35,29 +35,29 @@ const BeforeHero = () => {
         >
           <Box sx={{ display: { md: "flex", xs: "none" } }}>
             <Box sx={{ paddingRight: { xl: "2%" }, mt: 5 }}>
-              <FloatObj front={ill1} back={fli1} />
+              <FloatObj front={ill1} back={fli1} canFlip={true} />
             </Box>
             <Box>
               <Box>
-                <FloatObj front={ill2} back={ill2} />
+                <FloatObj front={ill2} back={ill2} canFlip={true} />
               </Box>
               <Box>
-                <FloatObj front={ill5} back={fli5} />
+                <FloatObj front={ill5} back={fli5} canFlip={true} />
               </Box>
             </Box>
             <Box sx={{ marginLeft: { xl: "1%" }, marginTop: "0%" }}>
-              <FloatObj front={ill3} back={ill3} />
+              <FloatObj front={ill3} back={ill3} canFlip={true} />
             </Box>
             <Box>
               <Box sx={{ marginLeft: { xl: "10%" }, marginTop: "-10%" }}>
-                <FloatObj front={ill7} back={fli2} />
+                <FloatObj front={ill7} back={fli2} canFlip={true} />
               </Box>
               <Box sx={{ marginLeft: { xl: "10%" }, paddingTop: "0%" }}>
-                <FloatObj front={ill6} back={ill6} />
+                <FloatObj front={ill6} back={ill6} canFlip={true} />
               </Box>
             </Box>
             <Box sx={{ marginTop: 5 }}>
-              <FloatObj front={ill4} back={fli3} />
+              <FloatObj front={ill4} back={fli3} canFlip={true} />
             </Box>
           </Box>
           <Box

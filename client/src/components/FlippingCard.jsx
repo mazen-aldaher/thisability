@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Typography, Box, Chip } from "@mui/material";
 import { styled, keyframes } from "@mui/system";
 import eyes from "../assets/ill/mock-eyes.png";
+import { NavLink } from "react-router-dom";
 
 // Keyframes for combined floating animation
 const float = keyframes`
@@ -25,14 +26,15 @@ const FlippingCardContainer = styled(Box)({
   borderRadius: "25px",
 });
 
-const FlippingCardInner = styled(Box)(({ isFlipped, backgroundColor }) => ({
+const FlippingCardInner = styled(Box)(({ isflipped, backgroundColor }) => ({
   position: "relative",
   width: "100%",
   height: "100%",
   textAlign: "center",
   transition: "transform 0.6s",
+  willChange: "transform",
   transformStyle: "preserve-3d",
-  transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+  transform: isflipped ? "rotateY(180deg)" : "rotateY(0deg)",
   backgroundColor,
   borderRadius: "25px",
 }));
@@ -62,22 +64,25 @@ const FlippingCard = ({
   ArtistImg = "",
   ArtImg = "",
   backgroundColor = "orange", // Default color if none is passed
+  link
 }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isflipped, setisflipped] = useState(false);
 
   const handleFlip = () => {
-    setIsFlipped(!isFlipped);
+    setisflipped(!isflipped);
   };
   const handleNoneFlip = () => {
-    setIsFlipped(false);
+    setisflipped(false);
   };
 
   return (
+    
+    <NavLink to={link} >
     <FlippingCardContainer
       onMouseEnter={handleFlip}
       onMouseLeave={handleNoneFlip}
     >
-      <FlippingCardInner isFlipped={isFlipped}>
+      <FlippingCardInner isflipped={isflipped}>
         {/* Front Face */}
         <FlippingCardFace backgroundColor={backgroundColor}>
           <Box sx={{ paddingY: 3 }}>
@@ -91,7 +96,7 @@ const FlippingCard = ({
                 }}
               />
             </Box>
-            <Box sx={{ alignItems: "center", pl: 8 }}>
+            <Box sx={{ alignItems: "center",  }}>
               <Box component={"img"} src={ArtImg} alt={FrontTitle} />
             </Box>
             <Box sx={{ paddingY: "20px", px: 8 }}>
@@ -146,6 +151,7 @@ const FlippingCard = ({
         </FlippingCardFace>
       </FlippingCardInner>
     </FlippingCardContainer>
+    </NavLink>
   );
 };
 

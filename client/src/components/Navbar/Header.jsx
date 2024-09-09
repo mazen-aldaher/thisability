@@ -28,7 +28,7 @@ import logo from "../../assets/Logo.png";
 
 const data = [
   { title: "About Us", link: "/about-us" },
-  { title: "Store", link: "/store" },
+  { title: "Store", link: "/products" },
   { title: "Community", link: "/blog" },
   { title: "Support", link: "/contact-us" },
   { title: "FAQ", link: "/faq" },

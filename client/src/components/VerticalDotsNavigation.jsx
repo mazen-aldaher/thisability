@@ -28,6 +28,7 @@ const VerticalDotsNavigation = ({
             color: activeSection === section ? "primary.main" : "grey.500",
             transform: activeSection === section ? "scale(1)" : "scale(0.75)",
             transition: "transform 0.3s ease, color 0.3s ease",
+            willChange: "transform",
           }}
         >
           <FiberManualRecordIcon />

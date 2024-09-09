@@ -1,19 +1,14 @@
-
 import React, { useState, useEffect } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { Box, Container, Typography, Button, Skeleton, Paper, IconButton, InputBase } from "@mui/material";
+import { Box, Container, Typography, Button, Skeleton, useMediaQuery, useTheme } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
-
+import Carousel from 'react-material-ui-carousel';
 import FlippingCard from "./FlippingCard"; // Assuming this is a custom component
 import cardImg from "../assets/ill/art-ist/card-1.png";
 import flipImg from "../assets/ill/art-ist/flip-1.png";
 
 // Categories data
 const categories = [
-  { id: 1, title: "All", color: "gray" }, // Add 'All' category
+  { id: 1, title: "All", color: "gray" },
   { id: 2, title: "paint", color: "orange" },
   { id: 3, title: "handmade", color: "lightBlue" },
   { id: 4, title: "art", color: "green" },
@@ -78,21 +73,20 @@ const data = [
 ];
 
 const ItemsSlider = () => {
-  const [products, setProducts] = useState([]); // Initially no products
+  const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md")); // Large screen breakpoint
 
   useEffect(() => {
-    // Simulate a loading delay
     const timer = setTimeout(() => {
-      setProducts(data); // Load the actual data
-      setLoading(false); // Disable loading
-    }, 2000); // 2 seconds loading time
-
-    return () => clearTimeout(timer); // Cleanup on unmount
+      setProducts(data);
+      setLoading(false);
+    }, 2000); // Simulating a 2-second loading time
+    return () => clearTimeout(timer);
   }, []);
 
   const handleCategoryChange = (category) => {
@@ -102,217 +96,106 @@ const ItemsSlider = () => {
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
-  
-    // Filter logic based on category and search
-    const filteredProducts = products.filter((product) =>
-      (selectedCategory === "All" || product.category === selectedCategory) &&
-      (product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       product.artistName.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-    const sliderSettings = {
-      dots: true,
-      infinite: true,
-      speed: 1000,
-      slidesToShow: Math.min(filteredProducts.length, 3),
-      slidesToScroll: 1,
-      autoplay: true,
-      autoplaySpeed: 1500,
-      pauseOnHover: true,
-      responsive: [
-        {
-          breakpoint: 768, // Mobile screen size
-          settings: {
-            slidesToShow: 1, // Show only 1 card on mobile
-            slidesToScroll: 1,
-          },
-        },
-        {
-          breakpoint: 1024, // Tablet screen size
-          settings: {
-            slidesToShow: 2, // Show 2 cards on tablet
-            slidesToScroll: 1,
-          },
-        },
-      ],
-    };
 
-  // Function to get color based on category
-  const getCategoryColor = (category) => {
-    const foundCategory = categories.find((cat) => cat.title === category);
-    return foundCategory ? foundCategory.color : "gray"; // Default to gray if not found
+  const filteredProducts = products.filter((product) =>
+    (selectedCategory === "All" || product.category === selectedCategory) &&
+    (product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.artistName.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Function to split products into groups of 3 for large screens
+  const getSlides = () => {
+    if (isLargeScreen) {
+      const slides = [];
+      for (let i = 0; i < filteredProducts.length; i += 3) {
+        slides.push(filteredProducts.slice(i, i + 3)); // Group by 3 for large screens
+      }
+      return slides;
+    } else {
+      return filteredProducts.map((product) => [product]); // Single slide for small screens
+    }
   };
 
-
+  const skeletonItems = [1, 2, 3]; // Array for skeleton placeholders
 
   return (
     <Box>
-      {error ? (
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6" color="error">
-            Error fetching products: {error}
-          </Typography>
-        </Box>
-      ) : loading ? (
-        // Show skeletons while loading
-        <Slider {...sliderSettings}>
-          {[...Array(4)].map((_, index) => (
-            <Box key={index} sx={{ px: { xs: 1, sm: 2 } }}>
-              <Box
-                sx={{
-                  width: "300px",
-                  height: "400px",
-                  borderRadius: "25px",
-                  overflow: "hidden",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                {/* Skeleton for the entire card */}
-                <Skeleton
-                  variant="rectangular"
-                  width="100%"
-                  height="100%"
-                  sx={{
-                    borderRadius: "25px",
-                    position: "relative",
-                  }}
-                >
-                  {/* Simulate the chip and title */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "20px",
-                      left: "20px",
-                      width: "100px",
-                      height: "30px",
-                    }}
-                  >
-                    <Skeleton
-                      variant="rounded"
-                      width="100%"
-                      height="100%"
-                      sx={{ backgroundColor: "#eded" }}
-                    />
-                  </Box>
-
-                  {/* Simulate the main image */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "80px",
-                      left: "50px",
-                      width: "200px",
-                      height: "150px",
-                      backgroundColor: "orange",
-                    }}
-                  >
-                    <Skeleton
-                      variant="rectangular"
-                      width="100%"
-                      height="100%"
-                    />
-                  </Box>
-
-                  {/* Simulate the title text */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      bottom: "80px",
-                      left: "30px",
-                      width: "240px",
-                      height: "40px",
-                    }}
-                  >
-                    <Skeleton variant="text" width="100%" height="100%" />
-                  </Box>
-
-                  {/* Simulate the decorative eyes element */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      bottom: "20px",
-                      right: "20px",
-                      width: "60px",
-                      height: "30px",
-                    }}
-                  >
-                    <Skeleton
-                      variant="circular"
-                      width="100%"
-                      height="100%"
-                      sx={{ transform: "rotate(-25deg)" }}
-                    />
-                  </Box>
-                </Skeleton>
+      {loading ? (
+        <Container maxWidth="xl">
+          {/* Display Skeletons while loading */}
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+            {skeletonItems.map((item) => (
+              <Box key={item} sx={{ width: "300px", height: "400px" }}>
+                <Skeleton variant="rectangular" width={300} height={200} />
+                <Skeleton width="60%" height={30} sx={{ mt: 2 }} />
+                <Skeleton width="80%" height={30} />
               </Box>
-            </Box>
-          ))}
-        </Slider>
-      ) : filteredProducts.length > 0 ? (
-        <>
-        {/* Search bar 
-      <Paper component="form" sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 420 }}>
-        <InputBase
-          sx={{ ml: 1, flex: 1 }}
-          placeholder="Search"
-          inputProps={{ "aria-label": "search products" }}
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-        <IconButton type="button" sx={{ p: "10px" }}>
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-        */}
-
-      {/* Category filter buttons */}
-      <Box sx={{ my: 3,display:"flex",justifyContent:"center" }}>
-        {categories.map((category) => (
-          <Button
-            key={category.id}
-            variant={selectedCategory === category.title ? "contained" : "outlined"}
-            sx={{ mx: 1 }}
-            onClick={() => handleCategoryChange(category.title)}
-          >
-            {category.title}
-          </Button>
-        ))}
-      </Box>
-
-        <Slider {...sliderSettings}>
-        {filteredProducts.map((product) => (
-            <Box key={product.id} sx={{ px: 2 }}>
-              <NavLink to={`/products/${product.id}`} style={{ textDecoration: "none" }}>
-                <FlippingCard
-                  Category={product.category}
-                  ArtImg={product.artImg}
-                  FrontTitle={product.frontTitle}
-                  ArtistImg={product.artistImg}
-                  BackTitle={product.backTitle}
-                  ArtistName={product.artistName}
-                  backgroundColor={categories.find(cat => cat.title === product.category)?.color || "gray"}
-                />
-                
-              </NavLink>
-            </Box>
-          ))}
-        </Slider>
-        </>
+            ))}
+          </Box>
+        </Container>
       ) : (
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6" gutterBottom>
-            There are no products available. Please add some from the link
-            below:
-          </Typography>
-          <Button
-            component={Link}
-            to="/products/add-new-product"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-          >
-            Create Product
-          </Button>
-        </Box>
+        filteredProducts.length > 0 ? (
+          <>
+            <Box sx={{ my: 3, display: "flex", justifyContent: "center" }}>
+              {categories.map((category) => (
+                <Button
+                  key={category.id}
+                  variant={selectedCategory === category.title ? "contained" : "outlined"}
+                  sx={{ mx: 1 }}
+                  onClick={() => handleCategoryChange(category.title)}
+                >
+                  {category.title}
+                </Button>
+              ))}
+            </Box>
+
+            <Container maxWidth="xl">
+              <Carousel
+                indicators={filteredProducts.length > 1}
+                autoPlay={true}
+                animation="slide"
+                cycleNavigation={true}
+                navButtonsAlwaysVisible={true}
+                duration={1000}
+              >
+                {getSlides().map((slide, index) => (
+                  <Box key={index} sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+                    {slide.map((product) => (
+                      <Box key={product.id}>
+                        <NavLink to={`/products/${product.id}`} style={{ textDecoration: "none" }}>
+                          <FlippingCard
+                            Category={product.category}
+                            ArtImg={product.artImg}
+                            FrontTitle={product.frontTitle}
+                            ArtistImg={product.artistImg}
+                            BackTitle={product.backTitle}
+                            ArtistName={product.artistName}
+                            backgroundColor={categories.find(cat => cat.title === product.category)?.color || "gray"}
+                          />
+                        </NavLink>
+                      </Box>
+                    ))}
+                  </Box>
+                ))}
+              </Carousel>
+            </Container>
+          </>
+        ) : (
+          <Box textAlign="center" mt={4}>
+            <Typography variant="h6" gutterBottom>
+              just for admin There are no   products available. Please add some from the link below:
+            </Typography>
+            <Button
+              component={Link}
+              to="/products/add-new-product"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Create Product
+            </Button>
+          </Box>
+        )
       )}
     </Box>
   );
