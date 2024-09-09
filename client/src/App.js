@@ -8,8 +8,8 @@ import Header from './components/Navbar/Header';
 import { lightTheme, darkTheme, autismTheme } from './theme';
 import Footer from './components/Navbar/Footer';
 import Landing from './pages/Landing/Landing';
-import SimpleSlider from './components/SimpleSlider';
 import StoreArchive from './pages/Store/StoreArchive';
+import BiddingArchive from './pages/Store/BiddingArchive';
 const App = () => {
   const [theme, setTheme] = useState(darkTheme);
   const { i18n, t } = useTranslation(); // Get 't' from useTranslation
@@ -47,6 +47,7 @@ const App = () => {
               <Routes>
                 <Route path="/" exact element={<Landing />} />
                 <Route path="/products" exact element={<StoreArchive />} />
+                <Route path="/bidding" exact element={<BiddingArchive />} />
               </Routes>
             </motion.div>
           </AnimatePresence>
