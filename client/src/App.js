@@ -10,6 +10,8 @@ import Footer from './components/Navbar/Footer';
 import Landing from './pages/Landing/Landing';
 import StoreArchive from './pages/Store/StoreArchive';
 import BiddingArchive from './pages/Store/BiddingArchive';
+import ArtistPage from './pages/Artist/ArtistPage';
+import ArtistArchive from './pages/Artists/ArtistArchive';
 const App = () => {
   const [theme, setTheme] = useState(darkTheme);
   const { i18n, t } = useTranslation(); // Get 't' from useTranslation
@@ -46,8 +48,10 @@ const App = () => {
             <motion.div>
               <Routes>
                 <Route path="/" exact element={<Landing />} />
-                <Route path="/products" exact element={<StoreArchive />} />
-                <Route path="/bidding" exact element={<BiddingArchive />} />
+                <Route path="/products" element={<StoreArchive />} />
+                <Route path="/bidding" element={<BiddingArchive />} />
+                <Route path="/artists" element={<ArtistArchive />} />
+                <Route path="/artists/:id" element={<ArtistPage />} />
               </Routes>
             </motion.div>
           </AnimatePresence>

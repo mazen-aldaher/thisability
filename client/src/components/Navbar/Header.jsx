@@ -169,7 +169,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
           color: scrolled ? "#fff" : "inherit",
         }}
       >
-        <Container maxWidth="xl">
+        <Box sx={{px:10}}>
           <Toolbar>
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
               <NavLink to="/">
@@ -234,7 +234,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
               <MenuIcon />
             </IconButton>
           </Toolbar>
-        </Container>
+        </Box>
       </AppBar>
 
       <SwipeableDrawer

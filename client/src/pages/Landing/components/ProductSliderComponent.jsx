@@ -87,7 +87,7 @@ const data = [
           ArtImg={item.artImg}
           ArtistImg={item.artistImg}
           backgroundColor={categories.find(cat => cat.title === item.category)?.color || "gray"}
-          link={`/products/${item.id}`} 
+          link={`/artists/${item.id}`} 
  
         />
       )} 
