@@ -3,7 +3,6 @@ import MainSlider from '../../../components/MainSlider'
 import cardImg from "../../../assets/ill/art-ist/card-1.png";
 import flipImg from "../../../assets/ill/art-ist/flip-1.png";
 import FlippingCard from '../../../components/FlippingCard';
-import { Box } from '@mui/material';
 
 const ProductSliderComponent = () => {
 

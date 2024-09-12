@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Box, Container, Typography, Button, Skeleton, useMediaQuery, useTheme } from "@mui/material";
 import { Link} from "react-router-dom";
@@ -30,9 +31,7 @@ const MainSlider = ({itemsSlider,renderSlide,itemsPerSlide = 3,loadingTime =2000
     setSelectedCategory(category);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+
 
   const filteredItems = items.filter((product) =>
     (selectedCategory === "All" || product.category === selectedCategory) &&

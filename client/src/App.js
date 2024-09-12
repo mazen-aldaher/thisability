@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Navbar/Header';
-import { lightTheme, darkTheme, autismTheme } from './theme';
+import { lightTheme} from './theme';
 import Footer from './components/Navbar/Footer';
 import Landing from './pages/Landing/Landing';
 import StoreArchive from './pages/Store/StoreArchive';
@@ -13,7 +13,7 @@ import BiddingArchive from './pages/Store/BiddingArchive';
 import ArtistPage from './pages/Artist/ArtistPage';
 import ArtistArchive from './pages/Artists/ArtistArchive';
 const App = () => {
-  const [theme, setTheme] = useState(darkTheme);
+  const [theme, setTheme] = useState(lightTheme);
   const { i18n, t } = useTranslation(); // Get 't' from useTranslation
 
   const handleLanguageChange = (language) => {

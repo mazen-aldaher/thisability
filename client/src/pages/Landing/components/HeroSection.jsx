@@ -12,7 +12,6 @@ import ill7 from "../../../assets/ill/ill-7.png";
 import fli1 from "../../../assets/ill/art-ist/flip-1.png";
 import fli2 from "../../../assets/ill/art-ist/flip-2.png";
 import fli3 from "../../../assets/ill/art-ist/flip-3.png";
-import fli4 from "../../../assets/ill/art-ist/flip-4.png";
 import fli5 from "../../../assets/ill/art-ist/flip-5.png";
 import CTABTN from "../../../components/Button/CTABTN";
 

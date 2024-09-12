@@ -31,7 +31,7 @@ const BiddingProductCard = () => {
         <CardMedia
           component="img"
           alt="New School Teachers"
-          height="200"
+          height="400"
           image="https://www.marketchino.com/media/catalog/product/cache/1/thumbnail/600x/17f82f742ffe127f42dca9de82fb58b1/h/1/h19.jpg"
           sx={{ borderRadius: '16px 16px 0 0' }}
         />

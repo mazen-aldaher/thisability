@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { styled, keyframes } from "@mui/system";
 
 // Keyframes for combined floating animation
@@ -12,6 +12,7 @@ const float = keyframes`
   }
 `;
 
+// Flipping card container with responsive width
 const FlippingCardContainer = styled(Box)(({ theme }) => ({
   perspective: "1000px",
   height: "400px",
@@ -37,6 +38,7 @@ const FlippingCardContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
+// Inner card with flip behavior
 const FlippingCardInner = styled(Box)(({ isflipped }) => ({
   position: "relative",
   width: "100%",
@@ -49,7 +51,8 @@ const FlippingCardInner = styled(Box)(({ isflipped }) => ({
   backfaceVisibility: "hidden",
 }));
 
-const FlippingCardFace = styled(Box)(({ theme, back }) => ({
+// Front and back card faces
+const FlippingCardFace = styled(Box)(({ back }) => ({
   position: "absolute",
   width: "100%",
   height: "100%",
@@ -58,25 +61,21 @@ const FlippingCardFace = styled(Box)(({ theme, back }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: back ? "transparent":"",
+  backgroundColor: back ? "transparent" : "",
   transform: back ? "rotateY(180deg)" : "none",
 }));
 
-const FloatObj = ({ front, back, canFlip }) => {
-  const [isFlipped, setIsFlipped] = useState(false); // Updated variable names for consistency
-  const theme = useTheme();
+// Main component with flipping logic
+const FloatObj = ({ front, back, canFlip, xl = "300px", md = "200px", lg, xs }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
-    // Only flip if `canFlip` is true
     if (canFlip) {
-      const flipInterval = setInterval(
-        () => {
-          setIsFlipped((prev) => !prev);
-        },
-        Math.random() * (5000 - 2000) + 2000
-      ); // Random interval between 2s and 5s
+      const flipInterval = setInterval(() => {
+        setIsFlipped((prev) => !prev);
+      }, Math.random() * (5000 - 2000) + 2000); // Random interval between 2s and 5s
 
-      return () => clearInterval(flipInterval); // Clean up interval on component unmount
+      return () => clearInterval(flipInterval); // Cleanup interval on unmount
     }
   }, [canFlip]);
 
@@ -90,7 +89,14 @@ const FloatObj = ({ front, back, canFlip }) => {
                 component="img"
                 src={front}
                 alt="Front Side"
-                sx={{ width: { xl: "250px", md: "200px" } }}
+                sx={{
+                  width: {
+                    xs: xs || "250px", // Responsive width for extra small screens, fallback to 250px
+                    md: md,            // Width for medium screens
+                    lg: lg || md,      // Width for large screens, fallback to md width
+                    xl: xl,            // Width for extra large screens
+                  },
+                }}
               />
             </Box>
           </Box>
@@ -102,7 +108,14 @@ const FloatObj = ({ front, back, canFlip }) => {
               component="img"
               src={back}
               alt="Back Side"
-              sx={{ width: { xl: "250px", md: "200px" } }}
+              sx={{
+                width: {
+                  xs: xs || "250px", // Responsive width for extra small screens, fallback to 250px
+                  md: md,            // Width for medium screens
+                  lg: lg || md,      // Width for large screens, fallback to md width
+                  xl: xl,            // Width for extra large screens
+                },
+              }}
             />
           </Box>
         </FlippingCardFace>

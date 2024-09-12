@@ -1,12 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import BiddingProductCard from './BiddingProductCard'; // You may need to extend ProductCard to handle bidding logic
 
 const BiddingArchiveList = () => {
   const [visibleItems, setVisibleItems] = useState(4); // Initial number of products to display
   const [isFetching, setIsFetching] = useState(false); // To control loading more products
   const [hasMoreItems, setHasMoreItems] = useState(true); // To control if more items are available
-  const theme = useTheme();
 
   // Bidding product data (example)
   const biddingData = [
