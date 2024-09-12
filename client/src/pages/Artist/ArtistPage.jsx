@@ -3,7 +3,7 @@ import { Box, Button, Container, Typography, useTheme } from '@mui/material';
 import ill from '../../assets/ill/ill-1.png';
 import mock5 from '../../assets/ill/mock-5.png';
 import mock6 from '../../assets/ill/mock-6.png';
-
+import brile from '../../assets/ill/prile.png';
 const ArtistPage = () => {
   const theme = useTheme();
   return (
@@ -182,20 +182,21 @@ const ArtistPage = () => {
       </Box>
       {/* Second Section */}
 
-      <Box sx={{ my: '10%' }}>
+      <Box sx={{ my: '5%' }}>
         <Box
           sx={{
             display: 'flex',
-            px: {xl:10,md:5,xs:5},
+            px: { xl: 10, md: 5, xs: 5 },
             flexDirection: { xs: 'column', md: 'row' },
             justifyContent: 'space-between',
+          
           }}
         >
-          <Box sx={{ width: { xs: '100%', md: '75%' } }}>
+          <Box sx={{pt:{xl:10,xs:0}, width: { xs: '100%', md: '75%' } }}>
             <Box sx={{ paddingY: '20px', paddingRight: '0%' }}>
-              <Typography variant="h3">LEARN MORE ABOUT THE ARTIST</Typography>
+              <Typography variant="h2" color={theme.palette.secondary.main}>LEARN MORE ABOUT THE ARTIST</Typography>
             </Box>
-            <Typography variant="h5" sx={{ fontSize: '20px' }}>
+            <Typography sx={{fontSize:{xl:"30px",md:"25px",xs:"20px"}}}  >
               Discover Hend Khalil, a visionary artist who transitioned from
               traditional painting to creating tactile artworks using materials
               like foam, wires, seeds, cotton, and paper cuts. Guided by touch,
@@ -210,10 +211,18 @@ const ArtistPage = () => {
               marginTop: { xs: '20px', md: '0' },
             }}
           >
-            <Box>Some Dots Illustration</Box>
-            <Box sx={{ border: 'solid 1px orange', height: '35vh' }}>
-              Video Screen
+            <Box sx={{ pb: 5 }}>
+              <Box component={'img'} src={brile} />{' '}
             </Box>
+            <Box
+              component="iframe"
+              width="100%"
+              
+              src="https://www.youtube.com/embed/DmOjmasF20I"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              sx={{ borderRadius: '20px', border: 'solid 2px',height:{xl:"500px",md:"450px"} }}
+            />
           </Box>
         </Box>
       </Box>

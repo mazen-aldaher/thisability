@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { Box, Button, useTheme, Skeleton } from '@mui/material';
 import ProductCard from './ProductCard';
