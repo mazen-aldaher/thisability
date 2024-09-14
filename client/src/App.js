@@ -5,13 +5,15 @@ import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Navbar/Header';
-import { lightTheme} from './theme';
+import { lightTheme } from './theme';
 import Footer from './components/Navbar/Footer';
 import Landing from './pages/Landing/Landing';
 import StoreArchive from './pages/Store/StoreArchive';
 import BiddingArchive from './pages/Store/BiddingArchive';
 import ArtistPage from './pages/Artist/ArtistPage';
 import ArtistArchive from './pages/Artists/ArtistArchive';
+import ProductDetails from './pages/Store/ProductDetails';
+
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
   const { i18n, t } = useTranslation(); // Get 't' from useTranslation
@@ -49,6 +51,8 @@ const App = () => {
               <Routes>
                 <Route path="/" exact element={<Landing />} />
                 <Route path="/products" element={<StoreArchive />} />
+                <Route path="/products/:id" element={<ProductDetails />} />
+
                 <Route path="/bidding" element={<BiddingArchive />} />
                 <Route path="/artists" element={<ArtistArchive />} />
                 <Route path="/artists/:id" element={<ArtistPage />} />

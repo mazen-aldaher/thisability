@@ -12,17 +12,19 @@ import Artist from './components/Artist';
 const artistProfile = [
   {
     id: 1,
-    artistName: 'Mazenaldaher',
-    artistImg: '',
-    descriptionGeneral: '',
-    artistClip: '',
+    artistName: 'Hanan Mohamed',
+    artistImg:
+      'https://t3.ftcdn.net/jpg/01/79/46/68/360_F_179466839_nARiMdo6ocQWnw6X5YyecerwSYnAVb88.jpg',
+    descriptionGeneral:
+      'The tactile dimensions of colorful paper cuts designed to be experienced through touch. The artwork depicts the power of imagination in the eye’s mind to perceive beauty.',
+    artistClip: 'https://www.youtube.com/embed/DmOjmasF20I',
     ill1: '',
     ill2: '',
-    descriptionMain: '',
+    descriptionMain: 'Discover Hend Khalil, a visionary artist who transitioned from traditional painting to creating tactile artworks using materials like foam, wires, seeds, cotton, and paper cuts. Guided by touch,she crafts stunning collage paintings that express the true art beyond vision.',
     descriptionAtelih: '',
-    artImg: '',
-    artTitle: '',
-    artDescription: '',
+    artImg: art,
+    artTitle: 'WHISPERS OF THE WIND',
+    artDescription: 'Each element weaves a story of resilience and grace,portraying her joyful dance as a celebration of overcoming life’s challenges. The artwork is a touching reminder of the beauty and strength found in embracing our journeys with open hearts.',
   },
 ];
 
@@ -165,7 +167,7 @@ const ArtistPage = () => {
   return (
     <>
       <Box>
-        <Artist data={data} />
+        <Artist data={data} artist={artistProfile} />
       </Box>
     </>
   );
