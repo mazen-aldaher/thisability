@@ -169,7 +169,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
           color: scrolled ? "#fff" : "inherit",
         }}
       >
-        <Box sx={{px:10}}>
+        <Box sx={{px:{xl:10}}}>
           <Toolbar>
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
               <NavLink to="/">

@@ -3,19 +3,27 @@ import {
   Avatar,
   Box,
   Button,
+  Chip,
   Container,
   Divider,
   Grid,
   Paper,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import ProductInfoTab from './components/ProductInfoTab';
-
+import { Flag } from '@mui/icons-material'; // Optional: If you want to use icons for country
 import StarIcon from '@mui/icons-material/Star';
 import BreadcrumbsComponent from '../../components/BreadcrumbsComponent';
-
-const PeoductDetails = () => {
+import splitTextByWords from '../../utils/splitTextByWords';
+import { motion } from 'framer-motion';
+import { toast, ToastContainer } from 'react-toastify';
+const ProductDetails = () => {
+  const [loading, setLoading] = useState(false);
+  const [basketAdded, setBasketAdded] = useState(false);
+  const theme = useTheme();
+  const navigate = useNavigate(); // Hook for navigation
   const [product, setProduct] = useState({
     id: 1,
     productImg:
@@ -37,50 +45,78 @@ const PeoductDetails = () => {
     name: 'Product1',
     averageRating: '3',
     price: '150',
+    artist: {
+      id: 1,
+      username: 'Mazenaldaher',
+      country: 'Egy',
+      avatarUrl:
+        'https://www.marketchino.com/media/catalog/product/cache/1/thumbnail/600x/17f82f742ffe127f42dca9de82fb58b1/h/1/h17.jpg',
+    },
     description:
-      'cdscsdcsdcsdcsdcsdcsdcsdcsdcsdcsdcdccsdcsdcsdcsdcdcsdcsdcsdcsccsdcdscsdcsdccdscsdcsdcsdcsdcsdcds',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco mazen aldaher.',
   });
+  const handleAddToCart = () => {
+    setLoading(true);
+
+    // Simulate a delay for adding to cart
+    setTimeout(() => {
+      setLoading(false);
+
+      // Display the toast notification
+      toast.success('Product added to cart!', {
+        position: 'bottom-left',
+        autoClose: 500,
+      });
+
+      // Simulate navigating to cart page after 2 seconds
+      setTimeout(() => {
+        navigate('/cart');
+      }, 2000);
+    }, 1000); // Simulate API loading time
+  };
+  const descriptionChunks = splitTextByWords(product.description, 30);
 
   return (
     <Container maxWidth="xl">
-      <Box>{/* there is a breadcrumbs */}</Box>
+      <BreadcrumbsComponent />
       <Grid container spacing={4}>
         <Grid item xl={6} xs={12}>
           <Box
             component={'img'}
             src={product.productImg}
             sx={{
-              transform: 'scale(0.8)',
+              transform: '{xl:scale(0.8)}',
               backgroundColor: '#ededed',
-              height: '600px',
+              height: { xl: '650px' },
               width: '100%',
               borderRadius: '25px',
               backgroundSize: 'contain',
               backgroundPosition: 'top ',
               backgroundRepeat: 'no-repeat',
-              mb: '-10%',
+              mb: { xl: '-10%' },
             }}
           />
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              transform: 'scale(0.8)',
+              transform: '{xl:scale(0.8)}',
               alignContent: 'flex-start',
               alignItems: 'flex-start',
               top: 5,
+              gap: { xs: 2 },
             }}
           >
             {product.thumbnails &&
-              product.thumbnails.map((thumb, index) => (
+              product.thumbnails.map((thumbObj, index) => (
                 <Box
                   key={index}
                   component={'img'}
-                  src={thumb}
+                  src={thumbObj.thumb}
                   sx={{
                     backgroundColor: '#ededed',
-                    height: '220px',
-                    width: '230px',
+                    height: { xl: '220px' },
+                    width: { xl: '230px', xs: '100%' },
                     borderRadius: '25px',
                     backgroundSize: 'contain',
                     backgroundPosition: 'center',
@@ -90,7 +126,7 @@ const PeoductDetails = () => {
           </Box>
         </Grid>
         <Grid item xl={6} xs={12}>
-          <Container maxWidth="sm" sx={{ pt: 10 }}>
+          <Container maxWidth="sm" sx={{ pt: { xl: 10 } }}>
             <Typography variant="h3" sx={{ textTransform: 'uppercase' }}>
               {product.name}
             </Typography>
@@ -111,55 +147,102 @@ const PeoductDetails = () => {
                 Read reviews
               </Typography>
             </Box>
-            <Typography variant="h4">${product.price.fixed(2)}</Typography>
-            <Box sx={{width:"20%"}}>
-            <Typography variant="h5" sx={{ paddingY: '20px' }}>
-              {product.description}
-            </Typography>
+            <Typography variant="h3">${product.price}</Typography>
+            <Box>
+              {descriptionChunks.map((chunk, index) => (
+                <Typography key={index} variant="h5" sx={{ paddingY: '20px' }}>
+                  {chunk}
+                </Typography>
+              ))}
             </Box>
-            <Paper
-              elevation={2}
+
+            <Box sx={{ pt: 1, pb: 3 }}>
+              <Typography variant="h5"> - More about artist: </Typography>
+            </Box>
+            <Box
               sx={{
-                backgroundColor: '#00FF00',
-                padding: '20px 40px',
                 display: 'flex',
+                alignContent: 'center',
                 alignItems: 'center',
-                gap: 2,
+                justifyContent: 'center',
+                gap: 0.2,
               }}
             >
-              <Avatar
-                src={product.artist ? product.artist.avatarUrl : ''}
-                sx={{ width: '50px', height: '50px' }}
-              />
-              <Box>
-                <Typography variant="h5">Artist:</Typography>
-
-                <Box>
+              <Button
+                sx={{
+                  backgroundColor: '#00457C',
+                  borderEndEndRadius: 0,
+                  borderStartEndRadius: 0,
+                  borderEndStartRadius: 40,
+                  borderStartStartRadius: 40,
+                  width: { xl: '50%', xs: '100%' },
+                  height: '70px',
+                  border: 'solid 1px #fff',
+                }}
+              >
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <Avatar
+                    src={product.artist ? product.artist.avatarUrl : ''}
+                    sx={{ width: '50px', height: '50px' }}
+                  />
                   <Typography variant="h6" sx={{ color: '#fff' }}>
-                    {product.artist
-                      ? product.artist.username
-                      : 'Unknown Artist'}
+                    {product.artist.username}
                   </Typography>
                 </Box>
-              </Box>
-            </Paper>
-            <Button
-              variant="contained"
-              sx={{ width: '100%', height: '70px', marginTop: '50px' }}
-            >
-              <Typography sx={{ fontSize: '20px' }}>Add to cart</Typography>
-            </Button>
-            <Box sx={{ paddingY: '20px' }}>
-              <Typography variant="h6">Checkout safety</Typography>
-              <Divider />
-              <Box sx={{ paddingTop: '20px', display: 'flex', gap: 2 }}>
-                {/* Example Payment Avatars */}
-                <Avatar sx={{ width: '75px', height: '75px' }} />
-                <Avatar sx={{ width: '75px', height: '75px' }} />
-                <Avatar sx={{ width: '75px', height: '75px' }} />
-                <Avatar sx={{ width: '75px', height: '75px' }} />
-              </Box>
+              </Button>
+              <Button
+                sx={{
+                  backgroundColor: '#3B7BBF',
+                  borderRadius: 0,
+                  width: '35%',
+                  height: '70px',
+                  Border: 'solid 1px #fff',
+                }}
+              >
+                <Typography variant="h6" sx={{ color: '#fff' }}>
+                  Autism
+                </Typography>
+              </Button>
+              <Button
+                sx={{
+                  backgroundColor: '#00457C',
+                  borderEndStartRadius: 0,
+                  borderStartStartRadius: 0,
+                  borderEndEndRadius: 40,
+                  borderStartEndRadius: 40,
+                  width: '35%',
+                  height: '70px',
+                  border: 'solid 1px #fff',
+                }}
+              >
+                <Box>
+                  {product.artist.country && (
+                    <Typography variant="h6" sx={{ color: '#fff' }}>
+                      {product.artist.country}
+                    </Typography>
+                  )}
+                </Box>
+              </Button>
             </Box>
+            <Container maxWidth="sm">
+              {/* Button or Loading */}
+              {!loading && (
+                <Button
+                  variant="contained"
+                  sx={{ width: '100%', height: '70px', marginTop: '50px' }}
+                  onClick={handleAddToCart}
+                >
+                  <Typography sx={{ fontSize: '20px' }}>Add to cart</Typography>
+                </Button>
+              )}
+
+              {/* Loading Animation */}
+              {loading && (
+                <Typography sx={{ textAlign: 'center', marginTop: '50px' }}>
+                  Loading...
+                </Typography>
+              )}
+            </Container>
           </Container>
         </Grid>
       </Grid>
@@ -183,8 +266,10 @@ const PeoductDetails = () => {
         <Typography variant="h6">Contact</Typography>
         <Typography>[Email us, Call us, Chat Online]</Typography>
       </Container>
+      {/* Toast Container for Notifications */}
+      <ToastContainer />
     </Container>
   );
 };
 
-export default PeoductDetails;
+export default ProductDetails;
