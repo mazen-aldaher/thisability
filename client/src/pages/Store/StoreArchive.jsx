@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import BreadcrumbsComponent from '../../components/BreadcrumbsComponent';
 import ProductArchiveList from './components/ProductArchiveList';

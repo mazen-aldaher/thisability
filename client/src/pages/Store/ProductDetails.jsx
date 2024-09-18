@@ -85,22 +85,22 @@ const ProductDetails = () => {
             component={'img'}
             src={product.productImg}
             sx={{
-              transform: '{xl:scale(0.8)}',
+              transform: {xl:"scale(0.8)"},
               backgroundColor: '#ededed',
-              height: { xl: '650px' },
+              height: { xl: '600px' },
               width: '100%',
               borderRadius: '25px',
               backgroundSize: 'contain',
               backgroundPosition: 'top ',
               backgroundRepeat: 'no-repeat',
-              mb: { xl: '-10%' },
+              mb:"-10%"
             }}
           />
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              transform: '{xl:scale(0.8)}',
+              transform: {xl:"scale(0.8)"},
               alignContent: 'flex-start',
               alignItems: 'flex-start',
               top: 5,
@@ -166,6 +166,7 @@ const ProductDetails = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 0.2,
+                px:2
               }}
             >
               <Button
@@ -229,7 +230,7 @@ const ProductDetails = () => {
               {!loading && (
                 <Button
                   variant="contained"
-                  sx={{ width: '100%', height: '70px', marginTop: '50px' }}
+                  sx={{ width: '100%', height: '70px', marginTop: '50px',borderRadius:"40px" }}
                   onClick={handleAddToCart}
                 >
                   <Typography sx={{ fontSize: '20px' }}>Add to cart</Typography>

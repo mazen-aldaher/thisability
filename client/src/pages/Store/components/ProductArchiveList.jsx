@@ -186,7 +186,7 @@ const ProductArchiveList = () => {
   return (
     <>
       {/* Category buttons */}
-      <Box sx={{ my: 3, display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{  display: 'flex', justifyContent: 'center' }}>
         {categories.map((category) => (
           <Button
             key={category.id}

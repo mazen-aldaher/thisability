@@ -13,6 +13,10 @@ import BiddingArchive from './pages/Store/BiddingArchive';
 import ArtistPage from './pages/Artist/ArtistPage';
 import ArtistArchive from './pages/Artists/ArtistArchive';
 import ProductDetails from './pages/Store/ProductDetails';
+import CartPage from './pages/Cart/CartPage';
+import CheckoutPage from './pages/Checkout/CheckoutPage';
+import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
+import OrderTracking from './pages/OrderTracking/OrderTracking';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -56,6 +60,10 @@ const App = () => {
                 <Route path="/bidding" element={<BiddingArchive />} />
                 <Route path="/artists" element={<ArtistArchive />} />
                 <Route path="/artists/:id" element={<ArtistPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/place-order" element={<PlaceOrder />} />
+                <Route path='/order-tracking' element=<OrderTracking/>  />
               </Routes>
             </motion.div>
           </AnimatePresence>
