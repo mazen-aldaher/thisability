@@ -73,9 +73,9 @@ const lightTheme = createTheme({
       fontWeight: 700,
     },
     h2: {
-      fontSize: '3rem',
+      fontSize: '4rem',
       '@media (max-width:600px)': {
-        fontSize: '0.875rem',
+        fontSize: '3rem',
       },
     },
 

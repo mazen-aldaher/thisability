@@ -19,6 +19,22 @@ import BreadcrumbsComponent from '../../components/BreadcrumbsComponent';
 import splitTextByWords from '../../utils/splitTextByWords';
 import { motion } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
+import HomeIcon from '@mui/icons-material/Home';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
+const BreadItems = [
+  {
+    text: 'Home',
+    path: '/',
+    icon: <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+  },
+  {
+    text: 'Products Listing',
+    path: '/products',
+    icon: <ShoppingCartIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+  },
+];
+
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [basketAdded, setBasketAdded] = useState(false);
@@ -78,14 +94,14 @@ const ProductDetails = () => {
 
   return (
     <Container maxWidth="xl">
-      <BreadcrumbsComponent />
+      <BreadcrumbsComponent items={BreadItems} />
       <Grid container spacing={4}>
         <Grid item xl={6} xs={12}>
           <Box
             component={'img'}
             src={product.productImg}
             sx={{
-              transform: {xl:"scale(0.8)"},
+              transform: { xl: 'scale(0.8)' },
               backgroundColor: '#ededed',
               height: { xl: '600px' },
               width: '100%',
@@ -93,14 +109,14 @@ const ProductDetails = () => {
               backgroundSize: 'contain',
               backgroundPosition: 'top ',
               backgroundRepeat: 'no-repeat',
-              mb:"-10%"
+              mb: '-10%',
             }}
           />
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              transform: {xl:"scale(0.8)"},
+              transform: { xl: 'scale(0.8)' },
               alignContent: 'flex-start',
               alignItems: 'flex-start',
               top: 5,
@@ -166,7 +182,7 @@ const ProductDetails = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 0.2,
-                px:2
+                px: 2,
               }}
             >
               <Button
@@ -230,7 +246,12 @@ const ProductDetails = () => {
               {!loading && (
                 <Button
                   variant="contained"
-                  sx={{ width: '100%', height: '70px', marginTop: '50px',borderRadius:"40px" }}
+                  sx={{
+                    width: '100%',
+                    height: '70px',
+                    marginTop: '50px',
+                    borderRadius: '40px',
+                  }}
                   onClick={handleAddToCart}
                 >
                   <Typography sx={{ fontSize: '20px' }}>Add to cart</Typography>
