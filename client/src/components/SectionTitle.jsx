@@ -10,10 +10,11 @@ const SectionTitle = () => {
   return (
     <Box
       sx={{
-        top: "-20px",
+        top: "-5%",
         display: "flex",
         flexDirection: "row",
         position: "relative",
+       
       }}
     >
       <Box

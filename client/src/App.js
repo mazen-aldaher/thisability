@@ -17,6 +17,7 @@ import CartPage from './pages/Cart/CartPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
 import OrderTracking from './pages/OrderTracking/OrderTracking';
+import AboutPage from './pages/About/AboutPage';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -55,15 +56,15 @@ const App = () => {
               <Routes>
                 <Route path="/" exact element={<Landing />} />
                 <Route path="/products" element={<StoreArchive />} />
+                <Route path="/about-us" element={<AboutPage />} />
                 <Route path="/products/:id" element={<ProductDetails />} />
-
                 <Route path="/bidding" element={<BiddingArchive />} />
                 <Route path="/artists" element={<ArtistArchive />} />
                 <Route path="/artists/:id" element={<ArtistPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/place-order" element={<PlaceOrder />} />
-                <Route path='/order-tracking' element=<OrderTracking/>  />
+                <Route path="/order-tracking" element=<OrderTracking /> />
               </Routes>
             </motion.div>
           </AnimatePresence>
