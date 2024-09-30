@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, Skeleton } from '@mui/material';
+import { Box, Button, useTheme, Skeleton, useMediaQuery } from '@mui/material';
 import ProductCard from './ProductCard';
+import ProductCardSkeleton from './ProductCardSkelton';
 
 const ProductArchiveList = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -10,6 +11,8 @@ const ProductArchiveList = () => {
   const [hasMoreItems, setHasMoreItems] = useState(true); // To control if more items are available
   const [loading, setLoading] = useState(true); // Control initial loading state
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // Simulate data fetching
   useEffect(() => {
@@ -35,7 +38,7 @@ const ProductArchiveList = () => {
     { id: 4, title: 'art', color: 'green' },
   ];
 
-       // Product data
+  // Product data
   const data = [
     {
       id: 1,
@@ -133,6 +136,38 @@ const ProductArchiveList = () => {
         { id: 3, title: 'instagram', url: 'www.instagram.com' },
       ],
     },
+    {
+      id: 7,
+      category: 'handmade',
+      productTitle: 'Take a look at my Ability',
+      description:
+        'Welcoming new school teachers to inspire and educate, shaping a brighter future for students.',
+      artImg:
+        'https://www.marketchino.com/media/catalog/product/cache/1/thumbnail/600x/17f82f742ffe127f42dca9de82fb58b1/h/1/h17.jpg',
+      price: 9600,
+      artistName: 'Mazen',
+      socialMedia: [
+        { id: 1, title: 'facebook', url: 'www.facebook.com' },
+        { id: 2, title: 'whatsapp', url: 'www.whatsapp.com' },
+        { id: 3, title: 'instagram', url: 'www.instagram.com' },
+      ],
+    },
+    {
+      id: 8,
+      category: 'handmade',
+      productTitle: 'Take a look at my Ability',
+      description:
+        'Welcoming new school teachers to inspire and educate, shaping a brighter future for students.',
+      artImg:
+        'https://www.marketchino.com/media/catalog/product/cache/1/thumbnail/600x/17f82f742ffe127f42dca9de82fb58b1/h/1/h17.jpg',
+      price: 9600,
+      artistName: 'Mazen',
+      socialMedia: [
+        { id: 1, title: 'facebook', url: 'www.facebook.com' },
+        { id: 2, title: 'whatsapp', url: 'www.whatsapp.com' },
+        { id: 3, title: 'instagram', url: 'www.instagram.com' },
+      ],
+    },
     // Add more products as needed
   ];
 
@@ -185,74 +220,75 @@ const ProductArchiveList = () => {
 
   return (
     <>
-      {/* Category buttons */}
-      <Box sx={{  display: 'flex', justifyContent: 'center' }}>
-        {categories.map((category) => (
-          <Button
-            key={category.id}
-            variant={
-              selectedCategory === category.title ? 'contained' : 'outlined'
-            }
-            sx={{ mx: 1, color: theme.palette.secondary.main }}
-            onClick={() => handleCategoryChange(category.title)}
-          >
-            {category.title}
-          </Button>
-        ))}
-      </Box>
+      <Box sx={{ pb: 10 }}>
+        {/* Category buttons */}
 
-      {/* Product list */}
-      <Box
-        sx={{
-          my: 1,
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}
-      >
-        {loading
-          ? Array.from(new Array(4)).map((_, index) => (
-              <Box key={index} sx={{ mx: 1, my: 1 }}>
-                <Skeleton variant="rectangular" width={210} height={118} />
-                <Skeleton />
-                <Skeleton width="60%" />
-              </Box>
-            ))
-          : visibleProducts.map((product) => {
-              const facebookUrl = product.socialMedia.find(
-                (media) => media.title === 'facebook'
-              )?.url;
-              const whatsappUrl = product.socialMedia.find(
-                (media) => media.title === 'whatsapp'
-              )?.url;
-              const instagramUrl = product.socialMedia.find(
-                (media) => media.title === 'instagram'
-              )?.url;
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          {categories.map((category) => (
+            <Button
+              key={category.id}
+              variant={
+                selectedCategory === category.title ? 'contained' : 'outlined'
+              }
+              sx={{ mx: 1, color: theme.palette.secondary.main }}
+              onClick={() => handleCategoryChange(category.title)}
+            >
+              {category.title}
+            </Button>
+          ))}
+        </Box>
 
-              return (
-                <Box key={product.id} sx={{ mx: 1, my: 1 }}>
-                  <ProductCard
-                    artImg={product.artImg}
-                    category={product.category}
-                    productTitle={product.productTitle}
-                    description={product.description}
-                    price={product.price}
-                    artistName={product.artistName}
-                    facebookUrl={facebookUrl}
-                    whatsappUrl={whatsappUrl}
-                    instagramUrl={instagramUrl}
-                    link={`/products/${product.id}`}
-                  />
+        {/* Product list */}
+        <Box
+          sx={{
+            my: 1,
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: isSmallScreen ? 'center' : 'flex-start',
+          }}
+        >
+          {loading
+            ? Array.from(new Array(4)).map((_, index) => (
+                <Box key={index} sx={{ pt: 5 }}>
+                  <ProductCardSkeleton />
                 </Box>
-              );
-            })}
+              ))
+            : visibleProducts.map((product) => {
+                const facebookUrl = product.socialMedia.find(
+                  (media) => media.title === 'facebook'
+                )?.url;
+                const whatsappUrl = product.socialMedia.find(
+                  (media) => media.title === 'whatsapp'
+                )?.url;
+                const instagramUrl = product.socialMedia.find(
+                  (media) => media.title === 'instagram'
+                )?.url;
+
+                return (
+                  <Box key={product.id} sx={{ pt: 5 }}>
+                    <ProductCard
+                      artImg={product.artImg}
+                      category={product.category}
+                      productTitle={product.productTitle}
+                      description={product.description}
+                      price={product.price}
+                      artistName={product.artistName}
+                      facebookUrl={facebookUrl}
+                      whatsappUrl={whatsappUrl}
+                      instagramUrl={instagramUrl}
+                      link={`/products/${product.id}`}
+                    />
+                  </Box>
+                );
+              })}
+        </Box>
+
+        {/* Show loading indicator when fetching */}
+        {isFetching && <p>Loading more products...</p>}
+
+        {/* Show "No more products" message when all products are loaded */}
+        {!hasMoreItems && <p>Thats all for today :)</p>}
       </Box>
-
-      {/* Show loading indicator when fetching */}
-      {isFetching && <p>Loading more products...</p>}
-
-      {/* Show "No more products" message when all products are loaded */}
-      {!hasMoreItems && <p>Thats all for today :)</p>}
     </>
   );
 };

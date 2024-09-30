@@ -94,7 +94,10 @@ const ProductDetails = () => {
 
   return (
     <Container maxWidth="xl">
+    <Box sx={{pt:5}} > 
+
       <BreadcrumbsComponent items={BreadItems} />
+    </Box>
       <Grid container spacing={4}>
         <Grid item xl={6} xs={12}>
           <Box

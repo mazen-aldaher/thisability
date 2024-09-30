@@ -20,7 +20,7 @@ const StoreArchive = () => {
 
   return (
     <>
-      <Container maxWidth="xl" sx={{ height: '100%' }}>
+      <Container maxWidth="xl" sx={{ height: '100%',minHeight:'100vh' }}>
         <Box
           sx={{
             py: 5,

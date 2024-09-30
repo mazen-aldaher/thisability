@@ -122,18 +122,19 @@ const darkTheme = createTheme({
       paper: '#2c3e50',
     },
   },
-  typography: {
+   typography: {
     fontFamily: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
     h1: {
       fontSize: '2rem',
       fontWeight: 700,
     },
     h2: {
-      fontSize: '1rem',
+      fontSize: '4rem',
       '@media (max-width:600px)': {
-        fontSize: '0.875rem',
+        fontSize: '3rem',
       },
     },
+
     navtext: {
       textTransform: 'uppercase',
       fontWeight: 500,
@@ -179,18 +180,19 @@ const autismTheme = createTheme({
       paper: '#b2dfdb',
     },
   },
-  typography: {
+    typography: {
     fontFamily: ['Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(','),
     h1: {
       fontSize: '2rem',
       fontWeight: 700,
     },
     h2: {
-      fontSize: '1rem',
+      fontSize: '4rem',
       '@media (max-width:600px)': {
-        fontSize: '2rem',
+        fontSize: '3rem',
       },
     },
+
     navtext: {
       textTransform: 'uppercase',
       fontWeight: 500,

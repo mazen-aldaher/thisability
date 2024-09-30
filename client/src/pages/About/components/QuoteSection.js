@@ -5,7 +5,7 @@ import Placeholder from "../../../assets/placeholder.png";
 
 const QuoteSection = () => (
   <>
-    <Box sx={{ backgroundColor: "green", height: "60vh" }}>
+    <Box sx={{ backgroundColor: "green", height: "70vh" }}>
       <Container sx={{ paddingY: "20vh" }}>
         <Typography
           variant="h2"
@@ -13,23 +13,24 @@ const QuoteSection = () => (
           sx={{ color: "#fff", textAlign: "center" }}
         >
           "The most creative people are motivated by the grandest of
-          problems..."
+          problems that are presented before them."
         </Typography>
         <Typography variant="h4" sx={{ color: "#fff", textAlign: "center" }}>
           - Neil deGrasse Tyson
         </Typography>
       </Container>
     </Box>
-    <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+    <Box sx={{ display: "flex", justifyContent: "space-around", backgroundColor:"#fff", height:'60vh' }}>
       <Box sx={{ marginTop: "-10%" }}>
-        <Box component="img" alt="PlaceHolder" src={img4} />
+        <Box component="img" alt="PlaceHolder" src={img4} sx={{borderRadius:"20px"}} />
       </Box>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           gap: 1,
-          alignItems: "center",
+          alignItems: "flex-start",
+          pt:5
         }}
       >
         {[...Array(4)].map((_, index) => (
