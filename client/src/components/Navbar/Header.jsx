@@ -29,8 +29,8 @@ import logo from "../../assets/Logo.png";
 const data = [
   { title: "About Us", link: "/about-us" },
   { title: "Store", link: "/products" },
-  { title: "Community", link: "/blog" },
-  { title: "Support", link: "/contact-us" },
+  { title: "Community", link: "/our-community" },
+  { title: "Support", link: "/support" },
   { title: "FAQ", link: "/faq" },
 ];
 
@@ -137,7 +137,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
                 <Button
                   color="inherit"
                   fullWidth
-                  onClick={() => navigate("/signin")}
+                  onClick={() => navigate("/login")}
                 >
                   {t`Sign In`}
                 </Button>
@@ -211,7 +211,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
                 </Avatar>
               ) : (
                 <Box sx={{ display: "flex", gap: 1 }}>
-                  <Button color="inherit" onClick={() => navigate("/signin")}>
+                  <Button color="inherit" onClick={() => navigate("/login")}>
                     {t`Sign In`}
                   </Button>
                   <Button

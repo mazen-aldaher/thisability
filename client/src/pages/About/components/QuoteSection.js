@@ -3,7 +3,7 @@ import { Box, Container, Typography } from "@mui/material";
 import img4 from "../../../assets/ill/img4.png";
 import Placeholder from "../../../assets/placeholder.png";
 
-const QuoteSection = () => (
+const QuoteSection = ({products}) => (
   <>
     <Box sx={{ backgroundColor: "green", height: "70vh" }}>
       <Container sx={{ paddingY: "20vh" }}>
@@ -20,26 +20,26 @@ const QuoteSection = () => (
         </Typography>
       </Container>
     </Box>
-    <Box sx={{ display: "flex", justifyContent: "space-around", backgroundColor:"#fff", height:'60vh' }}>
+    <Box sx={{ display: "flex", justifyContent:"space-evenly", backgroundColor:"#fff", height:'60vh' }}>
       <Box sx={{ marginTop: "-10%" }}>
         <Box component="img" alt="PlaceHolder" src={img4} sx={{borderRadius:"20px"}} />
       </Box>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-start",
-          gap: 1,
-          alignItems: "flex-start",
-          pt:5
+          justifyContent: "space-between",
+          gap: 5,
+          alignItems: "center",
+          pt:0
         }}
       >
-        {[...Array(4)].map((_, index) => (
+        {products.map((product, index) => (
           <Box key={index}>
             <Box
               component="img"
               alt="PlaceHolder"
-              src={Placeholder}
-              sx={{ clipPath: "circle(44%)", width: "200px" }}
+              src={product.imageUrl}
+              sx={{ width: "100%" }}
             />
           </Box>
         ))}

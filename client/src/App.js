@@ -18,6 +18,11 @@ import CheckoutPage from './pages/Checkout/CheckoutPage';
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
 import OrderTracking from './pages/OrderTracking/OrderTracking';
 import AboutPage from './pages/About/AboutPage';
+import Community from './pages/Community/Community';
+import SinglePostPage from './pages/Community/PostDetails';
+import SupportPage from './pages/Support/SupportPage';
+import FAQPage from './pages/Faq/FAQPage';
+import Login from './pages/Auth/Login';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -65,6 +70,25 @@ const App = () => {
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/place-order" element={<PlaceOrder />} />
                 <Route path="/order-tracking" element=<OrderTracking /> />
+                <Route path="/our-community" element=<Community /> />
+                <Route
+                  path="/support"
+                  element=<SupportPage />
+                />
+                <Route
+                  path="/our-community/post/:id"
+                  element=<SinglePostPage />
+                />
+                 <Route
+                  path="/faq"
+                  element=<FAQPage />
+                />
+
+                    <Route
+                  path="/login"
+                  element=<Login />
+                />
+                
               </Routes>
             </motion.div>
           </AnimatePresence>
