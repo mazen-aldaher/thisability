@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
-  const [isOnboardingComplete, setOnboardingComplete] = useState(false);
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -27,16 +27,16 @@ export const AuthProvider = ({ children }) => {
 
           // Check if the role is "artist" and set onboarding status accordingly
           if (data.role === "artist") {
-            setOnboardingComplete(data.isOnboardingComplete);
+            setIsOnboardingComplete(data.isOnboardingComplete);
           } else {
-            setOnboardingComplete(true); // Skip onboarding for non-artists
+            setIsOnboardingComplete(true); // Skip onboarding for non-artists
           }
         } catch (error) {
           console.error("Error fetching user", error);
           localStorage.removeItem("token");
           setUser(null);
           setUserRole(null);
-          setOnboardingComplete(false);
+          setIsOnboardingComplete(false);
         }
       }
     };
@@ -56,9 +56,11 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", data.token);
       setUser(data);
       setUserRole(data.role);
-      setOnboardingComplete(data.isOnboardingComplete);
+      setIsOnboardingComplete(data.isOnboardingComplete);
     } catch (error) {
       console.error("Error logging in", error);
+      // Optional: You may want to throw an error or return a specific message
+      throw new Error("Login failed. Please check your credentials.");
     }
   };
 
@@ -66,7 +68,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     setUser(null);
     setUserRole(null);
-    setOnboardingComplete(false);
+    setIsOnboardingComplete(false);
   };
 
   return (
@@ -75,7 +77,7 @@ export const AuthProvider = ({ children }) => {
         user,
         userRole,
         isOnboardingComplete,
-        setOnboardingComplete,
+        setIsOnboardingComplete,
         login,
         logout,
       }}

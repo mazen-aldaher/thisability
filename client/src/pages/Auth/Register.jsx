@@ -1,11 +1,11 @@
 import React from "react";
 import { Box, Container, Typography, Grid } from "@mui/material";
-import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm"; // Import RegisterForm
 import { NavLink } from "react-router-dom";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.png"; // Assuming you use the same logo
 import { motion } from "framer-motion";
 
-const Login = () => {
+const Register = () => {
   return (
     <Box
       sx={{
@@ -13,8 +13,8 @@ const Login = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden", // Prevent overflow
-        backgroundColor: "#f0f0f0", // Light background for better contrast
+        overflow: "hidden",
+        backgroundColor: "#f0f0f0",
       }}
     >
       <Grid container>
@@ -31,19 +31,19 @@ const Login = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "white", // White background for login form
-                borderRadius: "20px", // Rounded corners for aesthetics
-                boxShadow: 3, // Subtle shadow for depth
-                padding: { xs: 2, sm: 4 }, // Responsive padding
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: 3,
+                padding: { xs: 2, sm: 4 },
               }}
             >
               <Box
                 component="img"
-                sx={{ mb: 4, width: "70%", maxWidth: "300px" }} // Responsive logo size
+                sx={{ mb: 4, width: "70%", maxWidth: "300px" }}
                 src={Logo}
                 alt="Logo"
               />
-              <LoginForm />
+              <RegisterForm /> {/* Use RegisterForm here */}
             </Box>
           </motion.div>
         </Grid>
@@ -59,7 +59,7 @@ const Login = () => {
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             height: "100vh",
-            position: "relative", // Position relative for overlay
+            position: "relative",
             display: {
               xl: "flex",
               lg: "flex",
@@ -76,7 +76,7 @@ const Login = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark overlay for contrast
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -108,7 +108,7 @@ const Login = () => {
                     sx={{
                       color: "#fff",
                       lineHeight: "30px",
-                      marginBottom: 2, // Add some spacing below the text
+                      marginBottom: 2,
                     }}
                   >
                     Introducing Vector Search. Build
@@ -126,8 +126,8 @@ const Login = () => {
                         borderBottom: "1px solid #fff",
                         transition: "color 0.3s, transform 0.3s",
                         "&:hover": {
-                          color: "#ffd700", // Gold color on hover
-                          transform: "scale(1.05)", // Slightly scale up on hover
+                          color: "#ffd700",
+                          transform: "scale(1.05)",
                         },
                       }}
                     >
@@ -144,4 +144,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

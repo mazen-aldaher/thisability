@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import ThemeToggleBar from "../ThemeToggleBar";
 import logo from "../../assets/Logo.png";
 
-const data = [
+const navItems = [
   { title: "About Us", link: "/about-us" },
   { title: "Store", link: "/products" },
   { title: "Community", link: "/our-community" },
@@ -49,7 +49,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
   };
 
   const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
+    setDrawerOpen((prev) => !prev); // Use functional update for better performance
   };
 
   const scrollToTop = () => {
@@ -68,9 +68,9 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
 
   const handleLanguageChange = (event) => {
     const selectedLanguage = event.target.value;
-    i18n.changeLanguage(selectedLanguage);
+    i18n.changeLanguage(selectedLanguage); // Change language using i18next
     if (onLanguageChange) {
-      onLanguageChange(selectedLanguage);
+      onLanguageChange(selectedLanguage); // Callback for language change if provided
     }
   };
 
@@ -99,7 +99,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
             }}
           >
             <MenuItem value="en">
-              <Typography sx={{ variant: { xs: "body2" } }}>English</Typography>
+              <Typography variant="body2">English</Typography>
             </MenuItem>
             <MenuItem value="es">
               <Typography variant="body2">Español</Typography>
@@ -163,13 +163,11 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
           right: 0,
           transition: "background-color 0.3s ease, color 0.3s ease",
           backdropFilter: scrolled ? "blur(10px)" : "none",
-          backgroundColor: scrolled
-            ? theme.palette.primary
-            : theme.palette.primary,
+          backgroundColor: theme.palette.primary,
           color: scrolled ? "#fff" : "inherit",
         }}
       >
-        <Box sx={{px:{xl:10}}}>
+        <Box sx={{ px: { xl: 10 } }}>
           <Toolbar>
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
               <NavLink to="/">
@@ -189,7 +187,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
                 gap: "20px",
               }}
             >
-              {data.map((item) => (
+              {navItems.map((item) => (
                 <Button
                   key={item.link}
                   color="inherit"
@@ -206,9 +204,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
               ))}
 
               {isAuthenticated ? (
-                <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>
-                  U
-                </Avatar>
+                <Avatar sx={{ bgcolor: theme.palette.secondary.main }}>U</Avatar>
               ) : (
                 <Box sx={{ display: "flex", gap: 1 }}>
                   <Button color="inherit" onClick={() => navigate("/login")}>
@@ -266,7 +262,7 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
           }}
         >
           <List>
-            {data.map((item, index) => (
+            {navItems.map((item, index) => (
               <ListItem
                 button
                 key={index}
@@ -279,26 +275,26 @@ const Header = ({ onThemeChange, onLanguageChange, isAuthenticated }) => {
               </ListItem>
             ))}
             {!isAuthenticated && (
-              <ListItem
-                button
-                onClick={() => {
-                  navigate("/signin");
-                  handleDrawerToggle();
-                }}
-              >
-                <ListItemText primary={t`Sign In`} />
-              </ListItem>
-            )}
-            {!isAuthenticated && (
-              <ListItem
-                button
-                onClick={() => {
-                  navigate("/register");
-                  handleDrawerToggle();
-                }}
-              >
-                <ListItemText primary={t`Register`} />
-              </ListItem>
+              <>
+                <ListItem
+                  button
+                  onClick={() => {
+                    navigate("/login");
+                    handleDrawerToggle();
+                  }}
+                >
+                  <ListItemText primary={t`Sign In`} />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => {
+                    navigate("/register");
+                    handleDrawerToggle();
+                  }}
+                >
+                  <ListItemText primary={t`Register`} />
+                </ListItem>
+              </>
             )}
           </List>
         </Box>

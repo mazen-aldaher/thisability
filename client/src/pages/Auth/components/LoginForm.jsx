@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext"; // Importing AuthContext
+import { NavLink, useNavigate } from "react-router-dom"; // Importing necessary hooks
 import {
   Box,
   Button,
@@ -10,40 +10,48 @@ import {
   Alert,
   IconButton,
   InputAdornment,
-} from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+  CircularProgress,
+} from "@mui/material"; // Material UI components
+import { Visibility, VisibilityOff } from "@mui/icons-material"; // Icons
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [email, setEmail] = useState(""); // State for email
+  const [password, setPassword] = useState(""); // State for password
+  const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
+  const [error, setError] = useState(null); // State for error messages
+  const [loading, setLoading] = useState(false); // Loading state
+  const [loginFailed, setLoginFailed] = useState(false); // Track login failure
+  const { login } = useContext(AuthContext); // Destructure login function from AuthContext
+  const navigate = useNavigate(); // useNavigate for programmatic navigation
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    
+    e.preventDefault(); // Prevent default form submission
+    setError(null); // Reset error state
+    setLoading(true); // Set loading state
+
     // Basic email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       setError("Please enter a valid email address");
-      return;
+      setLoading(false);
+      return; // Exit if the email is invalid
     }
 
     try {
-      const data = await login(email, password);
-      navigate("/"); // Correctly navigate to the home page
-      console.log("Login successful", data);
+      await login(email, password); // Call login function
+      setLoginFailed(false); // Reset login failure state on successful login
+      navigate("/"); // Navigate to the home page on success
     } catch (error) {
-      setError("Invalid email or password");
-      console.error("Error logging in", error);
+      setError("Invalid email or password"); // Set error message on login failure
+      setLoginFailed(true); // Set login failure state
+      console.error("Error logging in", error); // Log the error
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
+    setShowPassword((prev) => !prev); // Toggle password visibility
   };
 
   return (
@@ -52,7 +60,7 @@ const LoginForm = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        height: "100%",
+        height: "100vh", // Full height for better centering
       }}
     >
       <Container component="main" maxWidth="sm">
@@ -64,10 +72,14 @@ const LoginForm = () => {
             padding: { xs: 2, sm: 4 },
             boxShadow: 3,
             borderRadius: 2,
+            backgroundColor: "white",
           }}
         >
-          <Typography component="h1" variant="h5">
-            Sign in to Dashboard
+          <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold' }}>
+            Sign In
+          </Typography>
+          <Typography variant="subtitle1" sx={{ mb: 3, color: "gray" }}>
+            Access your account
           </Typography>
           <Box
             component="form"
@@ -77,7 +89,7 @@ const LoginForm = () => {
           >
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
+                {error} {/* Show error message if exists */}
               </Alert>
             )}
             <TextField
@@ -90,7 +102,9 @@ const LoginForm = () => {
               autoComplete="email"
               autoFocus
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)} // Update email state on change
+              variant="outlined" // Use outlined variant for better visibility
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 25 } }} // Rounded edges
             />
             <TextField
               margin="normal"
@@ -98,20 +112,22 @@ const LoginForm = () => {
               fullWidth
               name="password"
               label="Password"
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"} // Conditional password type
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)} // Update password state on change
+              variant="outlined" // Use outlined variant for better visibility
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 25 } }} // Rounded edges
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={togglePasswordVisibility}
+                      onClick={togglePasswordVisibility} // Toggle password visibility
                       edge="end"
                     >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                      {showPassword ? <VisibilityOff /> : <Visibility />} {/* Show appropriate icon */}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -127,27 +143,41 @@ const LoginForm = () => {
                 borderRadius: "25px",
                 height: "50px",
                 backgroundColor: "green",
+                '&:hover': {
+                  backgroundColor: '#45a049', // Darker shade on hover
+                },
               }}
+              disabled={loading} // Disable button while loading
             >
-              Login
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'} {/* Show loading indicator */}
             </Button>
             <Typography align="center" variant="body2" sx={{ mt: 2 }}>
               Or
             </Typography>
           </Box>
+
+          {/* Conditional Rendering of "Forgot Password?" Button */}
+          {loginFailed && (
+            <Box sx={{ mt: 2 }}>
+              <NavLink to="/forgot-password" style={{ textDecoration: 'none', color: 'blue' }}>
+                <Typography variant="body2" sx={{ textAlign: "center" }}>
+                  Forgot Password?
+                </Typography>
+              </NavLink>
+            </Box>
+          )}
         </Box>
-        <Box sx={{ pt: 10, textAlign: "center" }}>
+        <Box sx={{ pt: 4, textAlign: "center" }}>
           <Typography>
             Need some help?
             <br />
-            <NavLink to="/contact" style={{ textDecoration: 'none', color: 'blue' }}>
+            <NavLink to="/support" style={{ textDecoration: 'none', color: 'blue' }}>
               Contact Us
             </NavLink>
           </Typography>
-          {/* Add your sign-up link here */}
           <Typography sx={{ mt: 2 }}>
             Don't have an account?{" "}
-            <NavLink to="/signup" style={{ textDecoration: 'none', color: 'blue' }}>
+            <NavLink to="/register" style={{ textDecoration: 'none', color: 'blue' }}>
               Sign Up
             </NavLink>
           </Typography>
