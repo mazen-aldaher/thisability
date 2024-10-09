@@ -1,0 +1,13 @@
+/* src/components/SplashScreen.css */
+.splash-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fff;
+}
+
+.splash-logo {
+  width: 200px;
+  height: auto;
+}

@@ -1,30 +1,55 @@
 import React, { useState } from 'react';
 import {
-  AppBar,
   Avatar,
   Badge,
   Box,
-  Button,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
-  Switch,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   Add as AddBoxIcon,
-  Notifications as NotificationsIcon,
-  Mail as MailIcon,
-  AccountCircle as AccountCircleIcon,
+  NotificationsActiveOutlined as NotificationsIcon,
+  MailOutline as MailIcon,
 } from '@mui/icons-material';
-import logo from '../../../assets/Logo.png';
-const TestTopbar = () => {
-  const [open, setOpen] = useState(false);
-  const [rtl, setRtl] = useState(false);
+import { styled, useTheme } from '@mui/material/styles';
+import MuiAppBar from '@mui/material/AppBar';
+import ThemeToggleBar from '../../../components/ThemeToggleBar';
+
+const TestTopbar = ({ handleDrawerToggle, open, onThemeChange }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuType, setMenuType] = useState('');
+  const drawerWidth = 240;
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const AppBar = styled(MuiAppBar, {
+    shouldForwardProp: (prop) => prop !== 'open',
+  })(({ theme }) => ({
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    variants: [
+      {
+        props: ({ open }) => open,
+        style: {
+          marginLeft: drawerWidth,
+          width: `calc(100% - ${drawerWidth}px)`,
+          transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+        },
+      },
+    ],
+  }));
 
   // Handle menu open
   const handleMenuOpen = (event, type) => {
@@ -37,13 +62,12 @@ const TestTopbar = () => {
     setAnchorEl(null);
     setMenuType('');
   };
-  const handleRtlToggle = () => {
-    setRtl(!rtl);
-  };
+
   // Dummy notification and message counts
   const notificationCount = 3;
   const mailCount = 5;
-  // Dummy notifications/messages for API calls
+
+  // Dummy notifications and messages for testing
   const notifications = [
     { id: 1, message: 'New order placed.' },
     { id: 2, message: 'Your profile was viewed.' },
@@ -60,80 +84,104 @@ const TestTopbar = () => {
     <>
       <AppBar
         position="fixed"
-        sx={{ zIndex: 1201, background: '#4dbd74', py: 1 }}
+        sx={{
+          zIndex: 1201,
+          background: '#4dbd74',
+          width: open ? {xl:'86.2%',xs:'87.3%'} : {xl:'100%',xs:"87.3%"},
+          backgroundColor: theme.palette.primary.main,
+          transition: 'width 10s ease', // Smooth transition
+          borderBottom: '1px solid rgba(255, 255, 255, 0.35)', // White border with 35% opacity
+        }}
       >
-        <Box sx={{ backgroundColor: '#fff', height: '10px' }} />
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Box>
-              <IconButton>
-                <MenuIcon />
-              </IconButton>
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 3,
-              justifyContent: 'center',
-              alignContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Box>
-              <Button
-                variant="contained"
-                sx={{ color: '#4dbd74', backgroundColor: '#fff' }}
-                endIcon={<AddBoxIcon />}
-              >
-                Create
-              </Button>
-            </Box>
-
-            <Box sx={{ marginLeft: 'auto' }}>
-              {/* Notifications */}
+        <Toolbar
+          sx={{ justifyContent: isSmallScreen ? 'flex-end' : 'space-between' }}
+        >
+          {isSmallScreen ? (
+            ''
+          ) : (
+            <>
+              {/* Menu Button */}
               <IconButton
                 color="inherit"
-                onClick={(e) => handleMenuOpen(e, 'notifications')}
+                onClick={handleDrawerToggle}
+                aria-label="open drawer"
+                sx={[
+                  {
+                    marginLeft: '-10px',
+                  },
+                ]}
               >
-                <Badge badgeContent={notificationCount} color="error">
-                  <NotificationsIcon />
-                </Badge>
+                <MenuIcon sx={{ color: '#ededed' }} />
               </IconButton>
-              {/* Mail */}
-              <IconButton
-                color="inherit"
-                onClick={(e) => handleMenuOpen(e, 'mail')}
-              >
-                <Badge badgeContent={mailCount} color="error">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
+            </>
+          )}
+
+          {/* Action Buttons */}
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            {/* Create Button */}
+
+            {/* Notifications */}
+            <IconButton
+              color="inherit"
+              onClick={(e) => handleMenuOpen(e, 'notifications')}
+              aria-label="show notifications"
+            >
+              <Badge badgeContent={notificationCount} color="success">
+                <NotificationsIcon sx={{ color: '#ededed', opacity: '75%' }} />
+              </Badge>
+            </IconButton>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ borderColor: '#fff', height: '30px', opacity: '35%' }}
+              />
+            </Box>
+            {/* Mail */}
+            <IconButton
+              color="inherit"
+              onClick={(e) => handleMenuOpen(e, 'mail')}
+              aria-label="show mails"
+            >
+              <Badge badgeContent={mailCount} color="success">
+                <MailIcon sx={{ color: '#ededed', opacity: '75%' }} />
+              </Badge>
+            </IconButton>
+            <ThemeToggleBar onThemeChange={onThemeChange} />
+
+            {/* Profile */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ borderColor: '#fff', height: '30px', opacity: '35%' }}
+              />
             </Box>
             <IconButton
               sx={{ borderRadius: '18px', backgroundColor: 'transparent' }}
               onClick={(e) => handleMenuOpen(e, 'profile')}
+              aria-label="profile"
             >
-              <Box>
-                <Avatar sx={{ width: '30px', height: '30px' }} />
-              </Box>
-              <Box sx={{ pl: 1 }}>
-                <Typography variant="body1" noWrap>
-                  Mazen
-                </Typography>
-              </Box>
+              <Avatar
+                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                sx={{}}
+              />
             </IconButton>
           </Box>
         </Toolbar>
+
         {/* Menu for notifications, mail, profile */}
         <Menu
           anchorEl={anchorEl}

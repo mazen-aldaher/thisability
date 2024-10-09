@@ -1,26 +1,51 @@
-import React from "react";
-import { Box, CssBaseline } from "@mui/material";
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import TestTopbar from "./components/TestTopbar";
+import React, { useState } from 'react';
+import { Box, CssBaseline, useTheme } from '@mui/material';
+import Sidebar from './components/Sidebar';
+import Topbar from './components/Topbar';
+import TestTopbar from './components/TestTopbar';
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = ({ children, onThemeChange }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false); // State for drawer
+  const theme = useTheme();
+  // Toggle the drawer's open/close state
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <TestTopbar />
-      {/*<Sidebar />*/}
+      <Sidebar
+        handleDrawerOpen={handleDrawerToggle}
+        open={drawerOpen}
+        handleDrawerClose={handleDrawerClose}
+      />
+      <TestTopbar
+        handleDrawerToggle={handleDrawerToggle}
+        open={drawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        onThemeChange={onThemeChange}
+      />
+
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: "background.default",
-          p: 3,
-          marginLeft: "240px", // Adjust this based on Sidebar width
-          marginTop: "64px", // Adjust this based on Topbar height
+          bgcolor: '#323a49',
+          height: '100vh',
         }}
       >
-        {children}
+        <Box
+          sx={{
+            p: 0,
+            marginLeft: '50px', // Adjust this based on Sidebar width
+            marginTop: '90px', // Adjust this based on Topbar height
+          }}
+        >
+          {children}
+        </Box>
       </Box>
     </Box>
   );

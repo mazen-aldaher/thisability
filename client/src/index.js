@@ -7,13 +7,14 @@ import App from './App';
 import './i18n';
 import { AuthProvider } from './context/AuthContext';
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <AuthProvider>
-    <BrowserRouter>
-      <StrictMode>
-        <App />
-      </StrictMode>
-    </BrowserRouter>
-  </AuthProvider>
+    <AuthProvider>
+      <BrowserRouter>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </BrowserRouter>
+    </AuthProvider>
 );

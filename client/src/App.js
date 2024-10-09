@@ -1,6 +1,6 @@
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
-import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion'; // Correct import
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -27,111 +27,187 @@ import ForgotPassword from './pages/Auth/ForgotPassword';
 import Register from './pages/Auth/Register';
 import UserDashboard from './pages/Dashboards/UserDashboard';
 import DashboardLayout from './pages/Dashboards/DashboardLayout';
+import ActiveBids from './pages/Dashboards/USerDashboardRoutes.js/ActiveBids';
+import PurchaseHistory from './pages/Dashboards/USerDashboardRoutes.js/PurchaseHistory';
+import Watchlist from './pages/Dashboards/USerDashboardRoutes.js/Watchlist';
+import ProfileSettings from './pages/Dashboards/USerDashboardRoutes.js/ProfileSettings';
+import BidHistory from './pages/Dashboards/USerDashboardRoutes.js/BidHistory';
+import Messages from './pages/Dashboards/USerDashboardRoutes.js/Messages';
+import ReviewsFeedback from './pages/Dashboards/USerDashboardRoutes.js/ReviewsFeedback';
+import SavedSearches from './pages/Dashboards/USerDashboardRoutes.js/SavedSearches';
+import Main from './pages/Dashboards/USerDashboardRoutes.js/Main';
+import DisputeResolution from './pages/Dashboards/USerDashboardRoutes.js/DisputeResolution';
+import AuctionStrategy from './pages/Dashboards/USerDashboardRoutes.js/AuctionStrategy';
+import AutoBiding from './pages/Dashboards/USerDashboardRoutes.js/AutoBiding';
+import BidInsights from './pages/Dashboards/USerDashboardRoutes.js/BidInsights';
+import DefaultLayout from './layout/DefaultLayout';
+import SplashScreen from './screens/SplashScreen';
+import OnboardingScreens from './screens/OnboardingScreens';
+import ScrollToTop from './hooks/ScrollToTop';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
-  const { i18n, t } = useTranslation(); // Get 't' from useTranslation
-  const location = useLocation(); // Get the current route
+  const { i18n, t } = useTranslation();
+  const location = useLocation();
+  const [loading, setLoading] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(true); // State to handle onboarding flow
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+      const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+      if (onboardingCompleted) {
+        setShowOnboarding(false);
+      }
+    }, 1000); // Adjust the timeout as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+  // Function to handle when the loading is complete
+  const handleLoadingComplete = () => setLoading(false);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('onboardingCompleted', 'true');
+  };
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+  };
 
   const handleLanguageChange = (language) => {
-    i18n.changeLanguage(language); // Use i18n to change the language
+    i18n.changeLanguage(language);
     toast.success(t(`Language changed to ${language}`), {
-      // Use `t` for translations
       position: 'bottom-left',
     });
   };
 
-  const handleThemeChange = (newTheme) => {
-    setTheme(newTheme);
-  };
   const shouldShowNavbarFooter = ![
     '/login',
     '/register',
-    '/dashboard/admin',
-    '/dashboard/admin/main',
-    '/dashboard/admin/users',
-    '/dashboard/admin/products',
-    '/dashboard/admin/orders',
-    '/dashboard/admin/community',
-    '/dashboard/admin/settings',
-    '/dashboard/admin/artists',
-    '/dashboard/admin/requests',
+    // Other excluded routes
     '/test',
-    '/onboarding/become-an-artist',
     '/onboarding',
-    '/home',
     '/dashboard',
-    '/user-dashboard',
+    // More routes here...
   ].includes(location.pathname);
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {/* Main container with flex to ensure layout height logic */}
-      <Box
-        display="flex"
-        flexDirection="column"
-        minHeight="100vh" // Full viewport height
-      >
-        {shouldShowNavbarFooter && (
-          <Header
-            onThemeChange={handleThemeChange}
-            onLanguageChange={handleLanguageChange}
-          />
-        )}
-
-        {/* Content area, grow to take available space */}
-        <Box>
-          <AnimatePresence>
-            <motion.div>
-              <Routes>
-                <Route path="/" exact element={<Landing />} />
-                <Route path="/products" element={<StoreArchive />} />
-                <Route path="/about-us" element={<AboutPage />} />
-                <Route path="/products/:id" element={<ProductDetails />} />
-                <Route path="/bidding" element={<BiddingArchive />} />
-                <Route path="/artists" element={<ArtistArchive />} />
-                <Route path="/artists/:id" element={<ArtistPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/place-order" element={<PlaceOrder />} />
-                <Route path="/order-tracking" element=<OrderTracking /> />
-                <Route path="/our-community" element=<Community /> />
-                <Route path="/support" element=<SupportPage /> />
-                <Route
-                  path="/our-community/post/:id"
-                  element=<SinglePostPage />
-                />
-                <Route path="/faq" element=<FAQPage /> />
-
-                <Route path="/login" element=<Login /> />
-                <Route path="/register" element=<Register /> />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/user-dashboard" element={<UserDashboard />} />
-
-                <Route
-                  path="/dashboard"
-                  element={
-                    <DashboardLayout>
-                      <Routes>
-                        <Route path="main" element={'main'} />
-                        <Route path="users" element={'users'} />
-                        <Route path="artists" element={'any'} />
-                      </Routes>
-                    </DashboardLayout>
-                  }
-                />
-              </Routes>
-            </motion.div>
-          </AnimatePresence>
-        </Box>
-
-        {/* Footer stays at the bottom */}
-        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-          {shouldShowNavbarFooter && <Footer />}
-        </Box>
-      </Box>
-      <ToastContainer />
-    </ThemeProvider>
+    <>
+      {loading ? (
+        <SplashScreen onLoadingComplete={handleLoadingComplete} />
+      ) : showOnboarding ? (
+        <OnboardingScreens onComplete={handleOnboardingComplete} />
+      ) : (
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <ScrollToTop />{' '}
+          {/* Add ScrollToTop component for smooth navigation */}
+          <Box display="flex" flexDirection="column" minHeight="100vh">
+            {shouldShowNavbarFooter && (
+              <Header
+                onThemeChange={handleThemeChange}
+                onLanguageChange={handleLanguageChange}
+              />
+            )}
+            <Box flexGrow={1}>
+              <AnimatePresence>
+                <motion.div>
+                  <Routes>
+                    <Route path="/" exact element={<Landing />} />
+                    <Route path="/products" element={<StoreArchive />} />
+                    <Route path="/about-us" element={<AboutPage />} />
+                    <Route path="/products/:id" element={<ProductDetails />} />
+                    <Route path="/bidding" element={<BiddingArchive />} />
+                    <Route path="/artists" element={<ArtistArchive />} />
+                    <Route path="/artists/:id" element={<ArtistPage />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/place-order" element={<PlaceOrder />} />
+                    <Route path="/order-tracking" element={<OrderTracking />} />
+                    <Route path="/our-community" element={<Community />} />
+                    <Route path="/support" element={<SupportPage />} />
+                    <Route
+                      path="/our-community/post/:id"
+                      element={<SinglePostPage />}
+                    />
+                    <Route path="/faq" element={<FAQPage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                      path="/forgot-password"
+                      element={<ForgotPassword />}
+                    />
+                    <Route
+                      path="*"
+                      name="Dashboard"
+                      element={<DefaultLayout />}
+                    />
+                    <Route
+                      path="/user-dashboard/*"
+                      element={
+                        <DashboardLayout onThemeChange={handleThemeChange}>
+                          <Routes>
+                            <Route path="/" element={<Main />} />
+                            <Route
+                              path="active-bids"
+                              element={<ActiveBids />}
+                            />
+                            <Route
+                              path="purchase-history"
+                              element={<PurchaseHistory />}
+                            />
+                            <Route path="watchlist" element={<Watchlist />} />
+                            <Route
+                              path="profile-settings"
+                              element={<ProfileSettings />}
+                            />
+                            <Route
+                              path="bid-history"
+                              element={<BidHistory />}
+                            />
+                            <Route path="messages" element={<Messages />} />
+                            <Route
+                              path="reviews-feedback"
+                              element={<ReviewsFeedback />}
+                            />
+                            <Route
+                              path="saved-searches"
+                              element={<SavedSearches />}
+                            />
+                            <Route
+                              path="dispute-resolution"
+                              element={<DisputeResolution />}
+                            />
+                            <Route
+                              path="auction-strategy-analytics"
+                              element={<AuctionStrategy />}
+                            />
+                            <Route
+                              path="auto-bidding"
+                              element={<AutoBiding />}
+                            />
+                            <Route
+                              path="bid-insights"
+                              element={<BidInsights />}
+                            />
+                          </Routes>
+                        </DashboardLayout>
+                      }
+                    />
+                  </Routes>
+                </motion.div>
+              </AnimatePresence>
+            </Box>
+            {shouldShowNavbarFooter && (
+              <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                <Footer />
+              </Box>
+            )}
+          </Box>
+          <ToastContainer />
+        </ThemeProvider>
+      )}
+    </>
   );
 };
 
