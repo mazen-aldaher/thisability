@@ -24,6 +24,7 @@ const LoginForm = () => {
   const { login } = useContext(AuthContext); // Destructure login function from AuthContext
   const navigate = useNavigate(); // useNavigate for programmatic navigation
 
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
     setError(null); // Reset error state
@@ -32,7 +33,7 @@ const LoginForm = () => {
     // Basic email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-      setError("Please enter a valid email address");
+      setError("Please enter a valid email address.");
       setLoading(false);
       return; // Exit if the email is invalid
     }
@@ -40,9 +41,14 @@ const LoginForm = () => {
     try {
       await login(email, password); // Call login function
       setLoginFailed(false); // Reset login failure state on successful login
-      navigate("/"); // Navigate to the home page on success
+      navigate("/"); // Navigate to the profile page on success
     } catch (error) {
-      setError("Invalid email or password"); // Set error message on login failure
+      // Expanded error handling for network or other issues
+      if (error.response) {
+        setError("Invalid email or password. Please try again.");
+      } else {
+        setError("Network error. Please try again later.");
+      }
       setLoginFailed(true); // Set login failure state
       console.error("Error logging in", error); // Log the error
     } finally {
@@ -50,6 +56,7 @@ const LoginForm = () => {
     }
   };
 
+  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev); // Toggle password visibility
   };
@@ -61,6 +68,7 @@ const LoginForm = () => {
         alignItems: "center",
         justifyContent: "center",
         height: "100vh", // Full height for better centering
+        backgroundColor: "#f0f2f5",
       }}
     >
       <Container component="main" maxWidth="sm">

@@ -1,11 +1,23 @@
-// store.js
-import {create} from 'zustand';
+import { configureStore } from "@reduxjs/toolkit";
+import { encrypt, persistedState, storeStorageKey } from "./storeEncription";
+import rootReducer from "./services/redux/rootReducer";
 
-const useStore = create((set) => ({
-  sidebarShow: false,
-  sidebarUnfoldable: false,
-  setSidebarShow: (show) => set({ sidebarShow: show }),
-  toggleSidebarUnfoldable: () => set((state) => ({ sidebarUnfoldable: !state.sidebarUnfoldable })),
-}));
+const newRootReducer = require("./services/redux/rootReducer").default;
 
-export default useStore;
+const store = configureStore({
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV !== "production",
+  preloadedState: persistedState(),
+});
+
+store.subscribe(() => {
+  localStorage.setItem(storeStorageKey, encrypt(store.getState()));
+});
+
+if (process.env.NODE_ENV === "development" && module.hot) {
+  module.hot.accept("./services/redux/rootReducer", () => {
+    store.replaceReducer(newRootReducer);
+  });
+}
+
+export default store;

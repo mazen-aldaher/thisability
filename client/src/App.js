@@ -44,6 +44,8 @@ import DefaultLayout from './layout/DefaultLayout';
 import SplashScreen from './screens/SplashScreen';
 import OnboardingScreens from './screens/OnboardingScreens';
 import ScrollToTop from './hooks/ScrollToTop';
+import axios from 'axios';
+import Profile from "./pages/Profile/Profile"
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -51,6 +53,29 @@ const App = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true); // State to handle onboarding flow
+  const [user, setUser] = useState(null);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (token) {
+        try {
+          const { data } = await axios.get(
+            'http://localhost:5000/api/user/profile',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setUser(data);
+        } catch (error) {
+          console.error('Error fetching user', error);
+        }
+      }
+    };
+    fetchUser();
+  }, [token]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,7 +84,7 @@ const App = () => {
       if (onboardingCompleted) {
         setShowOnboarding(false);
       }
-    }, 1000); // Adjust the timeout as needed
+    }, 2000); // Adjust the timeout as needed
 
     return () => clearTimeout(timer);
   }, []);
@@ -70,6 +95,8 @@ const App = () => {
     setShowOnboarding(false);
     localStorage.setItem('onboardingCompleted', 'true');
   };
+
+
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
   };
@@ -194,6 +221,7 @@ const App = () => {
                         </DashboardLayout>
                       }
                     />
+                    <Route path="/my-profile" element={<Profile />} />
                   </Routes>
                 </motion.div>
               </AnimatePresence>

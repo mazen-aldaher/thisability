@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
-  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
+  const [isOnboardingComplete, setOnboardingComplete] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const { data } = await axios.get(
-            "http://localhost:5000/api/users/profile",
+            "http://localhost:5000/api/user/profile",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -27,16 +27,16 @@ export const AuthProvider = ({ children }) => {
 
           // Check if the role is "artist" and set onboarding status accordingly
           if (data.role === "artist") {
-            setIsOnboardingComplete(data.isOnboardingComplete);
+            setOnboardingComplete(data.isOnboardingComplete);
           } else {
-            setIsOnboardingComplete(true); // Skip onboarding for non-artists
+            setOnboardingComplete(true); // Skip onboarding for non-artists
           }
         } catch (error) {
           console.error("Error fetching user", error);
           localStorage.removeItem("token");
           setUser(null);
           setUserRole(null);
-          setIsOnboardingComplete(false);
+          setOnboardingComplete(false);
         }
       }
     };
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/users/auth/login",
+        "http://localhost:5000/api/user/login",
         {
           email,
           password,
@@ -56,11 +56,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", data.token);
       setUser(data);
       setUserRole(data.role);
-      setIsOnboardingComplete(data.isOnboardingComplete);
+      setOnboardingComplete(data.isOnboardingComplete);
     } catch (error) {
       console.error("Error logging in", error);
-      // Optional: You may want to throw an error or return a specific message
-      throw new Error("Login failed. Please check your credentials.");
     }
   };
 
@@ -68,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     setUser(null);
     setUserRole(null);
-    setIsOnboardingComplete(false);
+    setOnboardingComplete(false);
   };
 
   return (
@@ -77,7 +75,7 @@ export const AuthProvider = ({ children }) => {
         user,
         userRole,
         isOnboardingComplete,
-        setIsOnboardingComplete,
+        setOnboardingComplete,
         login,
         logout,
       }}
