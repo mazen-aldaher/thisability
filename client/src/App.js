@@ -46,15 +46,16 @@ import OnboardingScreens from './screens/OnboardingScreens';
 import ScrollToTop from './hooks/ScrollToTop';
 import axios from 'axios';
 import Profile from "./pages/Profile/Profile"
+import SellerOrdersPage from './pages/OrdersPage/OrdersPage';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
   const { i18n, t } = useTranslation();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(true); // State to handle onboarding flow
-  const [user, setUser] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false); // State to handle onboarding flow
   const token = localStorage.getItem('token');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -84,7 +85,7 @@ const App = () => {
       if (onboardingCompleted) {
         setShowOnboarding(false);
       }
-    }, 2000); // Adjust the timeout as needed
+    }, 10000); // Adjust the timeout as needed
 
     return () => clearTimeout(timer);
   }, []);
@@ -153,6 +154,7 @@ const App = () => {
                     <Route path="/order-tracking" element={<OrderTracking />} />
                     <Route path="/our-community" element={<Community />} />
                     <Route path="/support" element={<SupportPage />} />
+                    <Route path="/seller-orders" element={<SellerOrdersPage />} />
                     <Route
                       path="/our-community/post/:id"
                       element={<SinglePostPage />}

@@ -6,15 +6,21 @@ import 'react-toastify/dist/ReactToastify.css'; // Import default styles
 import App from './App';
 import './i18n';
 import { AuthProvider } from './context/AuthContext';
-
+import store from './redux/store';
+import { Provider } from 'react-redux';
+import { OrderProvider } from './context/OrderContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <Provider store={store}>
     <AuthProvider>
-      <BrowserRouter>
-        <StrictMode>
-          <App />
-        </StrictMode>
-      </BrowserRouter>
+      <OrderProvider>
+        <BrowserRouter>
+          <StrictMode>
+            <App />
+          </StrictMode>
+        </BrowserRouter>
+      </OrderProvider>
     </AuthProvider>
+  </Provider>
 );

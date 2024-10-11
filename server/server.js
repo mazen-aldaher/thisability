@@ -10,7 +10,7 @@ import morgan from "morgan";
 import cookieSession from "cookie-session";
 import path from "path";
 import { fileURLToPath } from "url";
-import routes from "./routes/index.js"
+import routes from "./routes/index.js";
 
 // Initialize Express app
 const app = express();
@@ -58,10 +58,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use ("/api",routes)
-
-
- 
+app.use("/api", routes);;
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
@@ -73,3 +70,5 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+
+export default app

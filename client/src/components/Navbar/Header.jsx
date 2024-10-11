@@ -25,6 +25,11 @@ import { useTranslation } from 'react-i18next';
 import ThemeToggleBar from '../ThemeToggleBar';
 import logo from '../../assets/Logo.png';
 import { AuthContext } from '../../context/AuthContext';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const navItems = [
   { title: 'About Us', link: '/about-us' },
@@ -72,7 +77,7 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
   const handleLogout = () => {
     handleMenuClose();
     logout();
-    navigate("/")
+    navigate('/');
   };
 
   useEffect(() => {
@@ -149,9 +154,60 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                       navigate('/my-profile');
                     }}
                   >
+                    <AccountCircleIcon sx={{ marginRight: '8px' }} />
                     Profile
                   </MenuItem>
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+
+                  <MenuItem
+                    onClick={() => {
+                      handleMenuClose();
+                      navigate('/order-tracking'); // Change to your orders route
+                    }}
+                  >
+                    <TrackChangesIcon sx={{ marginRight: '8px' }} />
+                    Track Order
+                    {/* Add notification badge here if needed */}
+                  </MenuItem>
+
+                  <MenuItem
+                    onClick={() => {
+                      handleMenuClose();
+                      navigate('/order-history'); // Change to your order history route
+                    }}
+                  >
+                    <NotificationsIcon sx={{ marginRight: '8px' }} />
+                    Orders
+                    {/* Add notification badge here if needed */}
+                  </MenuItem>
+
+                  {user.role === 'admin' && (
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/dashboard/admin');
+                      }}
+                    >
+                      <DashboardIcon sx={{ marginRight: '8px' }} />
+                      Admin Dashboard
+                    </MenuItem>
+                  )}
+
+                  {user.role === 'artist' && (
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/seller-orders');
+                      }}
+                    >
+                      <DashboardIcon sx={{ marginRight: '8px' }} />
+                      Artist Dashboard
+                    </MenuItem>
+                  )}
+
+                  <MenuItem onClick={handleLogout}>
+                    <LogoutIcon sx={{ marginRight: '8px' }} />
+                    Logout
+                  </MenuItem>
                 </Menu>
               </div>
             ) : (
@@ -244,8 +300,32 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                         navigate('/my-profile');
                       }}
                     >
+                      <AccountCircleIcon sx={{ marginRight: '8px' }} />
                       Profile
                     </MenuItem>
+
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/order-tracking');
+                      }}
+                    >
+                      <TrackChangesIcon sx={{ marginRight: '8px' }} />
+                      Track Order
+                      {/* Add notification badge here if needed */}
+                    </MenuItem>
+
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/order-history'); // Change to your order history route
+                      }}
+                    >
+                      <NotificationsIcon sx={{ marginRight: '8px' }} />
+                      Orders
+                      {/* Add notification badge here if needed */}
+                    </MenuItem>
+
                     {user.role === 'admin' && (
                       <MenuItem
                         onClick={() => {
@@ -253,20 +333,27 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                           navigate('/dashboard/admin');
                         }}
                       >
+                        <DashboardIcon sx={{ marginRight: '8px' }} />
                         Admin Dashboard
                       </MenuItem>
                     )}
+
                     {user.role === 'artist' && (
                       <MenuItem
                         onClick={() => {
                           handleMenuClose();
-                          navigate('/dashboard/artist');
+                          navigate('/seller-orders');
                         }}
                       >
+                        <DashboardIcon sx={{ marginRight: '8px' }} />
                         Artist Dashboard
                       </MenuItem>
                     )}
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+
+                    <MenuItem onClick={handleLogout}>
+                      <LogoutIcon sx={{ marginRight: '8px' }} />
+                      Logout
+                    </MenuItem>
                   </Menu>
                 </div>
               ) : (

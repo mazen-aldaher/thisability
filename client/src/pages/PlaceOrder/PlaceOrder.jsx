@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Container, Grid, Typography, Button, Card, CardContent, Divider, Box, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+  Container, Grid, Typography, Button, Card, CardContent, Divider, Box, CircularProgress, Dialog, DialogActions,
+  DialogContent, DialogContentText, DialogTitle
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const PlaceOrder = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const navigate = useNavigate(); // for navigation to other pages
+  const navigate = useNavigate();
 
   const shippingAddress = {
     name: 'Mazen Abdelhalim Mohamed Aldaher',
@@ -17,40 +20,38 @@ const PlaceOrder = () => {
   const paymentMethod = 'Credit Card';
   const orderTotal = 7999.00;
 
-  // Simulate order placement
   const handlePlaceOrder = () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
-    // Simulate an API call delay (e.g., 2 seconds)
     setTimeout(() => {
-      setIsLoading(false); // Stop loading
-      setIsSuccess(true); // Show success dialog
+      setIsLoading(false);
+      setIsSuccess(true);
     }, 2000);
   };
 
   const handleContinueShopping = () => {
-    navigate('/products'); // Redirect to home or shopping page
+    navigate('/products');
   };
 
   const handleTrackOrder = () => {
-    navigate('/order-tracking'); // Redirect to order tracking page
+    navigate('/order-tracking');
   };
 
   return (
     <Container maxWidth="lg" sx={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
         Place Your Order
       </Typography>
 
       <Grid container spacing={4}>
-        {/* Shipping Address */}
+        {/* Shipping Address Section */}
         <Grid item xs={12} md={8}>
-          <Card>
+          <Card sx={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', borderRadius: '10px' }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                 Shipping Address
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                 {shippingAddress.name} <br />
                 {shippingAddress.addressLine1} <br />
                 {shippingAddress.addressLine2} <br />
@@ -58,19 +59,19 @@ const PlaceOrder = () => {
               </Typography>
               <Divider sx={{ marginY: '20px' }} />
 
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                 Payment Method
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" color="text.secondary">
                 {paymentMethod}
               </Typography>
               <Divider sx={{ marginY: '20px' }} />
 
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                 Order Items
               </Typography>
               <Box>
-                <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                   Kindle Paperwhite (8GB) - EGP {orderTotal.toFixed(2)}
                 </Typography>
               </Box>
@@ -78,14 +79,14 @@ const PlaceOrder = () => {
           </Card>
         </Grid>
 
-        {/* Order Summary */}
+        {/* Order Summary Section */}
         <Grid item xs={12} md={4}>
-          <Card>
+          <Card sx={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', borderRadius: '10px' }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                 Order Summary
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" color="text.secondary">
                 Items: EGP {orderTotal.toFixed(2)} <br />
                 Shipping & handling: -- <br />
                 Total: EGP {orderTotal.toFixed(2)}
@@ -98,9 +99,16 @@ const PlaceOrder = () => {
                 color="primary"
                 fullWidth
                 onClick={handlePlaceOrder}
-                disabled={isLoading} // Disable button while loading
+                disabled={isLoading}
+                sx={{
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  padding: '12px',
+                  backgroundColor: isLoading ? 'rgba(25, 118, 210, 0.5)' : '#1976d2',
+                  '&:hover': { backgroundColor: '#1a73e8' },
+                }}
               >
-                {isLoading ? <CircularProgress size={24} /> : 'Place Your Order'}
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Place Your Order'}
               </Button>
             </CardContent>
           </Card>
@@ -114,17 +122,28 @@ const PlaceOrder = () => {
         aria-labelledby="success-dialog-title"
         aria-describedby="success-dialog-description"
       >
-        <DialogTitle id="success-dialog-title">Order Placed Successfully</DialogTitle>
+        <DialogTitle id="success-dialog-title" sx={{ fontWeight: 'bold', color: '#4caf50' }}>
+          Order Placed Successfully
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="success-dialog-description">
+          <DialogContentText id="success-dialog-description" sx={{ color: '#333' }}>
             Your order has been placed successfully! You can continue shopping or track your order.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleContinueShopping} color="primary">
+          <Button
+            onClick={handleContinueShopping}
+            color="primary"
+            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+          >
             Continue Shopping
           </Button>
-          <Button onClick={handleTrackOrder} color="primary" autoFocus>
+          <Button
+            onClick={handleTrackOrder}
+            color="primary"
+            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+            autoFocus
+          >
             Track Your Order
           </Button>
         </DialogActions>

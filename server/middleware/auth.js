@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
 import asyncHandler from "express-async-handler";
+import User from "../models/User.js";
 
 // Middleware to protect routes and verify user roles
 export const protect = asyncHandler(async (req, res, next) => {

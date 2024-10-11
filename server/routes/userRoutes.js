@@ -26,6 +26,9 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
+//Protected Routes
+router.get("/profile", protect, getUserProfile);
+router.put("/profile", protect, updateUserProfile);
 //Get All Users
 router.get("/", getUsers);
 //Get User By ID
@@ -34,9 +37,7 @@ router.get("/:id", getUserById);
 router.put("/:id", updateUserById);
 //Delete User By ID
 router.delete("/:id", deleteUser);
-//Protected Routes
-router.get("/profile", protect, getUserProfile);
-router.put("/profile", protect, updateUserProfile);
+
 // Onboarding Completion Route
 router.post("/complete-onboarding", completeOnboarding);
 export default router;

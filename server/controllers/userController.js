@@ -17,7 +17,25 @@ const generateToken = (id) => {
 
 // Register a new user
 export const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const {
+    username,
+    email,
+    password,
+    role,
+    firstName,
+    lastName,
+    dateOfBirth,
+    phoneNumber,
+    address,
+    idNumber,
+    idDocument,
+    profilePicture,
+    bio,
+    website,
+    socialLinks,
+    artStyle,
+    portfolioUrl,
+  } = req.body;
 
   const userExists = await User.findOne({ email });
 
@@ -30,6 +48,20 @@ export const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     role,
+    firstName,
+    lastName,
+    dateOfBirth,
+    phoneNumber,
+    address,
+    idNumber,
+    idDocument,
+    profilePicture,
+    bio,
+    website,
+    socialLinks,
+    artStyle,
+    portfolioUrl,
+    status: role === "artist" ? "Application Submitted" : "Account Active",
   });
 
   if (user) {
@@ -94,6 +126,95 @@ export const loginUser = asyncHandler(async (req, res) => {
     } else {
       res.status(401).json({ message: "Invalid email or password" });
     }
+  }
+});
+
+// Get user profile
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  if (user) {
+    res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      dateOfBirth: user.dateOfBirth,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
+      idNumber: user.idNumber,
+      profilePicture: user.profilePicture,
+      bio: user.bio,
+      website: user.website,
+      socialLinks: user.socialLinks,
+      artStyle: user.artStyle,
+      portfolioUrl: user.portfolioUrl,
+      isOnboardingComplete: user.isOnboardingComplete,
+      idDocument: user.idDocument,
+    });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
+// Update user profile
+export const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.username = req.body.username || user.username;
+    user.email = req.body.email || user.email;
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.dateOfBirth = req.body.dateOfBirth || user.dateOfBirth;
+    user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+    user.address = req.body.address || user.address;
+    user.idNumber = req.body.idNumber || user.idNumber;
+    user.idDocument = req.body.idDocument || user.idDocument;
+    user.profilePicture = req.body.profilePicture || user.profilePicture;
+    user.bio = req.body.bio || user.bio;
+    user.website = req.body.website || user.website;
+    user.socialLinks = req.body.socialLinks || user.socialLinks;
+    user.artStyle = req.body.artStyle || user.artStyle;
+    user.portfolioUrl = req.body.portfolioUrl || user.portfolioUrl;
+    user.isOnboardingComplete =
+      req.body.isOnboardingComplete ?? user.isOnboardingComplete;
+
+    if (req.body.password) {
+      if (req.body.password.length < 6) {
+        return res
+          .status(400)
+          .json({ message: "Password must be at least 6 characters" });
+      }
+      user.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      dateOfBirth: updatedUser.dateOfBirth,
+      phoneNumber: updatedUser.phoneNumber,
+      address: updatedUser.address,
+      idNumber: updatedUser.idNumber,
+      idDocument: updatedUser.idDocument,
+      profilePicture: updatedUser.profilePicture,
+      bio: updatedUser.bio,
+      website: updatedUser.website,
+      socialLinks: updatedUser.socialLinks,
+      artStyle: updatedUser.artStyle,
+      portfolioUrl: updatedUser.portfolioUrl,
+      isOnboardingComplete: updatedUser.isOnboardingComplete,
+      token: generateToken(updatedUser._id),
+    });
+  } else {
+    res.status(404).json({ message: "User not found" });
   }
 });
 
@@ -182,7 +303,34 @@ export const getUserById = asyncHandler(async (req, res) => {
 
 // Update user by ID
 export const updateUserById = asyncHandler(async (req, res) => {
- 
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.username = req.body.username || user.username;
+    user.email = req.body.email || user.email;
+    if (req.body.password) {
+      user.password = await bcrypt.hash(req.body.password, 10);
+    }
+    user.role = req.body.role || user.role;
+    user.isOnboardingComplete =
+      req.body.isOnboardingComplete || user.isOnboardingComplete;
+    user.interviewDate = req.body.interviewDate || user.interviewDate;
+    user.verificationNotes =
+      req.body.verificationNotes || user.verificationNotes;
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      isOnboardingComplete: updatedUser.isOnboardingComplete,
+      token: generateToken(updatedUser._id),
+    });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
 });
 
 // Delete user
@@ -266,105 +414,6 @@ export const verifyOtp = asyncHandler(async (req, res) => {
   await user.save();
 
   res.json({ message: "OTP verified successfully" });
-});
-
-// Update user profile
-export const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  const fieldsToUpdate = [
-    "username",
-    "email",
-    "firstName",
-    "lastName",
-    "dateOfBirth",
-    "phoneNumber",
-    "address",
-    "idNumber",
-    "profilePicture",
-    "bio",
-    "website",
-    "socialLinks",
-    "artStyle",
-    "portfolioUrl",
-    "isOnboardingComplete",
-    "idDocument",
-    "profile",
-  ];
-
-  fieldsToUpdate.forEach((field) => {
-    if (field === "profile" && req.body[field]) {
-      user[field] = new mongoose.Types.ObjectId(req.body[field]);
-    } else if (req.body[field] !== undefined) {
-      user[field] = req.body[field];
-    }
-  });
-
-  if (req.body.password) {
-    if (req.body.password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters" });
-    }
-    user.password = await bcrypt.hash(req.body.password, 10);
-  }
-
-  const updatedUser = await user.save();
-
-  res.json({
-    _id: updatedUser._id,
-    username: updatedUser.username,
-    email: updatedUser.email,
-    role: updatedUser.role,
-    firstName: updatedUser.firstName,
-    lastName: updatedUser.lastName,
-    dateOfBirth: updatedUser.dateOfBirth,
-    phoneNumber: updatedUser.phoneNumber,
-    address: updatedUser.address,
-    idNumber: updatedUser.idNumber,
-    idDocument: updatedUser.idDocument,
-    profilePicture: updatedUser.profilePicture,
-    bio: updatedUser.bio,
-    website: updatedUser.website,
-    socialLinks: updatedUser.socialLinks,
-    artStyle: updatedUser.artStyle,
-    portfolioUrl: updatedUser.portfolioUrl,
-    isOnboardingComplete: updatedUser.isOnboardingComplete,
-    profile: updatedUser.profile,
-    token: generateToken(updatedUser._id),
-  });
-});
-// Get user profile
-export const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  if (user) {
-    res.json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      dateOfBirth: user.dateOfBirth,
-      phoneNumber: user.phoneNumber,
-      address: user.address,
-      idNumber: user.idNumber,
-      profilePicture: user.profilePicture,
-      bio: user.bio,
-      website: user.website,
-      socialLinks: user.socialLinks,
-      artStyle: user.artStyle,
-      portfolioUrl: user.portfolioUrl,
-      isOnboardingComplete: user.isOnboardingComplete,
-      idDocument: user.idDocument,
-    });
-  } else {
-    res.status(404).json({ message: "User not found" });
-  }
 });
 
 export default router;
