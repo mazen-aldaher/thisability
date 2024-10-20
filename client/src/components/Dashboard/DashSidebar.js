@@ -81,15 +81,15 @@ const AppSidebar = ({
           }}
         >
           <>
-            <Box sx={{display:"flex"}} >
+            <Box sx={{ display: 'flex' }}>
               <Typography
-                variant="h5"
+                variant="h6"
                 sx={{
                   color: theme.palette.secondary.main,
-                  fontFamily: 'cursive',
+                  fontFamily: "cursive",
                 }}
               >
-                |||Thisability
+                THISABILITY
               </Typography>
               <Typography
                 variant="h7"
