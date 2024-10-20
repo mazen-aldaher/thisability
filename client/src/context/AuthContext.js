@@ -46,19 +46,48 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post(
+      const response = await axios.post(
         "http://localhost:5000/api/user/login",
         {
           email,
           password,
         }
       );
-      localStorage.setItem("token", data.token);
-      setUser(data);
-      setUserRole(data.role);
-      setOnboardingComplete(data.isOnboardingComplete);
+
+      // Assuming the token is returned in response.data
+      localStorage.setItem("token", response.data.token);
+      setUser(response.data);
+      setUserRole(response.data.role);
+      setOnboardingComplete(response.data.isOnboardingComplete);
+
+      return response; // Return the response object
     } catch (error) {
       console.error("Error logging in", error);
+      throw error; // Re-throw the error for handling in the component
+    }
+  };
+
+  const register = async (username, email, password) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/user/register",
+        {
+          username,
+          email,
+          password,
+        }
+      );
+
+      // Assuming the token is returned in response.data
+      localStorage.setItem("token", response.data.token);
+      setUser(response.data);
+      setUserRole(response.data.role);
+      setOnboardingComplete(response.data.isOnboardingComplete);
+
+      return response; // Return the response object
+    } catch (error) {
+      console.error("Error registering", error);
+      throw error; // Re-throw the error for handling in the component
     }
   };
 
@@ -77,6 +106,7 @@ export const AuthProvider = ({ children }) => {
         isOnboardingComplete,
         setOnboardingComplete,
         login,
+        register, // Add the register function to context
         logout,
       }}
     >

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  Avatar,
   Box,
   Typography,
   CircularProgress,
@@ -112,7 +111,7 @@ const Profile = () => {
       sx={{
         minHeight: '100%',
         display: 'flex',
-        flexDirection:"column",
+        flexDirection: "column",
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',

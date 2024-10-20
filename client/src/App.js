@@ -47,6 +47,8 @@ import ScrollToTop from './hooks/ScrollToTop';
 import axios from 'axios';
 import Profile from "./pages/Profile/Profile"
 import SellerOrdersPage from './pages/OrdersPage/OrdersPage';
+import VerifyEmail from './pages/Auth/components/VerifyEmail';
+import ResetPassword from './pages/Auth/ResetPassword';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -116,6 +118,7 @@ const App = () => {
     '/test',
     '/onboarding',
     '/dashboard',
+    '/dashboard/admin',
     // More routes here...
   ].includes(location.pathname);
 
@@ -155,6 +158,8 @@ const App = () => {
                     <Route path="/our-community" element={<Community />} />
                     <Route path="/support" element={<SupportPage />} />
                     <Route path="/seller-orders" element={<SellerOrdersPage />} />
+
+                    <Route path='/verify-email' element={<VerifyEmail/>}  />
                     <Route
                       path="/our-community/post/:id"
                       element={<SinglePostPage />}
@@ -166,10 +171,14 @@ const App = () => {
                       path="/forgot-password"
                       element={<ForgotPassword />}
                     />
+                     <Route
+                      path="/reset-password"
+                      element={<ResetPassword />}
+                    />
                     <Route
                       path="*"
                       name="Dashboard"
-                      element={<DefaultLayout />}
+                      element={<DefaultLayout onThemeChange={handleThemeChange} />}
                     />
                     <Route
                       path="/user-dashboard/*"

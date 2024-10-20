@@ -7,28 +7,43 @@ import {
   DashSidebar,
 } from '../components/Dashboard';
 
-const DefaultLayout = () => {
+const DefaultLayout = ({onThemeChange}) => {
   const [unfoldable, setUnfoldable] = useState(false);
   const [sidebarShow, setSidebarShow] = useState(true);
 
   const handleDrawerToggle = () => {
-    setSidebarShow((prev) => !prev);  // Toggle sidebar visibility
+    setSidebarShow((prev) => !prev); // Toggle sidebar visibility
   };
 
   const handleUnfoldToggle = () => {
-    setUnfoldable((prev) => !prev);  // Toggle sidebar unfolding
+    setUnfoldable((prev) => !prev); // Toggle sidebar unfolding
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ height: '100vh' }}>
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+        }}
+      >
+        <DashHeader
+          handleDrawerToggle={handleDrawerToggle}
+          unfoldable={unfoldable}
+          onThemeChange={onThemeChange}
+        />
+      </Box>
       {/* Sidebar Section */}
-      <DashSidebar
-        handleDrawerToggle={handleDrawerToggle}
-        handleUnfoldToggle={handleUnfoldToggle}
-        sidebarShow={sidebarShow}
-        unfoldable={unfoldable}
-      />
-      
+      <Box sx={{ position: 'relative', zIndex: 0 }}>
+        <DashSidebar
+          handleDrawerToggle={handleDrawerToggle}
+          handleUnfoldToggle={handleUnfoldToggle}
+          sidebarShow={sidebarShow}
+          unfoldable={unfoldable}
+        />
+      </Box>
       {/* Main Content Section */}
       <Box
         sx={{
@@ -38,9 +53,6 @@ const DefaultLayout = () => {
           minHeight: '100vh',
         }}
       >
-        {/* Header Section */}
-        <DashHeader handleDrawerToggle={handleDrawerToggle} unfoldable={unfoldable} />
-
         {/* Content Section */}
         <Box sx={{ flexGrow: 1 }}>
           <DashContent />

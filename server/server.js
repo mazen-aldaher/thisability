@@ -27,7 +27,7 @@ app.use(morgan(NODE_ENV === "production" ? "common" : "dev")); // Logging middle
 app.use(helmet()); // Security middleware to set HTTP headers
 app.use(xss()); // XSS protection middleware
 app.use(mongoSanitize()); // Prevents NoSQL injection attacks
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(cors({origin:'http://localhost:3000'})); // Enable Cross-Origin Resource Sharing
 
 // Rate limiting middleware
 app.use(

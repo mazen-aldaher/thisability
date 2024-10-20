@@ -1,5 +1,16 @@
-import React from 'react';
-import { Drawer, IconButton, Toolbar, Divider, List, Box } from '@mui/material';
+import React, { useCallback } from 'react';
+import {
+  Drawer,
+  IconButton,
+  Toolbar,
+  Divider,
+  List,
+  Box,
+  Typography,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoIcon from '@mui/icons-material/AccountTree'; // Replace with your actual logo icon
@@ -7,59 +18,86 @@ import SygnetIcon from '@mui/icons-material/AcUnit'; // Replace with your actual
 import { AppSidebarNav } from './AppSidebarNav';
 import navigation from '../../_nav'; // Sidebar nav config
 
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  ...theme.mixins.toolbar,
+  justifyContent: 'space-between',
+  marginTop: 0,
+}));
+
+const Logo = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.primary.main,
+  textDecoration: 'none',
+  fontWeight: 700,
+}));
+
 const AppSidebar = ({
   handleDrawerToggle,
   handleUnfoldToggle,
   sidebarShow,
   unfoldable,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+
+  const drawerWidth = unfoldable ? 80 : 280;
+
+  const handleClose = useCallback(() => {
+    if (isMobile) {
+      handleDrawerToggle();
+    }
+  }, [isMobile, handleDrawerToggle]);
+
   return (
     <Drawer
-      variant="persistent"
+      variant={isMobile ? 'temporary' : 'persistent'}
       anchor="left"
       open={sidebarShow}
-      onClose={handleDrawerToggle}
+      onClose={handleClose}
       sx={{
-        width: unfoldable ? 80 : 250, // Adjust the width based on the 'unfoldable' state
-        flexShrink: 0,
+        width: drawerWidth,
+        flexShrink: 1,
         '& .MuiDrawer-paper': {
-          width: unfoldable ? 80 : 250, // Consistent width for the Drawer content
-          boxSizing: 'border-box', // Maintain consistent box sizing
+          width: drawerWidth,
+          boxSizing: 'border-box',
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
         },
       }}
     >
-      <Toolbar>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
-        >
-          <IconButton edge="start">
-            <LogoIcon fontSize="large" /> {/* Replace with actual logo */}
-          </IconButton>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleDrawerToggle}
-            className="d-lg-none"
-          >
+      <DrawerHeader>
+        <Logo component="a" href="/">
+          <LogoIcon fontSize="large" sx={{ mr: 1 }} />
+          {!unfoldable && (
+            <Typography variant="h6" noWrap component="div">
+              Thisability
+            </Typography>
+          )}
+        </Logo>
+        {isMobile && (
+          <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>
-        </Box>
-      </Toolbar>
+        )}
+      </DrawerHeader>
 
       <Divider />
 
-      <List>
-        <AppSidebarNav items={navigation} />
+      <List sx={{ flexGrow: 1, overflow: 'auto' }}>
+        <AppSidebarNav items={navigation} unfoldable={unfoldable} />
       </List>
 
       <Divider />
 
-      <Toolbar>
-        <IconButton onClick={handleUnfoldToggle}>
-          {unfoldable ? <MenuIcon /> : <SygnetIcon />} {/* Replace icons */}
+      <Toolbar sx={{ justifyContent: 'center' }}>
+        <IconButton onClick={handleUnfoldToggle} size="large">
+          {unfoldable ? <MenuIcon /> : <SygnetIcon />}
         </IconButton>
       </Toolbar>
     </Drawer>

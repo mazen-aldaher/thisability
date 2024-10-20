@@ -183,6 +183,8 @@ const TestTopbar = ({ handleDrawerToggle, open, onThemeChange }) => {
         </Toolbar>
 
         {/* Menu for notifications, mail, profile */}
+        <Box sx={{display:"flex",justifyContent:"flex-end", alignContent:"flex-end",alignItems:'flex-end'}} >
+
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -206,6 +208,7 @@ const TestTopbar = ({ handleDrawerToggle, open, onThemeChange }) => {
             </>
           )}
         </Menu>
+        </Box>
       </AppBar>
     </>
   );

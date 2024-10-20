@@ -5,7 +5,6 @@ const { isEmail } = pkg;
 
 const userSchema = new mongoose.Schema(
   {
-    
     username: {
       type: String,
       required: true,
@@ -25,6 +24,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 8,
     },
+    phone: { type: String, unique: true },
+    googleId: { type: String },
+    facebookId: { type: String },
+    appleId: { type: String },
     role: {
       type: String,
       enum: ["user", "artist", "admin"],
@@ -44,8 +47,9 @@ const userSchema = new mongoose.Schema(
     verificationNotes: { type: String, trim: true },
 
     // OTP for email verification
-    emailVerificationToken: { type: String },
-    emailVerificationExpires: { type: Date },
+    isVerified: { type: Boolean, default: false },
+    emailVerificationToken: String,
+    emailVerificationExpires: Date,
   },
   { timestamps: true }
 );

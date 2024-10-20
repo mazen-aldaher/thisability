@@ -1,10 +1,14 @@
 import express from "express";
+import twilio from "twilio";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import Profile from "../models/Profile.js";
+import mongoose from "mongoose";
+import { sendEmail } from "../util/sendEmail.js";
 
 const router = express.Router();
 
@@ -17,282 +21,238 @@ const generateToken = (id) => {
 
 // Register a new user
 export const registerUser = asyncHandler(async (req, res) => {
-  const {
-    username,
-    email,
-    password,
-    role,
-    firstName,
-    lastName,
-    dateOfBirth,
-    phoneNumber,
-    address,
-    idNumber,
-    idDocument,
-    profilePicture,
-    bio,
-    website,
-    socialLinks,
-    artStyle,
-    portfolioUrl,
-  } = req.body;
+  const { username, email, password, role, firstName, lastName } = req.body;
 
+  // Check if the user already exists
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  const user = await User.create({
+  // Hash the password before saving
+  //const hashedPassword = await bcrypt.hash(password, 10);
+  // Step 1: Create New User without profile reference
+  const newUser = new User({
     username,
     email,
-    password,
-    role,
-    firstName,
-    lastName,
-    dateOfBirth,
-    phoneNumber,
-    address,
-    idNumber,
-    idDocument,
-    profilePicture,
-    bio,
-    website,
-    socialLinks,
-    artStyle,
-    portfolioUrl,
-    status: role === "artist" ? "Application Submitted" : "Account Active",
+    password, // store hashed password
+    role: role || "user", // default role to 'user' if not provided
+    isVerified: false,
   });
 
-  if (user) {
+  // Save User first to get the user ID
+  const savedUser = await newUser.save();
+
+  // Step 2: Create New Profile linked to the user
+  const newProfile = new Profile({
+    firstName,
+    lastName,
+    user: savedUser._id, // Associate profile with the newly created user
+  });
+
+  // Save Profile
+  const savedProfile = await newProfile.save();
+
+  // Step 3: Update the user to reference the profile
+  savedUser.profile = savedProfile._id;
+  await savedUser.save();
+
+  // Step 5: Generate verification token (you can use JWT or another method)
+  const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h", // Set token expiration as needed
+  });
+
+  // Step 6: Send verification email
+  const verificationLink = `http://localhost:3000/verify-email?token=${token}`;
+  const emailContent = `
+    <h1>Verify Your Email</h1>
+    <p>Please click the link below to verify your email:</p>
+    <a href="${verificationLink}">Verify Email</a>
+  `;
+
+  try {
+    await sendEmail(
+      savedUser.email,
+      "Verify Your Email for Thisability",
+      emailContent
+    );
     res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id),
+      message: "User registered. Verification email sent.",
+      _id: savedUser._id,
+      username: savedUser.username,
+      email: savedUser.email,
+      role: savedUser.role,
+      profile: savedProfile, // Return profile with user info
+      token: generateToken(savedUser._id),
     });
-  } else {
-    res.status(400).json({ message: "Invalid user data" });
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    res.status(500).json({
+      message: "User registered, but failed to send verification email.",
+    });
   }
 });
-
 // Authenticate user & get token
 export const loginUser = asyncHandler(async (req, res) => {
-  const { email, password, googleIdToken } = req.body;
+  const { email, password } = req.body;
 
-  if (googleIdToken) {
-    try {
-      const ticket = await client.verifyIdToken({
-        idToken: googleIdToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
+  // Check if the user exists
+  const user = await User.findOne({ email }).populate("profile");
 
-      const payload = ticket.getPayload();
-      const googleEmail = payload.email;
-
-      let user = await User.findOne({ email: googleEmail });
-      if (!user) {
-        user = await User.create({
-          username: payload.name,
-          email: googleEmail,
-          googleId: payload.sub,
-          role: "user",
-          status: "Account Active",
-        });
-      }
-
-      res.json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
-      });
-    } catch (error) {
-      res.status(401).json({ message: "Google authentication failed" });
-    }
-  } else {
-    const user = await User.findOne({ email });
-
-    if (user && (await user.matchPassword(password))) {
-      res.json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(401).json({ message: "Invalid email or password" });
-    }
+  if (!user) {
+    console.log("User not found for email: ", email); // Log for debugging
+    return res.status(401).json({ message: "Invalid email or password" });
   }
+
+  // Check if the user is verified
+  if (!user.isVerified) {
+    console.log("User not verified: ", email); // Log for debugging
+    return res
+      .status(403)
+      .json({ message: "Please verify your email before logging in." });
+  }
+
+  // Check if the password matches
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    console.log("Password does not match for user: ", email); // Log for debugging
+    return res.status(401).json({ message: "Invalid email or password" });
+  }
+
+  // If successful, send back user data and token
+  res.json({
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    profile: user.profile, // Include profile details (firstName, lastName, etc.)
+    token: generateToken(user._id),
+  });
 });
 
 // Get user profile
 export const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  if (user) {
-    res.json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      dateOfBirth: user.dateOfBirth,
-      phoneNumber: user.phoneNumber,
-      address: user.address,
-      idNumber: user.idNumber,
-      profilePicture: user.profilePicture,
-      bio: user.bio,
-      website: user.website,
-      socialLinks: user.socialLinks,
-      artStyle: user.artStyle,
-      portfolioUrl: user.portfolioUrl,
-      isOnboardingComplete: user.isOnboardingComplete,
-      idDocument: user.idDocument,
-    });
-  } else {
-    res.status(404).json({ message: "User not found" });
+  try {
+    const user = await User.findById(req.user._id)
+      .populate("profile")
+      .select("-password");
+
+    if (user) {
+      res.json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        profile: user.profile, // Include the populated profile
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    // Log the error for debugging
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
 // Update user profile
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const userId = req.user._id; // Ensure you're fetching the user based on the token
+  const user = await User.findById(userId).populate("profile");
 
-  if (user) {
-    user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
-    user.firstName = req.body.firstName || user.firstName;
-    user.lastName = req.body.lastName || user.lastName;
-    user.dateOfBirth = req.body.dateOfBirth || user.dateOfBirth;
-    user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
-    user.address = req.body.address || user.address;
-    user.idNumber = req.body.idNumber || user.idNumber;
-    user.idDocument = req.body.idDocument || user.idDocument;
-    user.profilePicture = req.body.profilePicture || user.profilePicture;
-    user.bio = req.body.bio || user.bio;
-    user.website = req.body.website || user.website;
-    user.socialLinks = req.body.socialLinks || user.socialLinks;
-    user.artStyle = req.body.artStyle || user.artStyle;
-    user.portfolioUrl = req.body.portfolioUrl || user.portfolioUrl;
-    user.isOnboardingComplete =
-      req.body.isOnboardingComplete ?? user.isOnboardingComplete;
-
-    if (req.body.password) {
-      if (req.body.password.length < 6) {
-        return res
-          .status(400)
-          .json({ message: "Password must be at least 6 characters" });
-      }
-      user.password = await bcrypt.hash(req.body.password, 10);
-    }
-
-    const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      username: updatedUser.username,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      dateOfBirth: updatedUser.dateOfBirth,
-      phoneNumber: updatedUser.phoneNumber,
-      address: updatedUser.address,
-      idNumber: updatedUser.idNumber,
-      idDocument: updatedUser.idDocument,
-      profilePicture: updatedUser.profilePicture,
-      bio: updatedUser.bio,
-      website: updatedUser.website,
-      socialLinks: updatedUser.socialLinks,
-      artStyle: updatedUser.artStyle,
-      portfolioUrl: updatedUser.portfolioUrl,
-      isOnboardingComplete: updatedUser.isOnboardingComplete,
-      token: generateToken(updatedUser._id),
-    });
-  } else {
-    res.status(404).json({ message: "User not found" });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  // Update user profile fields
+  user.username = req.body.username || user.username;
+  user.email = req.body.email || user.email;
+
+  // Update Profile fields
+  if (user.profile) {
+    user.profile.firstName = req.body.firstName || user.profile.firstName;
+    user.profile.lastName = req.body.lastName || user.profile.lastName;
+
+    // Save updated profile
+    await user.profile.save();
+  }
+
+  // If the password is being updated, make sure it's hashed
+  if (req.body.password) {
+    if (req.body.password.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
+    }
+    user.password = await bcrypt.hash(req.body.password, 10);
+  }
+
+  // Save updated user
+  const updatedUser = await user.save();
+
+  res.json({
+    _id: updatedUser._id,
+    username: updatedUser.username,
+    email: updatedUser.email,
+    profile: updatedUser.profile, // Ensure profile is returned
+    token: generateToken(updatedUser._id),
+  });
 });
 
+// Forgot password
 // Forgot password
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: "User not found." });
 
-  if (!user) {
-    res.status(404).json({ message: "User not found" });
-    return;
-  }
-
-  const token = crypto.randomBytes(20).toString("hex");
-  user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-
-  await user.save();
-
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS,
-    },
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
   });
+  const resetLink = `http://localhost:3000/reset-password?token=${token}`;
 
-  const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/users/reset-password/${token}`;
+  const emailContent = `
+    <h1>Reset Your Password</h1>
+    <p>Click the link below to reset your password:</p>
+    <a href="${resetLink}">Reset Password</a>
+  `;
 
-  await transporter.sendMail({
-    to: user.email,
-    from: process.env.GMAIL_USER,
-    subject: "Password Reset",
-    text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
-          Please make a PUT request to the following link to complete the process:\n\n${resetUrl}\n\n
-          If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-  });
-
-  res.json({ message: "Password reset link sent to email" });
+  await sendEmail(user.email, "Reset Your Password for Thisability", emailContent);
+  res.json({ message: "Password reset email sent." });
 });
 
-// Reset password
+// Reset Password
 export const resetPassword = asyncHandler(async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
+  const token = req.query.token;
+  const { newPassword } = req.body;
 
-  const user = await User.findOne({
-    resetPasswordToken: token,
-    resetPasswordExpires: { $gt: Date.now() },
-  });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(400).json({ message: "Invalid token." });
 
-  if (!user) {
-    res
-      .status(400)
-      .json({ message: "Password reset token is invalid or has expired" });
-    return;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password reset successfully." });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid or expired token." });
   }
-
-  user.password = await bcrypt.hash(password, 10);
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-
-  await user.save();
-
-  res.json({ message: "Password has been updated" });
 });
 
-// Get all users
+// Get All Users (Admin)
 export const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find().select("-password");
+  const users = await User.find().select("-password").populate("profile");
   res.json(users);
 });
 
-// Get a user by ID
+// Get User by ID (Admin)
 export const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id)
+    .select("-password")
+    .populate("profile");
 
   if (user) {
     res.json(user);
@@ -301,51 +261,59 @@ export const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
-// Update user by ID
+// Update User by ID (Admin)
 export const updateUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate("profile");
 
   if (user) {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
+    user.role = req.body.role || user.role;
+
     if (req.body.password) {
       user.password = await bcrypt.hash(req.body.password, 10);
     }
-    user.role = req.body.role || user.role;
-    user.isOnboardingComplete =
-      req.body.isOnboardingComplete || user.isOnboardingComplete;
-    user.interviewDate = req.body.interviewDate || user.interviewDate;
-    user.verificationNotes =
-      req.body.verificationNotes || user.verificationNotes;
 
-    const updatedUser = await user.save();
+    await user.save();
 
     res.json({
-      _id: updatedUser._id,
-      username: updatedUser.username,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      isOnboardingComplete: updatedUser.isOnboardingComplete,
-      token: generateToken(updatedUser._id),
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      profile: user.profile,
     });
   } else {
     res.status(404).json({ message: "User not found" });
   }
 });
 
-// Delete user
-export const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+// Delete User (Admin)
 
-  if (user) {
-    await user.remove();
-    res.json({ message: "User removed" });
-  } else {
-    res.status(404).json({ message: "User not found" });
+export const deleteUser = asyncHandler(async (req, res, next) => {
+  try {
+    // Validate if the provided ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Delete the user using deleteOne
+    await User.deleteOne({ _id: req.params.id });
+
+    res.status(200).json({ message: "User removed successfully" });
+  } catch (error) {
+    console.error(`Error deleting user: ${error.message}`);
+    res.status(500).json({ message: "Server error, unable to delete user" });
   }
 });
 
-// Complete onboarding
+// Complete Onboarding
 export const completeOnboarding = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -357,6 +325,39 @@ export const completeOnboarding = asyncHandler(async (req, res) => {
   await user.save();
 
   res.status(200).json({ message: "Onboarding completed successfully" });
+});
+
+// Send Phone OTP with twilio
+export const sendPhoneOtp = asyncHandler(async (req, res) => {
+  const { phone } = req.body;
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const client = require("twilio")(accountSid, authToken);
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  const message = `Your OTP is ${otp}`;
+  client.messages
+    .create({
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: phone,
+      body: message,
+    })
+    .then((message) => console.log(message.sid))
+    .done();
+  res.json({ message: "OTP sent successfully" });
+});
+
+// verify-phone-otp-with twilio
+export const verifyPhoneOtp = asyncHandler(async (req, res) => {
+  const { phone, otp } = req.body;
+  // Check if the OTP is valid
+  const user = await User.findOne({ phone });
+  if (!user) return res.status(404).send("User not found");
+
+  // Issue JWT token
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+  res.json({ token });
 });
 
 // Send OTP
@@ -383,14 +384,14 @@ export const sendOtp = asyncHandler(async (req, res) => {
     },
   });
 
-  const mailOptions = {
+  await transporter.sendMail({
     to: user.email,
     from: process.env.GMAIL_USER,
     subject: "Your OTP Code",
-    text: `Your OTP code is ${otp}. It will expire in 1 hour.`,
-  };
+    text: `Your OTP code is ${otp}.
 
-  await transporter.sendMail(mailOptions);
+Your OTP code is ${otp}. This code will expire in 1 hour.`,
+  });
 
   res.json({ message: "OTP sent to email" });
 });
@@ -401,19 +402,39 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  if (!user || user.otpExpires < Date.now()) {
+    return res.status(400).json({ message: "OTP has expired or is invalid" });
   }
 
-  if (user.otp !== otp || Date.now() > user.otpExpires) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
+  if (user.otp !== otp) {
+    return res.status(400).json({ message: "Invalid OTP" });
   }
 
+  // Clear the OTP after successful verification
   user.otp = undefined;
   user.otpExpires = undefined;
   await user.save();
 
   res.json({ message: "OTP verified successfully" });
+});
+
+//Verify-email token route
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const token = req.body.token; // Change to req.body.token for POST requests
+  try {
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(400).send("Invalid user");
+
+    // Update user as verified
+    user.isVerified = true;
+    await user.save();
+
+    res.send("Email verified successfully!");
+  } catch (error) {
+    res.status(400).send("Invalid token or token expired.");
+  }
 });
 
 export default router;

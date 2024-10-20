@@ -20,16 +20,11 @@ import {
 const _nav = [
   {
     component: ListItem,
-    name: 'Dashboard',
+    name: 'Screen Overview',
     to: '/user-dashboard',
     icon: <Speed />,
-    badge: {
-      color: 'success',
-      text: 'NEW',
-    },
   },
   {
-    component: 'div',
     name: 'Theme',
   },
   {
@@ -43,10 +38,8 @@ const _nav = [
     name: 'Typography',
     to: '/theme/typography',
     icon: <Edit className="nav-icon" />,
-   
   },
   {
-    component: 'div',
     name: 'Components',
   },
   {
@@ -273,7 +266,6 @@ const _nav = [
     },
   },
   {
-    component: 'div',
     name: 'Extras',
   },
   {

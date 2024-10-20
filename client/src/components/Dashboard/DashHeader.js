@@ -10,6 +10,7 @@ import {
   Container,
   Typography,
   Divider,
+  Box,
 } from '@mui/material';
 import {
   NotificationsActiveOutlined as BellIcon,
@@ -21,8 +22,9 @@ import {
 } from '@mui/icons-material';
 import AppBreadcrumb from '../AppBreadcrumb';
 import AppHeaderDropdown from './header/AppHeaderDropdown';
+import ThemeToggleBar from '../ThemeToggleBar';
 
-const AppHeader = ({ handleDrawerToggle,unfoldable }) => {
+const AppHeader = ({ handleDrawerToggle, unfoldable, onThemeChange }) => {
   const headerRef = useRef(null);
   const [colorMode, setColorMode] = useState('light');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -60,11 +62,11 @@ const AppHeader = ({ handleDrawerToggle,unfoldable }) => {
       sx={{
         mb: 4,
         p: 0,
-        backgroundColor: '#ededed',
+
         transition: 'margin-left 0.3s', // Smooth transition effect
-        }}
+      }}
     >
-      <Container maxWidth="xl" sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -82,22 +84,13 @@ const AppHeader = ({ handleDrawerToggle,unfoldable }) => {
               Dashboard
             </NavLink>
           </Typography>
-          <Button color="inherit">
-            <NavLink
-              to="/users"
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Users
-            </NavLink>
-          </Button>
-          <Button color="inherit">
-            <NavLink
-              to="/settings"
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Settings
-            </NavLink>
-          </Button>
+          <Container
+            maxWidth="xl"
+            sx={{ px: 4, display: { md: 'flex', sm: 'none', xs: 'none' } }}
+          >
+            <AppBreadcrumb />
+          </Container>
+
           <IconButton color="inherit">
             <BellIcon />
           </IconButton>
@@ -108,38 +101,12 @@ const AppHeader = ({ handleDrawerToggle,unfoldable }) => {
           <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
 
           {/* Color Mode Toggle */}
-          <IconButton onClick={handleMenuOpen} color="inherit">
-            {colorMode === 'dark' ? (
-              <DarkMode />
-            ) : colorMode === 'auto' ? (
-              <Auto />
-            ) : (
-              <LightMode />
-            )}
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={() => handleColorModeClick('light')}>
-              Light
-            </MenuItem>
-            <MenuItem onClick={() => handleColorModeClick('dark')}>
-              Dark
-            </MenuItem>
-            <MenuItem onClick={() => handleColorModeClick('auto')}>
-              Auto
-            </MenuItem>
-          </Menu>
+          <ThemeToggleBar onThemeChange={onThemeChange} />
 
           <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
           <AppHeaderDropdown />
         </Toolbar>
-      </Container>
-      <Container maxWidth="xl" sx={{ px: 4 }}>
-        <AppBreadcrumb />
-      </Container>
+      </Box>
     </AppBar>
   );
 };
