@@ -25,9 +25,6 @@ const _nav = [
     icon: <Speed />,
   },
   {
-    name: 'Theme',
-  },
-  {
     component: ListItem,
     name: 'Bids',
     to: '/user-dashboard/active-bids',
@@ -38,9 +35,6 @@ const _nav = [
     name: 'Typography',
     to: '/theme/typography',
     icon: <Edit className="nav-icon" />,
-  },
-  {
-    name: 'Components',
   },
   {
     component: ListItem,
@@ -260,14 +254,8 @@ const _nav = [
     name: 'Widgets',
     to: '/widgets',
     icon: <Calculate />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
   },
-  {
-    name: 'Extras',
-  },
+ 
   {
     component: 'div',
     name: 'Pages',

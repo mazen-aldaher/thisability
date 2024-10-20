@@ -40,11 +40,10 @@ const AppSidebar = ({
   handleUnfoldToggle,
   sidebarShow,
   unfoldable,
+  drawerWidth,
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
-
-  const drawerWidth = unfoldable ? 80 : 280;
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClose = useCallback(() => {
     if (isMobile) {
@@ -60,36 +59,62 @@ const AppSidebar = ({
       onClose={handleClose}
       sx={{
         width: drawerWidth,
+        marginRight: '20px',
         flexShrink: 1,
         '& .MuiDrawer-paper': {
-          width: drawerWidth,
+          width: isMobile ? '100%' : drawerWidth,
           boxSizing: 'border-box',
           transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
+            easing: theme.transitions.easing.easeInOut,
             duration: theme.transitions.duration.enteringScreen,
           }),
         },
       }}
     >
-      <DrawerHeader>
-        <Logo component="a" href="/">
-          <LogoIcon fontSize="large" sx={{ mr: 1 }} />
-          {!unfoldable && (
-            <Typography variant="h6" noWrap component="div">
-              Thisability
-            </Typography>
-          )}
-        </Logo>
-        {isMobile && (
-          <IconButton onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        )}
-      </DrawerHeader>
+      <Box sx={{ pt: isMobile ? '' : 10 }}>
+        <DrawerHeader
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignContent: 'flex-start',
+            alignItems: 'center',
+          }}
+        >
+          <>
+            <Box sx={{display:"flex"}} >
+              <Typography
+                variant="h5"
+                sx={{
+                  color: theme.palette.secondary.main,
+                  fontFamily: 'cursive',
+                }}
+              >
+                |||Thisability
+              </Typography>
+              <Typography
+                variant="h7"
+                sx={{
+                  color: theme.palette.secondary.main,
+                  fontFamily: 'cursive',
+                }}
+              >
+                |Admin Console
+              </Typography>
+            </Box>
+            {isMobile && (
+              <IconButton onClick={handleClose}>
+                <CloseIcon />
+              </IconButton>
+            )}
+          </>
+        </DrawerHeader>
+      </Box>
 
       <Divider />
 
-      <List sx={{ flexGrow: 1, overflow: 'auto' }}>
+      <List
+        sx={{ flexGrow: 1, overflow: 'auto', pt: isMobile ? '20px' : '20px' }}
+      >
         <AppSidebarNav items={navigation} unfoldable={unfoldable} />
       </List>
 

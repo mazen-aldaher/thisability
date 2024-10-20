@@ -18,8 +18,7 @@ import { useMediaQuery } from '@mui/material';
 export const AppSidebarNav = ({ items, toggleDrawer, drawerOpen }) => {
   const [openItems, setOpenItems] = useState({});
   const theme = useTheme();
-
-  const isMobile = useMediaQuery('(max-width:600px)');
+  const isMobile = useMediaQuery('(max-width:100%)');
 
   const handleToggle = (index) => {
     setOpenItems((prevState) => ({
@@ -41,6 +40,7 @@ export const AppSidebarNav = ({ items, toggleDrawer, drawerOpen }) => {
             {icon}
           </ListItemIcon>
         )}
+        
         <ListItemText
           primary={name}
           sx={{
@@ -71,6 +71,7 @@ export const AppSidebarNav = ({ items, toggleDrawer, drawerOpen }) => {
   const navItem = (item, index) => {
     const { component, name, badge, icon, ...rest } = item;
     const Component = component || ListItem;
+
     return (
       <Component
         key={index}
@@ -80,8 +81,14 @@ export const AppSidebarNav = ({ items, toggleDrawer, drawerOpen }) => {
         {...rest}
         sx={{
           paddingLeft: '16px', // Indent items
+          borderRadius: '20px',
           '&:hover': {
             backgroundColor: theme.palette.primary.dark, // Highlight on hover
+            borderRadius: '20px',
+          },
+          '&.active': {
+            backgroundColor: theme.palette.primary.main, // Active background color
+            color: theme.palette.primary.contrastText, // Change text color for active item
           },
         }}
       >
@@ -101,6 +108,8 @@ export const AppSidebarNav = ({ items, toggleDrawer, drawerOpen }) => {
           onClick={() => handleToggle(index)}
           sx={{
             backgroundColor: theme.palette.background.default,
+            borderRadius: '20px',
+            my: 1,
             paddingLeft: '16px',
             '&:hover': {
               backgroundColor: theme.palette.primary.main,
@@ -139,29 +148,31 @@ export const AppSidebarNav = ({ items, toggleDrawer, drawerOpen }) => {
   return (
     <>
       {isMobile ? (
-        <>
-          <Drawer
-            anchor="left"
-            open={drawerOpen}
-            onClose={() => toggleDrawer(false)}
-            sx={{
-              '& .MuiDrawer-paper': {
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-              },
-            }}
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={() => toggleDrawer(false)}
+          sx={{
+            '& .MuiDrawer-paper': {
+              backgroundColor: theme.palette.background.default,
+              color: theme.palette.text.primary,
+            },
+          }}
+        >
+          <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={() => toggleDrawer(false)}
           >
-            <Box sx={{ width: 250 }} role="presentation" onClick={() => toggleDrawer(false)}>
-              {sidebarContent}
-            </Box>
-          </Drawer>
-        </>
+            {sidebarContent}
+          </Box>
+        </Drawer>
       ) : (
         <Box
           sx={{
-            width: 250,
+            width: 270,
             overflowY: 'auto',
-            backgroundColor: theme.palette.background.default, // Sidebar background
+            mx: 1,
           }}
         >
           {sidebarContent}

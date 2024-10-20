@@ -1,9 +1,9 @@
+import { Box } from '@mui/material'
 import React from 'react'
 
 const DashContent = () => {
   return (
-    <div>DashContent</div>
-  )
+<Box>Main</Box>  )
 }
 
 export default DashContent

@@ -45,7 +45,7 @@ import SplashScreen from './screens/SplashScreen';
 import OnboardingScreens from './screens/OnboardingScreens';
 import ScrollToTop from './hooks/ScrollToTop';
 import axios from 'axios';
-import Profile from "./pages/Profile/Profile"
+import Profile from './pages/Profile/Profile';
 import SellerOrdersPage from './pages/OrdersPage/OrdersPage';
 import VerifyEmail from './pages/Auth/components/VerifyEmail';
 import ResetPassword from './pages/Auth/ResetPassword';
@@ -99,7 +99,6 @@ const App = () => {
     localStorage.setItem('onboardingCompleted', 'true');
   };
 
-
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
   };
@@ -119,6 +118,7 @@ const App = () => {
     '/onboarding',
     '/dashboard',
     '/dashboard/admin',
+    '/user-dashboard',
     // More routes here...
   ].includes(location.pathname);
 
@@ -157,9 +157,12 @@ const App = () => {
                     <Route path="/order-tracking" element={<OrderTracking />} />
                     <Route path="/our-community" element={<Community />} />
                     <Route path="/support" element={<SupportPage />} />
-                    <Route path="/seller-orders" element={<SellerOrdersPage />} />
+                    <Route
+                      path="/seller-orders"
+                      element={<SellerOrdersPage />}
+                    />
 
-                    <Route path='/verify-email' element={<VerifyEmail/>}  />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route
                       path="/our-community/post/:id"
                       element={<SinglePostPage />}
@@ -171,14 +174,13 @@ const App = () => {
                       path="/forgot-password"
                       element={<ForgotPassword />}
                     />
-                     <Route
-                      path="/reset-password"
-                      element={<ResetPassword />}
-                    />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route
                       path="*"
                       name="Dashboard"
-                      element={<DefaultLayout onThemeChange={handleThemeChange} />}
+                      element={
+                        <DefaultLayout onThemeChange={handleThemeChange} />
+                      }
                     />
                     <Route
                       path="/user-dashboard/*"
