@@ -21,7 +21,7 @@ const _nav = [
   {
     component: ListItem,
     name: 'Screen Overview',
-    to: '/user-dashboard',
+    to: '/dashboard/main',
     icon: <Speed />,
   },
   {

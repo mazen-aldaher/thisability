@@ -119,6 +119,7 @@ const App = () => {
     '/dashboard',
     '/dashboard/admin',
     '/user-dashboard',
+    '/dashboard/main/'
     // More routes here...
   ].includes(location.pathname);
 
@@ -176,12 +177,16 @@ const App = () => {
                     />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route
-                      path="*"
-                      name="Dashboard"
+                      path="/dashboard/*"
                       element={
-                        <DefaultLayout onThemeChange={handleThemeChange} />
+                        <DefaultLayout onThemeChange={handleThemeChange}>
+                          <Routes>
+                            <Route path="/" element={<Main />} />
+                          </Routes>
+                        </DefaultLayout>
                       }
                     />
+
                     <Route
                       path="/user-dashboard/*"
                       element={

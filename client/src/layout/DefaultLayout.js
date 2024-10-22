@@ -7,7 +7,7 @@ import {
   DashSidebar,
 } from '../components/Dashboard';
 
-const DefaultLayout = ({ onThemeChange }) => {
+const DefaultLayout = ({children, onThemeChange }) => {
   const [unfoldable, setUnfoldable] = useState(false);
   const [sidebarShow, setSidebarShow] = useState(true);
   const drawerWidth = unfoldable ? 55 : 290;
@@ -67,7 +67,8 @@ const DefaultLayout = ({ onThemeChange }) => {
             transition: 'margin-left 0.4s ease-in-out', // Smooth transition for the marginLeft
           }}
         >
-          <DashContent />
+                  {children}
+
         </Box>
 
         {/* Footer Section */}
