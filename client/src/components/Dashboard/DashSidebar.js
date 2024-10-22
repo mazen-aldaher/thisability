@@ -13,11 +13,10 @@ import {
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import LogoIcon from '@mui/icons-material/AccountTree'; // Replace with your actual logo icon
 import SygnetIcon from '@mui/icons-material/AcUnit'; // Replace with your actual sygnet icon
 import { AppSidebarNav } from './AppSidebarNav';
-import navigation from '../../_nav'; // Sidebar nav config
-
+import artistNav from '../../DashMenu/_artistNav'; // Sidebar nav config
+import adminNav from '../../DashMenu/_adminNav'; // Sidebar nav config
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -27,20 +26,13 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   marginTop: 0,
 }));
 
-const Logo = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  color: theme.palette.primary.main,
-  textDecoration: 'none',
-  fontWeight: 700,
-}));
-
 const AppSidebar = ({
   handleDrawerToggle,
   handleUnfoldToggle,
   sidebarShow,
   unfoldable,
   drawerWidth,
+  role,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -86,7 +78,7 @@ const AppSidebar = ({
                 variant="h6"
                 sx={{
                   color: theme.palette.secondary.main,
-                  fontFamily: "cursive",
+                  fontFamily: 'cursive',
                 }}
               >
                 THISABILITY
@@ -96,9 +88,10 @@ const AppSidebar = ({
                 sx={{
                   color: theme.palette.secondary.main,
                   fontFamily: 'cursive',
+                  textTransform: 'capitalize',
                 }}
               >
-                |Admin Console
+                |{role} console
               </Typography>
             </Box>
             {isMobile && (
@@ -115,7 +108,12 @@ const AppSidebar = ({
       <List
         sx={{ flexGrow: 1, overflow: 'auto', pt: isMobile ? '20px' : '20px' }}
       >
-        <AppSidebarNav items={navigation} unfoldable={unfoldable} />
+        <AppSidebarNav
+          items={
+            role === 'admin' ? adminNav : role === 'artist' ? artistNav : []
+          }
+          unfoldable={unfoldable}
+        />
       </List>
 
       <Divider />

@@ -10,7 +10,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { Typography, useMediaQuery } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { AppSidebarNav } from '../../../components/Dashboard/AppSidebarNav';
-import navigation from '../../../_nav';
+import navigation from '../../../DashMenu/_artistNav';
 
 const drawerWidth = 265;
 

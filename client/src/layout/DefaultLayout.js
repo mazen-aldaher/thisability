@@ -1,17 +1,13 @@
 import { Box } from '@mui/material';
-import React, { useState } from 'react';
-import {
-  DashContent,
-  DashFooter,
-  DashHeader,
-  DashSidebar,
-} from '../components/Dashboard';
+import React, { useContext, useState } from 'react';
+import { DashFooter, DashHeader, DashSidebar } from '../components/Dashboard';
+import { AuthContext } from '../context/AuthContext';
 
-const DefaultLayout = ({children, onThemeChange }) => {
+const DefaultLayout = ({ children, onThemeChange, nav, admin }) => {
+  const { user } = useContext(AuthContext);
   const [unfoldable, setUnfoldable] = useState(false);
   const [sidebarShow, setSidebarShow] = useState(true);
   const drawerWidth = unfoldable ? 55 : 290;
-  
 
   const handleDrawerToggle = () => {
     setSidebarShow((prev) => !prev); // Toggle sidebar visibility
@@ -21,10 +17,8 @@ const DefaultLayout = ({children, onThemeChange }) => {
     setUnfoldable((prev) => !prev); // Toggle sidebar unfolding
   };
 
-  
-
   return (
-    <Box sx={{ height: '100vh',display:"flex",flexDirection:"column" }}>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header Section */}
       <Box
         sx={{
@@ -47,6 +41,9 @@ const DefaultLayout = ({children, onThemeChange }) => {
           sidebarShow={sidebarShow}
           unfoldable={unfoldable}
           drawerWidth={drawerWidth}
+          nav={nav}
+          admin={admin}
+          role={user.role}
         />
       </Box>
       {/* Main Content Section */}
@@ -63,12 +60,11 @@ const DefaultLayout = ({children, onThemeChange }) => {
           sx={{
             flexGrow: 1,
             p: 0,
-            marginLeft: unfoldable ? "5%": sidebarShow ?"18%":"2%",
+            marginLeft: unfoldable ? '5%' : sidebarShow ? '18%' : '2%',
             transition: 'margin-left 0.4s ease-in-out', // Smooth transition for the marginLeft
           }}
         >
-                  {children}
-
+          {children}
         </Box>
 
         {/* Footer Section */}

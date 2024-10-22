@@ -4,9 +4,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Menu,
-  MenuItem,
-  Button,
   Container,
   Typography,
   Divider,
@@ -16,9 +13,6 @@ import {
   NotificationsActiveOutlined as BellIcon,
   List as ListIcon,
   Mail as MailIcon,
-  DarkMode,
-  LightMode,
-  AutoMode as Auto,
 } from '@mui/icons-material';
 import AppBreadcrumb from '../AppBreadcrumb';
 import AppHeaderDropdown from './header/AppHeaderDropdown';

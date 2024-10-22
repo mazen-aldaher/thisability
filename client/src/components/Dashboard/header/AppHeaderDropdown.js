@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Avatar,
   Badge,
@@ -7,6 +7,7 @@ import {
   IconButton,
   Divider,
   Typography,
+  Box,
 } from '@mui/material';
 import {
   Notifications as NotificationsIcon,
@@ -17,13 +18,15 @@ import {
   Settings as SettingsIcon,
   CreditCard as CreditCardIcon,
   Description as DescriptionIcon,
-  Lock as LockIcon,
 } from '@mui/icons-material';
-
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../context/AuthContext';
 
 const AppHeaderDropdown = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -32,10 +35,23 @@ const AppHeaderDropdown = () => {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    handleClose();
+    logout();
+    navigate('/');
+  };
+
   return (
     <>
       <IconButton onClick={handleClick} color="inherit" className="py-0 pe-0">
-        <Avatar />
+        {user === user.avatar ? (
+          <Avatar />
+        ) : (
+          <Box sx={{textAlign:"left"}} >
+            <Typography sx={{fontSize:"13px"}} >Hello,</Typography>
+            <Typography>{user.profile.firstName}</Typography>
+          </Box>
+        )}
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -89,9 +105,9 @@ const AppHeaderDropdown = () => {
           <Badge color="primary" variant="dot" sx={{ ml: 1 }} />
         </MenuItem>
         <Divider />
-        <MenuItem>
-          <LockIcon fontSize="small" className="me-2" />
-          Lock Account
+        <MenuItem onClick={handleLogout}>
+          <LogoutIcon fontSize="small" sx={{ marginRight: '2px' }} />
+          Logout
         </MenuItem>
       </Menu>
     </>

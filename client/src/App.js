@@ -25,7 +25,6 @@ import FAQPage from './pages/Faq/FAQPage';
 import Login from './pages/Auth/Login';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import Register from './pages/Auth/Register';
-import UserDashboard from './pages/Dashboards/UserDashboard';
 import DashboardLayout from './pages/Dashboards/DashboardLayout';
 import ActiveBids from './pages/Dashboards/USerDashboardRoutes.js/ActiveBids';
 import PurchaseHistory from './pages/Dashboards/USerDashboardRoutes.js/PurchaseHistory';
@@ -49,6 +48,10 @@ import Profile from './pages/Profile/Profile';
 import SellerOrdersPage from './pages/OrdersPage/OrdersPage';
 import VerifyEmail from './pages/Auth/components/VerifyEmail';
 import ResetPassword from './pages/Auth/ResetPassword';
+import Admins from './pages/Dashboards/Admin/Admins';
+import Artists from './pages/Dashboards/Artists/Artists';
+import Clients from './pages/Dashboards/Clients/Clients';
+import Organizations from './pages/Dashboards/Organizations/Organizations';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -57,6 +60,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false); // State to handle onboarding flow
   const token = localStorage.getItem('token');
+  // eslint-disable-next-line
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -116,10 +120,26 @@ const App = () => {
     // Other excluded routes
     '/test',
     '/onboarding',
-    '/dashboard',
     '/dashboard/admin',
-    '/user-dashboard',
-    '/dashboard/main/'
+    '/dashboard/admin/main',
+    '/dashboard/admin/support',
+    '/dashboard/admin/users/',
+    '/dashboard/admin/users/admins',
+    '/dashboard/admin/users/artists',
+    '/dashboard/admin/users/clients',
+    '/dashboard/admin/users/organizations',
+    '/dashboard/admin/products/',
+    '/dashboard/admin/products/create',
+    '/dashboard/admin/products/orders',
+    '/dashboard/admin/products/bidding',
+    '/dashboard/admin/products/categories',
+    '/dashboard/admin/products/one-time-purchase',
+    '/dashboard/admin/blog/posts',
+    '/dashboard/admin/blog/posts/new',
+    '/dashboard/admin/blog/posts/categories',
+    '/dashboard/admin/profile',
+    '/dashboard/admin/settings',
+    '/dashboard/admin/docs',
     // More routes here...
   ].includes(location.pathname);
 
@@ -177,7 +197,52 @@ const App = () => {
                     />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route
-                      path="/dashboard/*"
+                      path="/dashboard/admin/*"
+                      element={
+                        <DefaultLayout onThemeChange={handleThemeChange}>
+                          <Routes>
+                            <Route path="main" element={<Main />} />
+                            <Route path="support" element={'support'} />
+                            <Route path="users/admins" element={<Admins/>} />
+                            <Route path="users/artists" element={<Artists/>} />
+                            <Route path="users/clients" element={<Clients/>} />
+                            <Route
+                              path="users/organizations"
+                              element={<Organizations/>}
+                            />
+                            <Route path="products" element={'products'} />
+                            <Route path="products/create" element={'products'} />
+                            <Route path="products/orders" element={'orders'} />
+                            <Route
+                              path="products/bidding"
+                              element={'bidding'}
+                            />
+                            <Route
+                              path="products/categories"
+                              element={'categories'}
+                            />
+                            <Route
+                              path="products/one-time-purchase"
+                              element={'OT-Purchase'}
+                            />
+                            <Route path="blog/posts" element={'posts'} />
+                            <Route
+                              path="blog/posts/create"
+                              element={'Create Post'}
+                            />
+                            <Route
+                              path="blog/posts/categories"
+                              element={'categories'}
+                            />
+                            <Route path="profile" element={'profile'} />
+                            <Route path="settings" element={'settings'} />
+                            <Route path="docs" element={'docs'} />
+                          </Routes>
+                        </DefaultLayout>
+                      }
+                    />
+                    <Route
+                      path="/dashboard/artist"
                       element={
                         <DefaultLayout onThemeChange={handleThemeChange}>
                           <Routes>
