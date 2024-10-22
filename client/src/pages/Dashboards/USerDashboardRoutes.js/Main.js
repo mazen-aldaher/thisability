@@ -2,8 +2,8 @@ import { Box, Typography, Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -61,23 +61,25 @@ const Main = () => {
       </Typography>
 
       <Paper elevation={3} sx={{ p: 2, borderRadius: 2 }}>
-        {/* Render the Bar Chart */}
+        {/* Render the Line Chart */}
         <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="role" fontSize={14} />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar
+            <Line
+              type="monotone"
               dataKey="count"
-              fill="#4CAF50"
+              stroke="#8884d8"
+              strokeWidth={2}
               animationDuration={1500} // Duration of animation in ms
               animationEasing="ease-out" // Type of animation easing
               animationBegin={0} // Delay before the animation starts
               isAnimationActive={true} // Enable animation
             />
-          </BarChart>
+          </LineChart>
         </ResponsiveContainer>
       </Paper>
     </Box>
