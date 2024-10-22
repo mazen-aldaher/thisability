@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     appleId: { type: String },
     role: {
       type: String,
-      enum: ["user", "artist", "admin"],
+      enum: ["user", "artist", "admin","organization"],
       default: "user",
     },
     isOnboardingComplete: { type: Boolean, default: false },

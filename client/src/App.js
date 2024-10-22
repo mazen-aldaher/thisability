@@ -234,7 +234,7 @@ const App = () => {
                               path="blog/posts/categories"
                               element={'categories'}
                             />
-                            <Route path="profile" element={'profile'} />
+                            <Route path="profile" element={<Profile/>} />
                             <Route path="settings" element={'settings'} />
                             <Route path="docs" element={'docs'} />
                           </Routes>
