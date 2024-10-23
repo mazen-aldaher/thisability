@@ -9,9 +9,20 @@ import {
   Paper,
   Typography,
   Avatar,
-  Button,
+  IconButton,
   TablePagination,
+  Box,
+  Badge,
+  Tooltip,
+  Divider,
 } from '@mui/material';
+import {
+  Visibility as ViewIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Block as BlockIcon,
+  PersonAdd as PersonAddIcon,
+} from '@mui/icons-material';
 
 const AdminTable = ({
   handleDelete,
@@ -19,127 +30,177 @@ const AdminTable = ({
   handleView,
   handleSuspend,
   filteredUsers,
-  handleReactivate
+  handleReactivate,
 }) => {
-  const [page, setPage] = useState(0); // State to manage current page
-  const [rowsPerPage, setRowsPerPage] = useState(5); // State to manage rows per page
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
-  // Handle page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Handle rows per page change
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset page when changing rows per page
+    setPage(0);
   };
 
-  // Calculate the users to be displayed based on pagination
   const paginatedUsers = filteredUsers.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
+  const toggleUserSelection = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    );
+  };
+
+  const isUserSelected = (userId) => selectedUsers.includes(userId);
+
   return (
     <>
-      {/* Table Container with Pagination */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, p: 2, bgcolor: '#000', borderRadius: '8px' }}>
+        <Typography variant="h6">User Management</Typography>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Tooltip title="View User">
+            <IconButton
+              color="primary"
+              onClick={() => selectedUsers.forEach((id) => handleView(id))}
+              disabled={selectedUsers.length === 0}
+            >
+              <ViewIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Update User">
+            <IconButton
+              color="secondary"
+              onClick={() => selectedUsers.forEach((id) => handleUpdate(id))}
+              disabled={selectedUsers.length === 0}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Suspend User">
+            <IconButton
+              color="secondary"
+              onClick={() => selectedUsers.forEach((id) => handleSuspend(id))}
+              disabled={selectedUsers.length === 0}
+            >
+              <BlockIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reactivate User">
+            <IconButton
+              color="primary"
+              onClick={() => selectedUsers.forEach((id) => handleReactivate(id))}
+              disabled={selectedUsers.length === 0}
+            >
+              <PersonAddIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete User">
+            <IconButton
+              color="error"
+              onClick={() => selectedUsers.forEach((id) => handleDelete(id))}
+              disabled={selectedUsers.length === 0}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+
       <TableContainer
         component={Paper}
         sx={{
           maxHeight: '100%',
           overflowY: 'auto',
+          textAlign: 'center',
+          borderRadius: '8px',
+          boxShadow: 3,
         }}
       >
-        <Table stickyHeader sx={{ minWidth: '92vw' }}>
-          <TableHead>
+        <Table stickyHeader sx={{ minWidth: '92vw', textAlign: 'center' }}>
+          <TableHead sx={{ bgcolor: '#1976d2', color: '#ffffff' }}>
             <TableRow>
-              <TableCell align="left">UserID</TableCell>
-              <TableCell>Avatar</TableCell>
-              <TableCell align="left">Username</TableCell>
-              <TableCell align="left">Email</TableCell>
-              <TableCell align="left">Role</TableCell>
-              <TableCell align="left">Status</TableCell>
-              <TableCell align="left">Actions</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Select</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>UserID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Avatar</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Username</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Email</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Role</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Verification</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Status</TableCell>
             </TableRow>
           </TableHead>
 
-          {/* Display message if no users match the filter */}
           {filteredUsers.length === 0 ? (
             <TableBody>
               <TableRow>
-                <TableCell colSpan={7} align="center">
-                  <Typography variant="body1">User Not Found</Typography>
+                <TableCell colSpan={8} align="center">
+                  <Typography variant="body1" color="textSecondary">User Not Found</Typography>
                 </TableCell>
               </TableRow>
             </TableBody>
           ) : (
             <TableBody>
               {paginatedUsers.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell align="left">
+                <TableRow
+                  key={user._id}
+                  onClick={() => toggleUserSelection(user._id)}
+                  sx={{
+                    cursor: 'pointer',
+                    bgcolor: isUserSelected(user._id) ? '#000' : 'inherit',
+                    color:"#000",
+                    '&:hover': { bgcolor: '#0000' },
+                  }}
+                >
+                  <TableCell align="center">
+                    <input
+                      type="checkbox"
+                      checked={isUserSelected(user._id)}
+                      onChange={() => toggleUserSelection(user._id)}
+                    />
+                  </TableCell>
+                  <TableCell align="center">
                     <Typography variant="body1">{user._id}</Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     <Avatar
                       variant="circular"
                       src={user.avatar}
                       sx={{ width: 40, height: 40 }}
                     />
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="center">
                     <Typography variant="body1">{user.username}</Typography>
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="center">
                     <Typography variant="body1">{user.email}</Typography>
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="center">
                     <Typography variant="body1">{user.role}</Typography>
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="center">
                     <Typography variant="body1">
                       {user.isVerified ? 'Verified' : 'Pending'}
                     </Typography>
                   </TableCell>
-                  <TableCell align="left">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleView(user._id)}
-                      sx={{ marginRight: 1 }}
-                    >
-                      View
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleUpdate(user._id)}
-                      sx={{ marginRight: 1 }}
-                    >
-                      Update
-                    </Button>
-                    <Button
-                      onClick={() => handleSuspend(user._id)}
-                      color="secondary"
-                      disabled={user.status === 'suspended'} // Disable if already suspended
-                    >
-                      Suspend
-                    </Button>
-
-                    <Button
-                      onClick={() => handleReactivate(user._id)}
-                      color="primary"
-                      disabled={user.status === 'active'} // Disable if already active
-                    >
-                      Reactivate
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleDelete(user._id)}
-                    >
-                      Delete
-                    </Button>
+                  <TableCell align="center">
+                    <Typography variant="body1">
+                      {user.status === 'active' ? (
+                        <Badge
+                          sx={{ '& .MuiBadge-dot': { backgroundColor: 'green' } }}
+                          variant="dot"
+                        />
+                      ) : (
+                        <Badge
+                          sx={{ '& .MuiBadge-dot': { backgroundColor: 'red' } }}
+                          variant="dot"
+                        />
+                      )}
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ))}
@@ -148,7 +209,8 @@ const AdminTable = ({
         </Table>
       </TableContainer>
 
-      {/* Pagination Controls */}
+      <Divider sx={{ my: 2 }} />
+
       <TablePagination
         component="div"
         count={filteredUsers.length}
@@ -157,6 +219,7 @@ const AdminTable = ({
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
+        sx={{ bgcolor: "#000", borderRadius: '8px' }}
       />
     </>
   );
