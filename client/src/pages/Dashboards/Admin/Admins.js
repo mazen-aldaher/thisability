@@ -17,7 +17,6 @@ import {
   DialogContentText,
 } from '@mui/material';
 import AdminTable from './AdminTable';
-import CreateUser from '../components/forms/CreateUser';
 import DashContainer from '../../../components/DashContainer/DashContainer';
 
 const Users = () => {
@@ -27,6 +26,8 @@ const Users = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(true); // Add loading state
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const [isCreateMode, setIsCreateMode] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const [newUser, setNewUser] = useState({
     username: '',
@@ -94,6 +95,7 @@ const Users = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
     setIsEditMode(false);
+    setIsCreateMode(false); // Reset create mode
   };
 
   const handleUpdate = async () => {
@@ -113,21 +115,33 @@ const Users = () => {
   };
 
   const handleSuspend = async (userId) => {
-    setConfirmDialog({
-      isOpen: true,
-      title: 'Are you sure you want to suspend this user?',
-      subTitle: 'You cannot undo this action',
-      onConfirm: async () => {
-        try {
-          await axios.patch(`http://localhost:5000/api/user/suspend/${userId}`);
-          fetchUsers();
-          showNotification('User suspended successfully', 'success');
-          setConfirmDialog({ ...confirmDialog, isOpen: false });
-        } catch (error) {
-          showNotification('Error suspending user. Please try again.', 'error');
-        }
-      },
-    });
+    try {
+      const confirmed = window.confirm(
+        'Are you sure you want to suspend this user?'
+      );
+      if (!confirmed) return;
+
+      await axios.put(`http://localhost:5000/api/user/suspend/${userId}`);
+      fetchUsers(); // Refresh the list of users
+      showNotification('User suspended successfully!', 'success');
+    } catch (error) {
+      showNotification('Error suspending user. Please try again.', 'error');
+    }
+  };
+
+  const handleReactivate = async (userId) => {
+    try {
+      const confirmed = window.confirm(
+        'Are you sure you want to reactivate this user?'
+      );
+      if (!confirmed) return;
+
+      await axios.put(`http://localhost:5000/api/user/reactivate/${userId}`);
+      fetchUsers(); // Refresh the list of users
+      showNotification('User reactivated successfully!', 'success');
+    } catch (error) {
+      showNotification('Error reactivating user. Please try again.', 'error');
+    }
   };
 
   const handleDelete = async (userId) => {
@@ -165,13 +179,17 @@ const Users = () => {
 
   const handleCreate = async () => {
     if (!validate()) return;
+    setButtonLoading(true); // Start button loader
     try {
       await axios.post('http://localhost:5000/api/user/register', newUser);
       fetchUsers();
       setNewUser({ username: '', email: '', role: 'admin', password: '' });
       showNotification('User created successfully!', 'success');
+      handleCloseModal();
     } catch (error) {
       showNotification('Error creating user. Please try again.', 'error');
+    } finally {
+      setButtonLoading(false); // End button loader
     }
   };
 
@@ -202,16 +220,21 @@ const Users = () => {
     (user) =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchQuery.toLowerCase())||
+      user.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user._id.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const openCreateDialog = () => {
+    setIsCreateMode(true);
+    setIsModalOpen(true);
+  };
   return (
     <>
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         <Box>
           <DashContainer
             SBox
-            handleAdd
+            handleAdd={openCreateDialog}
             title="Admin Users Console"
             searchQuery={searchQuery}
             handleSearchChange={handleSearchChange}
@@ -233,11 +256,12 @@ const Users = () => {
                   users={users}
                   handleView={(user) => handleViewOrEdit(user, false)}
                   handleUpdate={(user) => handleViewOrEdit(user, true)}
-                  handleSuspend={handleSuspend}
                   handleDelete={handleDelete}
                   searchQuery={searchQuery}
                   handleSearchChange={handleSearchChange}
                   filteredUsers={filteredUsers}
+                  handleSuspend={handleSuspend}
+                  handleReactivate={handleReactivate}
                 />
               </>
             ) : (
@@ -248,7 +272,7 @@ const Users = () => {
           </DashContainer>
         </Box>
       </Box>
-
+      {/*
       <Box>
         <DashContainer title="Create New User">
           <CreateUser
@@ -260,6 +284,7 @@ const Users = () => {
           />
         </DashContainer>
       </Box>
+ */}
 
       {/* Snackbar for notifications */}
       <Snackbar
@@ -359,6 +384,139 @@ const Users = () => {
           <Button onClick={handleCloseModal} color="primary">
             Close
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* User Details Modal */}
+      <Dialog
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
+        <DialogContent>
+          {selectedUser ? (
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="User ID"
+                value={selectedUser._id}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Username"
+                name="username"
+                value={selectedUser?.username}
+                onChange={isEditMode ? handleInputChange : null}
+                InputProps={{ readOnly: !isEditMode }}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Email"
+                name="email"
+                value={selectedUser.email}
+                onChange={isEditMode ? handleInputChange : null}
+                InputProps={{ readOnly: !isEditMode }}
+              />
+              <Select
+                fullWidth
+                margin="normal"
+                label="Role"
+                name="role"
+                value={selectedUser.role}
+                onChange={isEditMode ? handleInputChange : null}
+                disabled={!isEditMode}
+              >
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="user">User</MenuItem>
+              </Select>
+            </>
+          ) : isCreateMode ? (
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Username"
+                name="username"
+                value={newUser.username}
+                onChange={handleNewUserInputChange}
+                error={!!errors.username}
+                helperText={errors.username}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Email"
+                name="email"
+                value={newUser.email}
+                onChange={handleNewUserInputChange}
+                error={!!errors.email}
+                helperText={errors.email}
+              />
+              <Select
+                fullWidth
+                margin="normal"
+                label="Role"
+                name="role"
+                value={newUser.role}
+                onChange={handleNewUserInputChange}
+              >
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="user">User</MenuItem>
+              </Select>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Password"
+                name="password"
+                value={newUser.password}
+                onChange={handleNewUserInputChange}
+                error={!!errors.password}
+                helperText={errors.password}
+              />
+              <Button
+                onClick={generatePassword}
+                variant="outlined"
+                sx={{ mt: 2 }}
+              >
+                Generate Password
+              </Button>
+            </>
+          ) : null}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="secondary">
+            Cancel
+          </Button>
+          {isEditMode && (
+            <Button
+              onClick={handleUpdate}
+              color="primary"
+              disabled={buttonLoading} // Disable button when loading
+              startIcon={
+                buttonLoading ? <CircularProgress size={20} /> : null // Show loading spinner
+              }
+            >
+              Update
+            </Button>
+          )}
+          {isCreateMode && (
+            <Button
+              onClick={handleCreate}
+              color="primary"
+              disabled={buttonLoading} // Disable button when loading
+              startIcon={
+                buttonLoading ? <CircularProgress size={20} /> : null // Show loading spinner
+              }
+            >
+              Create
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

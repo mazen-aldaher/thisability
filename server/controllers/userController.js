@@ -218,7 +218,11 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     <a href="${resetLink}">Reset Password</a>
   `;
 
-  await sendEmail(user.email, "Reset Your Password for Thisability", emailContent);
+  await sendEmail(
+    user.email,
+    "Reset Your Password for Thisability",
+    emailContent
+  );
   res.json({ message: "Password reset email sent." });
 });
 
@@ -434,6 +438,57 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     res.send("Email verified successfully!");
   } catch (error) {
     res.status(400).send("Invalid token or token expired.");
+  }
+});
+
+//suspend user by id
+export const suspendUserById = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user is already suspended
+    if (user.status === "suspended") {
+      return res.status(400).json({ message: "User is already suspended" });
+    }
+
+    // Update the user's status to 'suspended'
+    user.status = "suspended";
+    await user.save();
+
+    res.status(200).json({ message: "User suspended successfully" });
+  } catch (error) {
+    console.error("Error suspending user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Update the user's status to 'reactivate'
+export const reactivateUser = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user is already active
+    if (user.status === "active") {
+      return res.status(400).json({ message: "User is already active" });
+    }
+
+    // Update the user's status to 'active'
+    user.status = "active";
+    await user.save();
+
+    res.status(200).json({ message: "User reactivated successfully" });
+  } catch (error) {
+    console.error("Error reactivating user:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 

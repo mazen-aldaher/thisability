@@ -14,7 +14,9 @@ import {
   verifyOtp,
   completeOnboarding,
   sendPhoneOtp,
-  verifyEmail
+  verifyEmail,
+  suspendUserById,
+  reactivateUser
 } from "../controllers/userController.js";
 import { protect } from "../middleware/auth.js";
 
@@ -41,6 +43,12 @@ router.get("/:id", getUserById);
 router.put("/:id", updateUserById);
 //Delete User By ID
 router.delete("/:id", deleteUser);
+
+//Suspend User by ID
+router.put("/suspend/:id", suspendUserById);
+
+//Activate user by id
+router.put("/reactivate/:id", reactivateUser);
 
 // Onboarding Completion Route
 router.post("/complete-onboarding", completeOnboarding);

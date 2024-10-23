@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     appleId: { type: String },
     role: {
       type: String,
-      enum: ["user", "artist", "admin","organization"],
+      enum: ["user", "artist", "admin", "organization"],
       default: "user",
     },
     isOnboardingComplete: { type: Boolean, default: false },
@@ -43,9 +43,8 @@ const userSchema = new mongoose.Schema(
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
-    suspended: { type: Boolean, default: false },
     verificationNotes: { type: String, trim: true },
-
+    status: { type: String, enum: ["active", "suspended"], default: "active" }, 
     // OTP for email verification
     isVerified: { type: Boolean, default: false },
     emailVerificationToken: String,

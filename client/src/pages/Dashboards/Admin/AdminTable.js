@@ -19,6 +19,7 @@ const AdminTable = ({
   handleView,
   handleSuspend,
   filteredUsers,
+  handleReactivate
 }) => {
   const [page, setPage] = useState(0); // State to manage current page
   const [rowsPerPage, setRowsPerPage] = useState(5); // State to manage rows per page
@@ -50,7 +51,7 @@ const AdminTable = ({
           overflowY: 'auto',
         }}
       >
-        <Table stickyHeader sx={{ minWidth:"92vw" }}>
+        <Table stickyHeader sx={{ minWidth: '92vw' }}>
           <TableHead>
             <TableRow>
               <TableCell align="left">UserID</TableCell>
@@ -118,12 +119,19 @@ const AdminTable = ({
                       Update
                     </Button>
                     <Button
-                      variant="contained"
-                      color="warning"
                       onClick={() => handleSuspend(user._id)}
-                      sx={{ marginRight: 1 }}
+                      color="secondary"
+                      disabled={user.status === 'suspended'} // Disable if already suspended
                     >
                       Suspend
+                    </Button>
+
+                    <Button
+                      onClick={() => handleReactivate(user._id)}
+                      color="primary"
+                      disabled={user.status === 'active'} // Disable if already active
+                    >
+                      Reactivate
                     </Button>
                     <Button
                       variant="contained"
