@@ -184,7 +184,7 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        navigate('/dashboard/admin');
+                        navigate('/dashboard/admin/main');
                       }}
                     >
                       <DashboardIcon sx={{ marginRight: '8px' }} />
@@ -196,11 +196,23 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        navigate('/seller-orders');
+                        navigate('/dashboard/artist/main');
                       }}
                     >
                       <DashboardIcon sx={{ marginRight: '8px' }} />
                       Artist Dashboard
+                    </MenuItem>
+                  )}
+
+                          {user.role === 'organization' && (
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate('/dashboard/organization/main');
+                      }}
+                    >
+                      <DashboardIcon sx={{ marginRight: '8px' }} />
+                      organization Dashboard
                     </MenuItem>
                   )}
 
