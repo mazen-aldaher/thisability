@@ -8,6 +8,7 @@ import {
   Container,
 } from '@mui/material';
 import ProfileLayout from './components/ProfileLayout';
+import AvatarComponent from '../../components/AvatarComponent';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -111,7 +112,7 @@ const Profile = () => {
       sx={{
         minHeight: '100%',
         display: 'flex',
-        flexDirection: "column",
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
@@ -123,12 +124,19 @@ const Profile = () => {
           {successMessage && (
             <Alert
               severity="success"
-              sx={{ mb: 3, maxWidth: '500px', width: '100%', textAlign: 'center' }}
+              sx={{
+                mb: 3,
+                maxWidth: '500px',
+                width: '100%',
+                textAlign: 'center',
+              }}
             >
               {successMessage}
             </Alert>
           )}
-          <ProfileLayout user={user} onSave={updateUserProfile} /> {/* Pass the update function to ProfileLayout */}
+          <AvatarComponent />
+          <ProfileLayout user={user} onSave={updateUserProfile} />{' '}
+          {/* Pass the update function to ProfileLayout */}
         </>
       ) : (
         <Typography variant="h6" sx={{ textAlign: 'center' }}>

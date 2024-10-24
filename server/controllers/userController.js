@@ -9,7 +9,7 @@ import User from "../models/User.js";
 import Profile from "../models/Profile.js";
 import mongoose from "mongoose";
 import { sendEmail } from "../util/sendEmail.js";
-
+import {s3} from "../config/aws-config.js"
 const router = express.Router();
 
 // Generate JWT
@@ -109,7 +109,6 @@ export const loginUser = asyncHandler(async (req, res) => {
     return res.status(401).json({ error: "Invalid email or password" });
   }
 
-  
   // Check if the user is verified
   if (!user.isVerified) {
     console.error("User not verified: ", email); // Log for debugging
@@ -137,7 +136,6 @@ export const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
-
 // Get user profile
 export const getUserProfile = asyncHandler(async (req, res) => {
   try {
@@ -163,13 +161,34 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Update user profile
+
+
 export const updateUserProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id; // Ensure you're fetching the user based on the token
   const user = await User.findById(userId).populate("profile");
 
+  // Check if user exists
   if (!user) {
     return res.status(404).json({ message: "User not found" });
+  }
+
+  // Handle avatar file upload
+  const newAvatar = req.file ? req.file.location : user.profile.avatar;
+
+  // Delete the previous avatar if it exists and a new one is uploaded
+  if (req.file && user.profile.avatar) {
+    const oldAvatarKey = user.profile.avatar.split('/').pop(); // Extract the file name
+    const oldAvatarParams = {
+      Bucket: "thisability", // Your S3 bucket name
+      Key: oldAvatarKey, // The key of the file in S3
+    };
+
+    try {
+      await s3.deleteObject(oldAvatarParams).promise();
+    } catch (error) {
+      console.error("Error deleting old avatar from S3:", error);
+      return res.status(500).json({ message: "Could not delete old avatar" });
+    }
   }
 
   // Update user profile fields
@@ -180,6 +199,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   if (user.profile) {
     user.profile.firstName = req.body.firstName || user.profile.firstName;
     user.profile.lastName = req.body.lastName || user.profile.lastName;
+    user.profile.avatar = newAvatar; // Set the new avatar
 
     // Save updated profile
     await user.profile.save();

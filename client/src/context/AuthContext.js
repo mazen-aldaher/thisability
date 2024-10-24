@@ -9,14 +9,13 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isOnboardingComplete, setOnboardingComplete] = useState(false);
-  // eslint-disable-next-line
   const [selectedUser, setSelectedUser] = useState(null); // State for the individual user fetched by ID
   const [notification, setNotification] = useState({
     open: false,
     message: '',
     severity: 'success',
   });
-  const [users, setUsers] = useState([]); // Add state for managing users list
+  const [users, setUsers] = useState([]); // State for managing users list
 
   // Fetch current user profile
   useEffect(() => {
@@ -34,11 +33,8 @@ export const AuthProvider = ({ children }) => {
           );
           setUser(data);
           setUserRole(data.role);
-          if (data.role === 'artist') {
-            setOnboardingComplete(data.isOnboardingComplete);
-          } else {
-            setOnboardingComplete(true);
-          }
+          setOnboardingComplete(data.isOnboardingComplete ?? true); // Default to true if not artist
+          fetchUsers(); // Fetch users after successful login
         } catch (error) {
           console.error('Error fetching user', error);
           localStorage.removeItem('token');
@@ -63,8 +59,8 @@ export const AuthProvider = ({ children }) => {
   // Fetch users for admin
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/user');
-      setUsers(response);
+      const { data } = await axios.get('http://localhost:5000/api/user');
+      setUsers(data); // Correctly set users from response data
     } catch (error) {
       showNotification('Error fetching users.', 'error');
       console.error('Error fetching users:', error);
@@ -76,10 +72,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         'http://localhost:5000/api/user/login',
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       localStorage.setItem('token', response.data.token);
       setUser(response.data);
@@ -99,11 +92,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         'http://localhost:5000/api/user/register',
-        {
-          username,
-          email,
-          password,
-        }
+        { username, email, password }
       );
       localStorage.setItem('token', response.data.token);
       setUser(response.data);
@@ -132,12 +121,11 @@ export const AuthProvider = ({ children }) => {
       console.error('Error creating user:', error);
     }
   };
+
   // Function to get a specific user by ID
   const getUserById = async (userId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/user/${userId}`
-      );
+      const response = await axios.get(`http://localhost:5000/api/user/${userId}`);
       setSelectedUser(response.data);
       showNotification('User fetched successfully!', 'success');
       return response.data; // Return the user data
@@ -147,13 +135,11 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+
   // Update user
   const updateUser = async (userId, updatedUser) => {
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/user/${userId}`,
-        updatedUser
-      );
+      const response = await axios.put(`http://localhost:5000/api/user/${userId}`, updatedUser);
       setUsers((prevUsers) =>
         prevUsers.map((user) => (user._id === userId ? response.data : user))
       );
@@ -205,10 +191,15 @@ export const AuthProvider = ({ children }) => {
         deleteUser,
         users,
         fetchUsers,
-        getUserById
+        getUserById,
       }}
     >
       {children}
+      <Snackbar open={notification.open} autoHideDuration={6000} onClose={handleCloseNotification}>
+        <Alert onClose={handleCloseNotification} severity={notification.severity} sx={{ width: '100%' }}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </AuthContext.Provider>
   );
 };

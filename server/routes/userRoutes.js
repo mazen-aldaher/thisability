@@ -19,6 +19,7 @@ import {
   reactivateUser
 } from "../controllers/userController.js";
 import { protect } from "../middleware/auth.js";
+import { upload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.post("/verify-otp", verifyOtp);
 router.post('/verify-email',verifyEmail)
 //Protected Routes
 router.get("/profile", protect, getUserProfile);
-router.put("/profile", protect, updateUserProfile);
+router.put("/profile", protect, upload.single("avatar"), updateUserProfile);
 //Get All Users
 router.get("/", getUsers);
 //Get User By ID

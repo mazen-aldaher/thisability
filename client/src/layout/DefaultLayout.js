@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 const DefaultLayout = ({ children, onThemeChange, nav, admin }) => {
   const { user } = useContext(AuthContext);
   const [unfoldable, setUnfoldable] = useState(false);
-  const [sidebarShow, setSidebarShow] = useState(true);
+  const [sidebarShow, setSidebarShow] = useState(false);
   const drawerWidth = unfoldable ? 55 : 290;
 
   const handleDrawerToggle = () => {
