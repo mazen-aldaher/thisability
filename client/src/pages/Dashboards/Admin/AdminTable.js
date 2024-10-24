@@ -52,7 +52,9 @@ const AdminTable = ({
 
   const toggleUserSelection = (userId) => {
     setSelectedUsers((prev) =>
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
     );
   };
 
@@ -60,8 +62,15 @@ const AdminTable = ({
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, p: 2, bgcolor: '#000', borderRadius: '8px' }}>
-        <Typography variant="h6">User Management</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          mb: 0,
+          p: 1,
+          borderRadius: '8px',
+        }}
+      >
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Tooltip title="View User">
             <IconButton
@@ -93,7 +102,9 @@ const AdminTable = ({
           <Tooltip title="Reactivate User">
             <IconButton
               color="primary"
-              onClick={() => selectedUsers.forEach((id) => handleReactivate(id))}
+              onClick={() =>
+                selectedUsers.forEach((id) => handleReactivate(id))
+              }
               disabled={selectedUsers.length === 0}
             >
               <PersonAddIcon />
@@ -124,14 +135,28 @@ const AdminTable = ({
         <Table stickyHeader sx={{ minWidth: '92vw', textAlign: 'center' }}>
           <TableHead sx={{ bgcolor: '#1976d2', color: '#ffffff' }}>
             <TableRow>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Select</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>UserID</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                Select
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                UserID
+              </TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Avatar</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Username</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Role</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Verification</TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold' }}>Status</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                Username
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                Email
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                Role
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                Verification
+              </TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold' }}>
+                Status
+              </TableCell>
             </TableRow>
           </TableHead>
 
@@ -139,7 +164,9 @@ const AdminTable = ({
             <TableBody>
               <TableRow>
                 <TableCell colSpan={8} align="center">
-                  <Typography variant="body1" color="textSecondary">User Not Found</Typography>
+                  <Typography variant="body1" color="textSecondary">
+                    User Not Found
+                  </Typography>
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -151,20 +178,21 @@ const AdminTable = ({
                   onClick={() => toggleUserSelection(user._id)}
                   sx={{
                     cursor: 'pointer',
-                    bgcolor: isUserSelected(user._id) ? '#000' : 'inherit',
-                    color:"#000",
-                    '&:hover': { bgcolor: '#0000' },
+
+                    bgcolor: isUserSelected(user._id) ? 'darkGreen' : 'inherit',
+                    '&:hover': { bgcolor: 'darkGreen' },
                   }}
                 >
-                  <TableCell align="center">
+                  <TableCell align="center" >
                     <input
                       type="checkbox"
+                      
                       checked={isUserSelected(user._id)}
                       onChange={() => toggleUserSelection(user._id)}
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <Typography variant="body1">{user._id}</Typography>
+                    <Typography sx={{color:isUserSelected(user._id) ? '#fff' : 'inherit',}}  variant="body1">{user._id}</Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Avatar
@@ -174,24 +202,26 @@ const AdminTable = ({
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <Typography variant="body1">{user.username}</Typography>
+                    <Typography sx={{color:isUserSelected(user._id) ? '#fff' : 'inherit',}} variant="body1">{user.username}</Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="body1">{user.email}</Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography variant="body1">{user.role}</Typography>
+                    <Typography sx={{color:isUserSelected(user._id) ? '#fff' : 'inherit',}} variant="body1">{user.role}</Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography variant="body1">
+                    <Typography sx={{color:isUserSelected(user._id) ? '#fff' : 'inherit',}} variant="body1">
                       {user.isVerified ? 'Verified' : 'Pending'}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <Typography variant="body1">
+                    <Typography sx={{color:isUserSelected(user._id) ? '#fff' : 'inherit',}} variant="body1">
                       {user.status === 'active' ? (
                         <Badge
-                          sx={{ '& .MuiBadge-dot': { backgroundColor: 'green' } }}
+                          sx={{
+                            '& .MuiBadge-dot': { backgroundColor: 'green' },
+                          }}
                           variant="dot"
                         />
                       ) : (
@@ -219,7 +249,7 @@ const AdminTable = ({
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
-        sx={{ bgcolor: "#000", borderRadius: '8px' }}
+        sx={{ borderRadius: '8px' }}
       />
     </>
   );

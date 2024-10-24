@@ -19,6 +19,10 @@ const generateToken = (id) => {
   });
 };
 
+const USER_STATUS = {
+  ACTIVE: "active",
+  SUSPENDED: "suspended",
+};
 // Register a new user
 export const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, role, firstName, lastName } = req.body;
@@ -38,6 +42,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     password, // store hashed password
     role: role || "user", // default role to 'user' if not provided
     isVerified: false,
+    status: USER_STATUS.ACTIVE,
   });
 
   // Save User first to get the user ID
@@ -100,24 +105,25 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email }).populate("profile");
 
   if (!user) {
-    console.log("User not found for email: ", email); // Log for debugging
-    return res.status(401).json({ message: "Invalid email or password" });
+    console.error("User not found for email: ", email); // Log for debugging
+    return res.status(401).json({ error: "Invalid email or password" });
   }
 
+  
   // Check if the user is verified
   if (!user.isVerified) {
-    console.log("User not verified: ", email); // Log for debugging
-    return res
-      .status(403)
-      .json({ message: "Please verify your email before logging in." });
+    console.error("User not verified: ", email); // Log for debugging
+    return res.status(403).json({
+      error: "Please verify your email before logging in.",
+    });
   }
 
   // Check if the password matches
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    console.log("Password does not match for user: ", email); // Log for debugging
-    return res.status(401).json({ message: "Invalid email or password" });
+    console.error("Password does not match for user: ", email); // Log for debugging
+    return res.status(401).json({ error: "Invalid email or password" });
   }
 
   // If successful, send back user data and token
@@ -130,6 +136,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     token: generateToken(user._id),
   });
 });
+
 
 // Get user profile
 export const getUserProfile = asyncHandler(async (req, res) => {
@@ -444,20 +451,17 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 //suspend user by id
 export const suspendUserById = asyncHandler(async (req, res) => {
   try {
-    const userId = req.params.id;
+    const user = await User.findById(req.params.id);
 
-    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if user is already suspended
-    if (user.status === "suspended") {
+    if (user.status === USER_STATUS.SUSPENDED) {
       return res.status(400).json({ message: "User is already suspended" });
     }
 
-    // Update the user's status to 'suspended'
-    user.status = "suspended";
+    user.status = USER_STATUS.SUSPENDED;
     await user.save();
 
     res.status(200).json({ message: "User suspended successfully" });
@@ -470,19 +474,17 @@ export const suspendUserById = asyncHandler(async (req, res) => {
 // Update the user's status to 'reactivate'
 export const reactivateUser = asyncHandler(async (req, res) => {
   try {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
+    const user = await User.findById(req.params.id);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if user is already active
-    if (user.status === "active") {
+    if (user.status === USER_STATUS.ACTIVE) {
       return res.status(400).json({ message: "User is already active" });
     }
 
-    // Update the user's status to 'active'
-    user.status = "active";
+    user.status = USER_STATUS.ACTIVE;
     await user.save();
 
     res.status(200).json({ message: "User reactivated successfully" });

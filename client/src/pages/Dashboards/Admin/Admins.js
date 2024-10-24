@@ -272,26 +272,13 @@ const Users = () => {
           </DashContainer>
         </Box>
       </Box>
-      {/*
-      <Box>
-        <DashContainer title="Create New User">
-          <CreateUser
-            handleCreate={handleCreate}
-            newUser={newUser}
-            handleNewUserInputChange={handleNewUserInputChange}
-            errors={errors}
-            generatePassword={generatePassword}
-          />
-        </DashContainer>
-      </Box>
- */}
 
       {/* Snackbar for notifications */}
       <Snackbar
         open={notification.open}
         autoHideDuration={4000}
         onClose={() => setNotification({ ...notification, open: false })}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Alert
           onClose={() => setNotification({ ...notification, open: false })}

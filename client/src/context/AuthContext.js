@@ -209,21 +209,6 @@ export const AuthProvider = ({ children }) => {
       }}
     >
       {children}
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={4000}
-        onClose={handleCloseNotification}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert
-          onClose={handleCloseNotification}
-          severity={notification.severity}
-        >
-          {notification.message}
-        </Alert>
-      </Snackbar>
     </AuthContext.Provider>
   );
 };
