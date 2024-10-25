@@ -7,6 +7,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]); // State for managing users list
   const [userRole, setUserRole] = useState(null);
   const [isOnboardingComplete, setOnboardingComplete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // State for the individual user fetched by ID
@@ -15,7 +16,8 @@ export const AuthProvider = ({ children }) => {
     message: '',
     severity: 'success',
   });
-  const [users, setUsers] = useState([]); // State for managing users list
+    const [loading, setLoading] = useState(true); // Add loading state
+
 
   // Fetch current user profile
   useEffect(() => {
@@ -56,7 +58,20 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  // Fetch users for admin
+  // Fetch admin users
+    const fetchAdminUsers = async () => {
+  try {
+      setLoading(true); // Start loader
+      const response = await axios.get('http://localhost:5000/api/user');
+      const adminUsers = response.data.filter((user) => user.role === 'admin');
+      setUsers(adminUsers);
+      setLoading(false); // End loader
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setLoading(false);
+    }
+  };
+  //Fetch artist users 
   const fetchUsers = async () => {
     try {
       const { data } = await axios.get('http://localhost:5000/api/user');
@@ -192,6 +207,9 @@ export const AuthProvider = ({ children }) => {
         users,
         fetchUsers,
         getUserById,
+        fetchAdminUsers,
+        loading,
+        selectedUser
       }}
     >
       {children}

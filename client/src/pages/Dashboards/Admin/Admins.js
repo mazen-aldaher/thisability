@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Typography,
@@ -18,15 +18,29 @@ import {
 } from '@mui/material';
 import AdminTable from './AdminTable';
 import DashContainer from '../../../components/DashContainer/DashContainer';
+import { AuthContext } from '../../../context/AuthContext';
+import { useModal } from '../../../context/ModalContext';
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const {
+    loading,
+    fetchAdminUsers,
+    users,
+    setUsers,
+    selectedUser,
+    setSelectedUser,
+    fetchUser
+  } = useContext(AuthContext);
+
+  const {
+    isEditMode,
+    setIsEditMode,
+    isModalOpen,
+    setIsModalOpen,
+    isCreateMode,
+    setIsCreateMode,
+  } = useModal();
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
-  const [isCreateMode, setIsCreateMode] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [newUser, setNewUser] = useState({
@@ -57,21 +71,8 @@ const Users = () => {
     });
   };
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true); // Start loader
-      const response = await axios.get('http://localhost:5000/api/user');
-      const adminUsers = response.data.filter((user) => user.role === 'admin');
-      setUsers(adminUsers);
-      setLoading(false); // End loader
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchUsers();
+    fetchAdminUsers();
   }, []);
 
   const handleViewOrEdit = async (userId, editMode = false) => {
@@ -105,7 +106,7 @@ const Users = () => {
           `http://localhost:5000/api/user/${selectedUser._id}`,
           selectedUser
         );
-        fetchUsers();
+        fetchUser();
         handleCloseModal();
         showNotification('User updated successfully!', 'success');
       } catch (error) {
@@ -122,7 +123,7 @@ const Users = () => {
       if (!confirmed) return;
 
       await axios.put(`http://localhost:5000/api/user/suspend/${userId}`);
-      fetchUsers(); // Refresh the list of users
+      fetchAdminUsers(); // Refresh the list of users
       showNotification('User suspended successfully!', 'success');
     } catch (error) {
       showNotification('Error suspending user. Please try again.', 'error');
@@ -137,7 +138,7 @@ const Users = () => {
       if (!confirmed) return;
 
       await axios.put(`http://localhost:5000/api/user/reactivate/${userId}`);
-      fetchUsers(); // Refresh the list of users
+      fetchAdminUsers(); // Refresh the list of users
       showNotification('User reactivated successfully!', 'success');
     } catch (error) {
       showNotification('Error reactivating user. Please try again.', 'error');
@@ -182,7 +183,7 @@ const Users = () => {
     setButtonLoading(true); // Start button loader
     try {
       await axios.post('http://localhost:5000/api/user/register', newUser);
-      fetchUsers();
+      fetchAdminUsers();
       setNewUser({ username: '', email: '', role: 'admin', password: '' });
       showNotification('User created successfully!', 'success');
       handleCloseModal();

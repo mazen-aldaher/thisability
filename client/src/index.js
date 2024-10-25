@@ -9,6 +9,7 @@ import { AuthProvider } from './context/AuthContext';
 import store from './redux/store';
 import { Provider } from 'react-redux';
 import { OrderProvider } from './context/OrderContext';
+import { ModalProvider } from './context/ModalContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,7 +18,9 @@ root.render(
       <OrderProvider>
         <BrowserRouter>
           <StrictMode>
-            <App />
+            <ModalProvider>
+              <App />
+            </ModalProvider>
           </StrictMode>
         </BrowserRouter>
       </OrderProvider>

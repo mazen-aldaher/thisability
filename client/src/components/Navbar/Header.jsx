@@ -121,7 +121,7 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
         Orders
       </MenuItem>
       {user.role === 'admin' && (
-        <MenuItem onClick={() => navigate('/dashboard/admin')}>
+        <MenuItem onClick={() => navigate('/dashboard/admin/main')}>
           <DashboardIcon sx={{ marginRight: '8px' }} />
           Admin Dashboard
         </MenuItem>
