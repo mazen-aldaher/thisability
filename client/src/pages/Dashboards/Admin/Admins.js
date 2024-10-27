@@ -10,8 +10,6 @@ import {
   TextField,
   Select,
   MenuItem,
-  Alert,
-  Snackbar,
   Box,
   CircularProgress,
   DialogContentText,
@@ -20,6 +18,7 @@ import AdminTable from './AdminTable';
 import DashContainer from '../../../components/DashContainer/DashContainer';
 import { AuthContext } from '../../../context/AuthContext';
 import { useModal } from '../../../context/ModalContext';
+import { useNotification } from '../../../context/NotificationContext';
 
 const Users = () => {
   const {
@@ -29,7 +28,7 @@ const Users = () => {
     setUsers,
     selectedUser,
     setSelectedUser,
-    fetchUser
+    fetchUser,
   } = useContext(AuthContext);
 
   const {
@@ -40,6 +39,7 @@ const Users = () => {
     isCreateMode,
     setIsCreateMode,
   } = useModal();
+  const { showNotification } = useNotification();
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -49,11 +49,7 @@ const Users = () => {
     role: 'admin',
     password: '',
   });
-  const [notification, setNotification] = useState({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+
   const [errors, setErrors] = useState({});
 
   const [confirmDialog, setConfirmDialog] = useState({
@@ -62,14 +58,6 @@ const Users = () => {
     subTitle: '',
     onConfirm: () => {},
   }); // Confirmation dialog for delete and suspend actions
-
-  const showNotification = (message, severity = 'success') => {
-    setNotification({
-      open: true,
-      message,
-      severity,
-    });
-  };
 
   useEffect(() => {
     fetchAdminUsers();
@@ -106,7 +94,7 @@ const Users = () => {
           `http://localhost:5000/api/user/${selectedUser._id}`,
           selectedUser
         );
-        fetchUser();
+        fetchUser(response);
         handleCloseModal();
         showNotification('User updated successfully!', 'success');
       } catch (error) {
@@ -273,22 +261,6 @@ const Users = () => {
           </DashContainer>
         </Box>
       </Box>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={4000}
-        onClose={() => setNotification({ ...notification, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert
-          onClose={() => setNotification({ ...notification, open: false })}
-          severity={notification.severity}
-          sx={{ width: '100%' }}
-        >
-          {notification.message}
-        </Alert>
-      </Snackbar>
 
       {/* Confirmation Dialog */}
       <Dialog open={confirmDialog.isOpen}>

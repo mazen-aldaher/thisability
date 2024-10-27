@@ -1,23 +1,23 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { Snackbar, Alert } from '@mui/material';
+import { useUser } from './UserContext';
+import { useUsers } from './UsersContext';
+import { useSelectedUser } from './SelectedUserContext';
+import { useNotification } from './NotificationContext';
+import { useLoading } from './LoadingContext';
 
 // Create AuthContext
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState([]); // State for managing users list
+  const { users, setUsers, fetchUsers, addUser, updateUser, deleteUser } =
+    useUsers();
+  const { selectedUser, setSelectedUser } = useSelectedUser();
   const [userRole, setUserRole] = useState(null);
   const [isOnboardingComplete, setOnboardingComplete] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // State for the individual user fetched by ID
-  const [notification, setNotification] = useState({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
-    const [loading, setLoading] = useState(true); // Add loading state
-
+  const { showNotification } = useNotification();
+  const { startLoading, stopLoading, loading } = useLoading();
 
   // Fetch current user profile
   useEffect(() => {
@@ -25,66 +25,35 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
+          startLoading();
           const { data } = await axios.get(
             'http://localhost:5000/api/user/profile',
             {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              headers: { Authorization: `Bearer ${token}` },
             }
           );
           setUser(data);
           setUserRole(data.role);
           setOnboardingComplete(data.isOnboardingComplete ?? true); // Default to true if not artist
-          fetchUsers(); // Fetch users after successful login
+          fetchUsers();
         } catch (error) {
           console.error('Error fetching user', error);
           localStorage.removeItem('token');
           setUser(null);
           setUserRole(null);
           setOnboardingComplete(false);
+        } finally {
+          stopLoading();
         }
       }
     };
     fetchUser();
   }, []);
 
-  // Function to show notifications
-  const showNotification = (message, severity = 'success') => {
-    setNotification({
-      open: true,
-      message,
-      severity,
-    });
-  };
-
-  // Fetch admin users
-    const fetchAdminUsers = async () => {
-  try {
-      setLoading(true); // Start loader
-      const response = await axios.get('http://localhost:5000/api/user');
-      const adminUsers = response.data.filter((user) => user.role === 'admin');
-      setUsers(adminUsers);
-      setLoading(false); // End loader
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setLoading(false);
-    }
-  };
-  //Fetch artist users 
-  const fetchUsers = async () => {
-    try {
-      const { data } = await axios.get('http://localhost:5000/api/user');
-      setUsers(data); // Correctly set users from response data
-    } catch (error) {
-      showNotification('Error fetching users.', 'error');
-      console.error('Error fetching users:', error);
-    }
-  };
-
   // Login function
   const login = async (email, password) => {
     try {
+      startLoading();
       const response = await axios.post(
         'http://localhost:5000/api/user/login',
         { email, password }
@@ -99,12 +68,15 @@ export const AuthProvider = ({ children }) => {
       showNotification('Error logging in.', 'error');
       console.error('Error logging in', error);
       throw error;
+    } finally {
+      stopLoading();
     }
   };
 
   // Register function
   const register = async (username, email, password) => {
     try {
+      startLoading();
       const response = await axios.post(
         'http://localhost:5000/api/user/register',
         { username, email, password }
@@ -119,61 +91,41 @@ export const AuthProvider = ({ children }) => {
       showNotification('Error registering user.', 'error');
       console.error('Error registering', error);
       throw error;
+    } finally {
+      stopLoading();
     }
   };
 
-  // Create a new user (admin functionality)
-  const createUser = async (newUser) => {
+  // Fetch admin users
+  const fetchAdminUsers = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/user/register',
-        newUser
-      );
-      setUsers((prevUsers) => [...prevUsers, response.data]);
-      showNotification('User created successfully!', 'success');
+      startLoading();
+      const response = await axios.get('http://localhost:5000/api/user');
+      const adminUsers = response.data.filter((user) => user.role === 'admin');
+      setUsers(adminUsers);
     } catch (error) {
-      showNotification('Error creating user.', 'error');
-      console.error('Error creating user:', error);
+      console.error('Error fetching users:', error);
+    } finally {
+      stopLoading();
     }
   };
 
   // Function to get a specific user by ID
   const getUserById = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/user/${userId}`);
+      startLoading();
+      const response = await axios.get(
+        `http://localhost:5000/api/user/${userId}`
+      );
       setSelectedUser(response.data);
       showNotification('User fetched successfully!', 'success');
-      return response.data; // Return the user data
+      return response.data;
     } catch (error) {
       showNotification('Error fetching user by ID.', 'error');
       console.error('Error fetching user by ID:', error);
       throw error;
-    }
-  };
-
-  // Update user
-  const updateUser = async (userId, updatedUser) => {
-    try {
-      const response = await axios.put(`http://localhost:5000/api/user/${userId}`, updatedUser);
-      setUsers((prevUsers) =>
-        prevUsers.map((user) => (user._id === userId ? response.data : user))
-      );
-      showNotification('User updated successfully!', 'success');
-    } catch (error) {
-      showNotification('Error updating user.', 'error');
-      console.error('Error updating user:', error);
-    }
-  };
-
-  // Delete user
-  const deleteUser = async (userId) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/user/${userId}`);
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
-      showNotification('User deleted successfully!', 'success');
-    } catch (error) {
-      showNotification('Error deleting user.', 'error');
-      console.error('Error deleting user:', error);
+    } finally {
+      stopLoading();
     }
   };
 
@@ -186,11 +138,6 @@ export const AuthProvider = ({ children }) => {
     showNotification('Logged out successfully!', 'success');
   };
 
-  // Handle closing notification
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -201,7 +148,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
-        createUser,
+        createUser: addUser,
         updateUser,
         deleteUser,
         users,
@@ -209,15 +156,10 @@ export const AuthProvider = ({ children }) => {
         getUserById,
         fetchAdminUsers,
         loading,
-        selectedUser
+        selectedUser,
       }}
     >
       {children}
-      <Snackbar open={notification.open} autoHideDuration={6000} onClose={handleCloseNotification}>
-        <Alert onClose={handleCloseNotification} severity={notification.severity} sx={{ width: '100%' }}>
-          {notification.message}
-        </Alert>
-      </Snackbar>
     </AuthContext.Provider>
   );
 };
