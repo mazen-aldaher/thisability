@@ -27,17 +27,17 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <StrictMode>
-        <NotificationProvider>
-          <LoadingProvider>
-            <ModalProvider>
-              <SelectedUserProvider>
-                <UsersProvider>
-                  <UserProvider>
-                    <AuthProvider>
-                      <ButtonLoadingProvider>
-                        <ConfirmDialogProvider>
-                          <EditModeProvider>
-                            <ErrorsProvider>
+        <ErrorsProvider>
+          <NotificationProvider>
+            <LoadingProvider>
+              <ModalProvider>
+                <SelectedUserProvider>
+                  <UsersProvider>
+                    <UserProvider>
+                      <AuthProvider>
+                        <ButtonLoadingProvider>
+                          <ConfirmDialogProvider>
+                            <EditModeProvider>
                               <NewUserProvider>
                                 <SearchQueryProvider>
                                   <OrderProvider>
@@ -45,17 +45,17 @@ root.render(
                                   </OrderProvider>
                                 </SearchQueryProvider>
                               </NewUserProvider>
-                            </ErrorsProvider>
-                          </EditModeProvider>
-                        </ConfirmDialogProvider>
-                      </ButtonLoadingProvider>
-                    </AuthProvider>
-                  </UserProvider>
-                </UsersProvider>
-              </SelectedUserProvider>
-            </ModalProvider>
-          </LoadingProvider>
-        </NotificationProvider>
+                            </EditModeProvider>
+                          </ConfirmDialogProvider>
+                        </ButtonLoadingProvider>
+                      </AuthProvider>
+                    </UserProvider>
+                  </UsersProvider>
+                </SelectedUserProvider>
+              </ModalProvider>
+            </LoadingProvider>
+          </NotificationProvider>
+        </ErrorsProvider>
       </StrictMode>
     </BrowserRouter>
   </Provider>

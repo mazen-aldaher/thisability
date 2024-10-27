@@ -44,12 +44,12 @@ const AppHeaderDropdown = () => {
   return (
     <>
       <IconButton onClick={handleClick} color="inherit" className="py-0 pe-0">
-        {user === user.avatar ? (
+        {user === user?.avatar ? (
           <Avatar />
         ) : (
           <Box sx={{textAlign:"left"}} >
             <Typography sx={{fontSize:"13px"}} >Hello,</Typography>
-            <Typography>{user.profile.firstName}</Typography>
+            <Typography>{user?.profile?.firstName}</Typography>
           </Box>
         )}
       </IconButton>

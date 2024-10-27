@@ -40,7 +40,7 @@ export const ModalProvider = ({ children }) => {
         setIsCreateMode,
         openModal,
         closeModal,
-
+        setSelectedItem,
       }}
     >
       {children}

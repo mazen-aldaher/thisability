@@ -1,6 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { useUser } from './UserContext';
 import { useUsers } from './UsersContext';
 import { useSelectedUser } from './SelectedUserContext';
 import { useNotification } from './NotificationContext';
@@ -11,8 +11,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const { users, setUsers, fetchUsers, addUser, updateUser, deleteUser } =
-    useUsers();
+  const { users, fetchUsers, addUser, updateUser, deleteUser } = useUsers();
   const { selectedUser, setSelectedUser } = useSelectedUser();
   const [userRole, setUserRole] = useState(null);
   const [isOnboardingComplete, setOnboardingComplete] = useState(false);
@@ -23,30 +22,31 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          startLoading();
-          const { data } = await axios.get(
-            'http://localhost:5000/api/user/profile',
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          setUser(data);
-          setUserRole(data.role);
-          setOnboardingComplete(data.isOnboardingComplete ?? true); // Default to true if not artist
-          fetchUsers();
-        } catch (error) {
-          console.error('Error fetching user', error);
-          localStorage.removeItem('token');
-          setUser(null);
-          setUserRole(null);
-          setOnboardingComplete(false);
-        } finally {
-          stopLoading();
-        }
+      if (!token) return;
+
+      try {
+        startLoading();
+        const { data } = await axios.get(
+          'http://localhost:5000/api/user/profile',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setUser(data);
+        setUserRole(data.role);
+        setOnboardingComplete(data.isOnboardingComplete ?? true);
+        fetchUsers();
+      } catch (error) {
+        console.error('Error fetching user', error);
+        localStorage.removeItem('token');
+        setUser(null);
+        setUserRole(null);
+        setOnboardingComplete(false);
+      } finally {
+        stopLoading();
       }
     };
+
     fetchUser();
   }, []);
 
@@ -96,20 +96,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Fetch admin users
-  const fetchAdminUsers = async () => {
-    try {
-      startLoading();
-      const response = await axios.get('http://localhost:5000/api/user');
-      const adminUsers = response.data.filter((user) => user.role === 'admin');
-      setUsers(adminUsers);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    } finally {
-      stopLoading();
-    }
-  };
-
   // Function to get a specific user by ID
   const getUserById = async (userId) => {
     try {
@@ -154,9 +140,9 @@ export const AuthProvider = ({ children }) => {
         users,
         fetchUsers,
         getUserById,
-        fetchAdminUsers,
         loading,
         selectedUser,
+        setSelectedUser,
       }}
     >
       {children}

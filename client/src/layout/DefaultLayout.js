@@ -2,9 +2,11 @@ import { Box } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { DashFooter, DashHeader, DashSidebar } from '../components/Dashboard';
 import { AuthContext } from '../context/AuthContext';
+import { useUsers } from '../context/UsersContext';
 
 const DefaultLayout = ({ children, onThemeChange, nav, admin }) => {
   const { user } = useContext(AuthContext);
+  const { users } = useUsers();
   const [unfoldable, setUnfoldable] = useState(false);
   const [sidebarShow, setSidebarShow] = useState(false);
   const drawerWidth = unfoldable ? 55 : 290;
@@ -43,7 +45,8 @@ const DefaultLayout = ({ children, onThemeChange, nav, admin }) => {
           drawerWidth={drawerWidth}
           nav={nav}
           admin={admin}
-          role={user.role}
+          role={user?.role || 'user'} // Check if user exists, default to 'guest'
+          users={users}
         />
       </Box>
       {/* Main Content Section */}

@@ -1,10 +1,16 @@
 import React, { createContext, useContext, useState } from 'react';
+import axios from 'axios'; // Ensure axios is imported
+import { useLoading } from './LoadingContext';
+import { useErrors } from './ErrorsContext';
 
 // Create NewUserContext
 export const NewUserContext = createContext();
 
 // Provider component
 export const NewUserProvider = ({ children }) => {
+  const { loading, startLoading, stopLoading } = useLoading();
+  const { error, setError } = useErrors();
+
   const [newUser, setNewUser] = useState({
     username: '',
     email: '',
@@ -31,7 +37,16 @@ export const NewUserProvider = ({ children }) => {
   };
 
   return (
-    <NewUserContext.Provider value={{ newUser, updateNewUser, resetNewUser }}>
+    <NewUserContext.Provider
+      value={{
+        newUser,
+        updateNewUser,
+        resetNewUser,
+        setNewUser,
+        loading,
+        error,
+      }}
+    >
       {children}
     </NewUserContext.Provider>
   );

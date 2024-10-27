@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
@@ -19,17 +20,13 @@ import DashContainer from '../../../components/DashContainer/DashContainer';
 import { AuthContext } from '../../../context/AuthContext';
 import { useModal } from '../../../context/ModalContext';
 import { useNotification } from '../../../context/NotificationContext';
+import { useUsers } from '../../../context/UsersContext';
+import { useSearchQuery } from '../../../context/SearchQueryContext';
+import { useButtonLoading } from '../../../context/ButtonLoadingContext';
+import { useNewUser } from '../../../context/NewUserContext';
 
 const Users = () => {
-  const {
-    loading,
-    fetchAdminUsers,
-    users,
-    setUsers,
-    selectedUser,
-    setSelectedUser,
-    fetchUser,
-  } = useContext(AuthContext);
+  const { loading, selectedUser } = useContext(AuthContext);
 
   const {
     isEditMode,
@@ -38,17 +35,17 @@ const Users = () => {
     setIsModalOpen,
     isCreateMode,
     setIsCreateMode,
+    selectedItem,
+    setSelectedItem,
   } = useModal();
-  const { showNotification } = useNotification();
-  const [searchQuery, setSearchQuery] = useState(''); // State for search query
-  const [buttonLoading, setButtonLoading] = useState(false);
+  const { fetchAdminUsers, users,updateUser } = useUsers();
 
-  const [newUser, setNewUser] = useState({
-    username: '',
-    email: '',
-    role: 'admin',
-    password: '',
-  });
+  const { showNotification } = useNotification();
+  const { searchQuery, setSearchQuery } = useSearchQuery(); // State for search query
+  const { buttonLoading, startButtonLoading, stopButtonLoading } =
+    useButtonLoading();
+
+  const { newUser, setNewUser, resetNewUser, updateNewUser } = useNewUser();
 
   const [errors, setErrors] = useState({});
 
@@ -65,11 +62,8 @@ const Users = () => {
 
   const handleViewOrEdit = async (userId, editMode = false) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/user/${userId}`
-      );
-      const user = response.data;
-      setSelectedUser(user);
+      updateUser()
+      setSelectedItem(userId);
       setIsEditMode(editMode);
       setIsModalOpen(true);
     } catch (error) {
@@ -82,19 +76,19 @@ const Users = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedUser(null);
+    setSelectedItem(null);
     setIsEditMode(false);
-    setIsCreateMode(false); // Reset create mode
+    setIsCreateMode(false);
   };
 
   const handleUpdate = async () => {
-    if (selectedUser) {
+    if (selectedItem) {
       try {
         const response = await axios.put(
-          `http://localhost:5000/api/user/${selectedUser._id}`,
-          selectedUser
+          `http://localhost:5000/api/user/${selectedItem._id}`,
+          selectedItem
         );
-        fetchUser(response);
+        fetchAdminUsers(response);
         handleCloseModal();
         showNotification('User updated successfully!', 'success');
       } catch (error) {
@@ -141,9 +135,7 @@ const Users = () => {
       onConfirm: async () => {
         try {
           await axios.delete(`http://localhost:5000/api/user/${userId}`);
-          setUsers((prevUsers) =>
-            prevUsers.filter((user) => user._id !== userId)
-          );
+          fetchAdminUsers();
           showNotification('User deleted successfully!', 'success');
           setConfirmDialog({ ...confirmDialog, isOpen: false });
         } catch (error) {
@@ -166,28 +158,30 @@ const Users = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Modified handleCreate
   const handleCreate = async () => {
     if (!validate()) return;
-    setButtonLoading(true); // Start button loader
+    startButtonLoading();
     try {
+      // Submit newUser data to the backend
       await axios.post('http://localhost:5000/api/user/register', newUser);
       fetchAdminUsers();
-      setNewUser({ username: '', email: '', role: 'admin', password: '' });
+      resetNewUser(); // Reset the form fields after creation
       showNotification('User created successfully!', 'success');
       handleCloseModal();
     } catch (error) {
       showNotification('Error creating user. Please try again.', 'error');
     } finally {
-      setButtonLoading(false); // End button loader
+      stopButtonLoading();
     }
   };
 
-  const handleInputChange = (e) => {
-    setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
-  };
-
+  // Modified handleNewUserInputChange
   const handleNewUserInputChange = (e) => {
-    setNewUser({ ...newUser, [e.target.name]: e.target.value });
+    updateNewUser(e.target.name, e.target.value); // Use updateNewUser to handle input changes
+  };
+  const handleInputChange = (e) => {
+    setSelectedItem({ ...selectedItem, [e.target.name]: e.target.value });
   };
 
   const generatePassword = () => {

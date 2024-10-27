@@ -197,7 +197,7 @@ const AdminTable = ({
                   <TableCell align="center">
                     <Avatar
                       variant="circular"
-                      src={user.profile.avatar}
+                      src={user?.profile?.avatar}
                       sx={{ width: 40, height: 40 }}
                     />
                   </TableCell>
