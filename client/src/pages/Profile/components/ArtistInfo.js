@@ -17,24 +17,24 @@ const ArtistInfo = ({ formData, isEditing, handleInputChange, handleEditClick, h
           fullWidth
           label="Art Style"
           value={formData.artStyle}
-          disabled={!isEditing}
+          disabled={!isEditing.artistInfo}
           onChange={(e) => handleInputChange(e, 'artStyle')}
         />
         <TextField
           fullWidth
           label="Portfolio URL"
           value={formData.portfolioUrl}
-          disabled={!isEditing}
+          disabled={!isEditing.artistInfo}
           onChange={(e) => handleInputChange(e, 'portfolioUrl')}
           sx={{ mt: 2 }}
         />
         <Button
           variant="contained"
-          startIcon={isEditing ? <SaveIcon /> : <EditIcon />}
-          onClick={() => (isEditing ? handleSaveSection('artistInfo') : handleEditClick('artistInfo'))}
+          startIcon={isEditing.artistInfo ? <SaveIcon /> : <EditIcon />}
+          onClick={() => (isEditing.artistInfo ? handleSaveSection('artistInfo') : handleEditClick('artistInfo'))}
           sx={{ mt: 3 }}
         >
-          {isEditing ? 'Save' : 'Edit'}
+          {isEditing.artistInfo ? 'Save' : 'Edit'}
         </Button>
       </AccordionDetails>
     </Accordion>

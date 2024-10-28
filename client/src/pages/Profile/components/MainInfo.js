@@ -3,7 +3,13 @@ import { Grid, TextField, Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 
-const MainInfo = ({ formData, isEditing, handleInputChange, handleEditClick, handleSaveSection }) => {
+const MainInfo = ({
+  formData,
+  isEditing,
+  handleInputChange,
+  handleEditClick,
+  handleSaveSection,
+}) => {
   return (
     <div>
       <Grid container spacing={3}>
@@ -12,7 +18,7 @@ const MainInfo = ({ formData, isEditing, handleInputChange, handleEditClick, han
             fullWidth
             label="First Name"
             value={formData.firstName}
-            disabled={!isEditing}
+            disabled={!isEditing.mainInfo}
             onChange={(e) => handleInputChange(e, 'firstName')}
           />
         </Grid>
@@ -21,18 +27,22 @@ const MainInfo = ({ formData, isEditing, handleInputChange, handleEditClick, han
             fullWidth
             label="Last Name"
             value={formData.lastName}
-            disabled={!isEditing}
+            disabled={!isEditing.mainInfo}
             onChange={(e) => handleInputChange(e, 'lastName')}
           />
         </Grid>
       </Grid>
       <Button
         variant="contained"
-        startIcon={isEditing ? <SaveIcon /> : <EditIcon />}
-        onClick={() => (isEditing ? handleSaveSection('mainInfo') : handleEditClick('mainInfo'))}
+        startIcon={isEditing.mainInfo ? <SaveIcon /> : <EditIcon />}
+        onClick={() =>
+          isEditing.mainInfo
+            ? handleSaveSection('mainInfo')
+            : handleEditClick('mainInfo')
+        }
         sx={{ mt: 3 }}
       >
-        {isEditing ? 'Save' : 'Edit'}
+        {isEditing.mainInfo ? 'Save' : 'Edit'}
       </Button>
     </div>
   );

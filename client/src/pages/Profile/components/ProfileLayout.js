@@ -23,6 +23,9 @@ import { useErrors } from '../../../context/ErrorsContext';
 import { useLoading } from '../../../context/LoadingContext';
 import { useNotification } from '../../../context/NotificationContext';
 import AvatarComponent from './AvatarComponent';
+import MainInfo from './MainInfo';
+import ArtistInfo from './ArtistInfo';
+import WalletInfo from './WalletInfo';
 
 const ProfileLayout = () => {
   const { user, setUser } = useAuth();
@@ -202,9 +205,11 @@ const ProfileLayout = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
             <AvatarComponent
               avatar={avatar}
-              onAvatarChange={handleAvatarChange}
+              onChange={handleAvatarChange}
               onUpload={uploadAvatar}
+              onClick={uploadAvatar}
             />
+
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                 {formData.username}
@@ -212,116 +217,38 @@ const ProfileLayout = () => {
               <Typography variant="body1" color="text.secondary">
                 {formData.email}
               </Typography>
-              <Button variant="contained" onClick={uploadAvatar} sx={{ mt: 2 }}>
-                Upload Avatar
-              </Button>
             </Box>
           </Box>
 
           <Divider sx={{ my: 3 }} />
+
           <Box mb={4}>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
               Main Info
             </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="First Name"
-                  value={formData.firstName}
-                  disabled={!isEditing.mainInfo}
-                  onChange={(e) => handleInputChange(e, 'firstName')}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Last Name"
-                  value={formData.lastName}
-                  disabled={!isEditing.mainInfo}
-                  onChange={(e) => handleInputChange(e, 'lastName')}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              variant="contained"
-              startIcon={isEditing.mainInfo ? <SaveIcon /> : <EditIcon />}
-              onClick={() =>
-                isEditing.mainInfo
-                  ? handleSaveSection('mainInfo')
-                  : handleEditClick('mainInfo')
-              }
-              sx={{ mt: 3 }}
-            >
-              {isEditing.mainInfo ? 'Save' : 'Edit'}
-            </Button>
+            <MainInfo
+              formData={formData}
+              isEditing={isEditing}
+              handleInputChange={handleInputChange}
+              handleEditClick={handleEditClick}
+              handleSaveSection={handleSaveSection}
+            />
           </Box>
+          <ArtistInfo
+            formData={formData}
+            isEditing={isEditing}
+            handleInputChange={handleInputChange}
+            handleEditClick={handleEditClick}
+            handleSaveSection={handleSaveSection}
+          />
 
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                Artist Info
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TextField
-                fullWidth
-                label="Art Style"
-                value={formData.artStyle}
-                disabled={!isEditing.artistInfo}
-                onChange={(e) => handleInputChange(e, 'artStyle')}
-              />
-              <TextField
-                fullWidth
-                label="Portfolio URL"
-                value={formData.portfolioUrl}
-                disabled={!isEditing.artistInfo}
-                onChange={(e) => handleInputChange(e, 'portfolioUrl')}
-                sx={{ mt: 2 }}
-              />
-              <Button
-                variant="contained"
-                startIcon={isEditing.artistInfo ? <SaveIcon /> : <EditIcon />}
-                onClick={() =>
-                  isEditing.artistInfo
-                    ? handleSaveSection('artistInfo')
-                    : handleEditClick('artistInfo')
-                }
-                sx={{ mt: 3 }}
-              >
-                {isEditing.artistInfo ? 'Save' : 'Edit'}
-              </Button>
-            </AccordionDetails>
-          </Accordion>
-
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                Wallet Info
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TextField
-                fullWidth
-                label="Wallet Address"
-                value={formData.walletAddress}
-                disabled={!isEditing.wallet}
-                onChange={(e) => handleInputChange(e, 'walletAddress')}
-              />
-              <Button
-                variant="contained"
-                startIcon={isEditing.wallet ? <SaveIcon /> : <EditIcon />}
-                onClick={() =>
-                  isEditing.wallet
-                    ? handleSaveSection('wallet')
-                    : handleEditClick('wallet')
-                }
-                sx={{ mt: 3 }}
-              >
-                {isEditing.wallet ? 'Save' : 'Edit'}
-              </Button>
-            </AccordionDetails>
-          </Accordion>
+          <WalletInfo
+            formData={formData}
+            isEditing={isEditing}
+            handleInputChange={handleInputChange}
+            handleEditClick={handleEditClick}
+            handleSaveSection={handleSaveSection}
+          />
         </>
       )}
     </Box>

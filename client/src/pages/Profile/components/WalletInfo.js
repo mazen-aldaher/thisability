@@ -17,16 +17,16 @@ const WalletInfo = ({ formData, isEditing, handleInputChange, handleEditClick, h
           fullWidth
           label="Wallet Address"
           value={formData.walletAddress}
-          disabled={!isEditing}
+          disabled={!isEditing.wallet}
           onChange={(e) => handleInputChange(e, 'walletAddress')}
         />
         <Button
           variant="contained"
-          startIcon={isEditing ? <SaveIcon /> : <EditIcon />}
-          onClick={() => (isEditing ? handleSaveSection('walletInfo') : handleEditClick('walletInfo'))}
+          startIcon={isEditing.wallet ? <SaveIcon /> : <EditIcon />}
+          onClick={() => (isEditing.wallet ? handleSaveSection('walletInfo') : handleEditClick('walletInfo'))}
           sx={{ mt: 3 }}
         >
-          {isEditing ? 'Save' : 'Edit'}
+          {isEditing.wallet ? 'Save' : 'Edit'}
         </Button>
       </AccordionDetails>
     </Accordion>
