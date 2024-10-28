@@ -1,19 +1,35 @@
 import React from 'react';
-import { Avatar, Button, IconButton } from '@mui/material';
+import { Avatar, Box, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 
-const AvatarComponent = ({ avatar, onAvatarChange, onUpload }) => {
+const AvatarComponent = ({ avatar, handleAvatarChange }) => {
   return (
-    <div style={{ position: 'relative' }}>
-      <Avatar src={avatar} alt="User Avatar" sx={{ height: '100px', width: '100px', mr: 3 }} />
-      <IconButton color="primary" component="label" sx={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: 'white' }}>
+    <Box sx={{ position: 'relative' }}>
+      <Avatar
+        src={avatar}
+        alt="User Avatar"
+        sx={{ height: '100px', width: '100px', mr: 3 }}
+      />
+      <IconButton
+        color="primary"
+        component="label"
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          backgroundColor: 'white',
+          '&:hover': { backgroundColor: 'grey.200' },
+        }}
+      >
         <EditIcon />
-        <input type="file" hidden accept="image/*" onChange={onAvatarChange} />
+        <input
+          type="file"
+          hidden
+          onChange={handleAvatarChange}
+          accept="image/*"
+        />
       </IconButton>
-      <Button variant="contained" onClick={onUpload} sx={{ mt: 2 }}>
-        Upload Avatar
-      </Button>
-    </div>
+    </Box>
   );
 };
 

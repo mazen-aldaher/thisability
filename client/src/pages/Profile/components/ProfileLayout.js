@@ -18,10 +18,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import axios from 'axios';
-import AvatarComponent from '../../../components/AvatarComponent';
 import { useAuth } from '../../../context/AuthContext';
 import { useErrors } from '../../../context/ErrorsContext';
 import { useLoading } from '../../../context/LoadingContext';
+import { useNotification } from '../../../context/NotificationContext';
+import AvatarComponent from './AvatarComponent';
 
 const ProfileLayout = () => {
   const { user, setUser } = useAuth();
@@ -33,7 +34,7 @@ const ProfileLayout = () => {
   const [formData, setFormData] = useState(user);
   const [avatar, setAvatar] = useState('');
   const { loading, startLoading, stopLoading } = useLoading();
-  const [message, setMessage] = useState(null);
+  const { showNotification } = useNotification();
   const { error, setError } = useErrors();
   const [avatarFile, setAvatarFile] = useState(null);
 
@@ -90,14 +91,14 @@ const ProfileLayout = () => {
         await axios.put('http://localhost:5000/api/user/profile', updateData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        setMessage({ type: 'success', text: 'Profile updated successfully' });
+        showNotification('Profile updated successfully', 'success');
         handleEditClick(section);
         fetchUserProfile(); // Refresh the user profile immediately
       } catch (error) {
-        setMessage({
-          type: 'error',
-          text: error.response?.data?.message || 'Error updating profile',
-        });
+        showNotification(
+          error.response?.data?.message || 'Error updating profile',
+          'error'
+        );
       } finally {
         stopLoading();
       }
@@ -173,10 +174,10 @@ const ProfileLayout = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      setMessage({ type: 'success', text: 'Avatar uploaded successfully' });
+      showNotification('Avatar uploaded successfully', 'success');
       fetchUserProfile(); // Refresh the user profile immediately after upload
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error uploading avatar' });
+      showNotification('Error uploading avatar', 'error');
     } finally {
       stopLoading();
     }
@@ -192,11 +193,6 @@ const ProfileLayout = () => {
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
       }}
     >
-      {message && (
-        <Alert severity={message.type} sx={{ mb: 2 }}>
-          {message.text}
-        </Alert>
-      )}
       {loading ? (
         <Box sx={{ textAlign: 'center', mt: 3 }}>
           <CircularProgress />
@@ -204,32 +200,11 @@ const ProfileLayout = () => {
       ) : (
         <>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-            <Box sx={{ position: 'relative' }}>
-              <Avatar
-                src={avatar}
-                alt="User Avatar"
-                sx={{ height: '100px', width: '100px', mr: 3 }}
-              />
-              <IconButton
-                color="primary"
-                component="label"
-                sx={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: 'white',
-                  '&:hover': { backgroundColor: 'grey.200' },
-                }}
-              >
-                <EditIcon />
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleAvatarChange}
-                  accept="image/*"
-                />
-              </IconButton>
-            </Box>
+            <AvatarComponent
+              avatar={avatar}
+              onAvatarChange={handleAvatarChange}
+              onUpload={uploadAvatar}
+            />
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                 {formData.username}
