@@ -19,27 +19,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import axios from 'axios';
 import AvatarComponent from '../../../components/AvatarComponent';
+import { useAuth } from '../../../context/AuthContext';
+import { useErrors } from '../../../context/ErrorsContext';
+import { useLoading } from '../../../context/LoadingContext';
 
 const ProfileLayout = () => {
-  const [userProfile, setUserProfile] = useState(null);
+  const { user, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState({
     mainInfo: false,
     artistInfo: false,
     wallet: false,
   });
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    artStyle: '',
-    portfolioUrl: '',
-    walletAddress: '',
-  });
+  const [formData, setFormData] = useState(user);
   const [avatar, setAvatar] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { loading, startLoading, stopLoading } = useLoading();
   const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
+  const { error, setError } = useErrors();
   const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
@@ -47,7 +42,7 @@ const ProfileLayout = () => {
   }, []);
 
   const fetchUserProfile = async () => {
-    setLoading(true);
+    startLoading();
     try {
       const response = await axios.get(
         'http://localhost:5000/api/user/profile',
@@ -55,7 +50,7 @@ const ProfileLayout = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
       );
-      setUserProfile(response.data);
+      setUser(response.data);
       setFormData((prevData) => ({
         ...prevData,
         firstName: response.data.profile.firstName,
@@ -67,7 +62,7 @@ const ProfileLayout = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Error fetching user profile');
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
@@ -80,7 +75,7 @@ const ProfileLayout = () => {
   };
 
   const handleSaveSection = async (section) => {
-    setLoading(true);
+    startLoading();
     const updateData = {
       mainInfo: { firstName: formData.firstName, lastName: formData.lastName },
       artistInfo: {
@@ -104,7 +99,7 @@ const ProfileLayout = () => {
           text: error.response?.data?.message || 'Error updating profile',
         });
       } finally {
-        setLoading(false);
+        stopLoading();
       }
     }
   };
@@ -170,7 +165,7 @@ const ProfileLayout = () => {
     const avatarData = new FormData();
     avatarData.append('avatar', compressedFile);
 
-    setLoading(true);
+    startLoading();
     try {
       await axios.put('http://localhost:5000/api/user/profile', avatarData, {
         headers: {
@@ -183,7 +178,7 @@ const ProfileLayout = () => {
     } catch (error) {
       setMessage({ type: 'error', text: 'Error uploading avatar' });
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
   return (

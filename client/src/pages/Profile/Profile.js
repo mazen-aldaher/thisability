@@ -46,7 +46,6 @@ const Profile = () => {
     }
   };
 
-
   if (error) {
     return (
       <Container
@@ -94,8 +93,7 @@ const Profile = () => {
               {successMessage}
             </Alert>
           )}
-          <ProfileLayout user={user} onSave={handleProfileUpdate} />{' '}
-          {/* Update function here */}
+          <ProfileLayout /> 
         </>
       ) : (
         <Typography variant="h6" sx={{ textAlign: 'center' }}>

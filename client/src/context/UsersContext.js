@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLoading } from './LoadingContext';
@@ -15,9 +14,9 @@ const UsersContext = createContext();
 // Provider component
 export const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const [userRole, setUserRole] = useState(null);
-  const { loading, startLoading, stopLoading } = useLoading();
+  const { startLoading, stopLoading } = useLoading();
   const { setError } = useErrors();
   const { setSelectedUser } = useSelectedUser();
   const { showNotification } = useNotification();
@@ -36,27 +35,39 @@ export const UsersProvider = ({ children }) => {
     }
   };
 
-// Fetch current user profile
+  // Fetch current user profile
   const fetchUserProfile = async () => {
+    startLoading();
+    try {
+      const response = await axios.get(`${apiUrl}/user/profile`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setUser(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error fetching user profile');
+    } finally {
+      stopLoading();
+    }
+  };
+
+  // Function to update the user profile
+  const updateUserProfile = async (updatedUserData) => {
     const token = localStorage.getItem('token');
     if (token) {
       startLoading();
+      setError(null);
       try {
-        const { data } = await axios.get(
+        const { data } = await axios.put(
           `${apiUrl}/user/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          updatedUserData,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(data);
-        return data; // Return the fetched user data
+        showNotification('Profile updated successfully.', 'success');
+        fetchUserProfile();
       } catch (err) {
-        console.error('Error fetching user', err);
-        localStorage.removeItem('token');
-        setError('Failed to fetch user profile. Please log in again.');
-        setUser(null);
+        setError('Failed to update profile. Please try again.');
+        showNotification('Failed to update profile.', 'error');
       } finally {
         stopLoading();
       }
@@ -65,34 +76,68 @@ export const UsersProvider = ({ children }) => {
       stopLoading();
     }
   };
-  // Function to update the user profile
-  const updateUserProfile = async (updatedUserData) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      startLoading();
-      setError(null); // Reset any previous errors
-      try {
-        const { data } = await axios.put(
-          `${apiUrl}/user/profile`,
-          updatedUserData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+
+  const compressImage = (file, quality = 0.7) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const maxWidth = 800;
+        const maxHeight = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
           }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          'image/jpeg',
+          quality
         );
-        setUser(data); // Update the local user state with the new data
-        showNotification('Profile updated successfully.', 'success');
-        return data; // Return updated user data if needed
-      } catch (err) {
-        console.error('Error updating user profile', err);
-        setError('Failed to update profile. Please try again.');
-        return null; // Return null in case of error
-      } finally {
-        stopLoading();
-      }
-    } else {
-      setError('No token found. Please log in.');
+      };
+    });
+  };
+
+  // Function to upload avatar
+  const uploadAvatar = async (avatarFile) => {
+    if (!avatarFile) return;
+    const compressedFile = await compressImage(avatarFile);
+    const avatarData = new FormData();
+    avatarData.append('avatar', compressedFile);
+
+    startLoading();
+    try {
+      await axios.put(`${apiUrl}/user/profile`, avatarData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      showNotification('Avatar uploaded successfully', 'success');
+      fetchUserProfile();
+    } catch (error) {
+      showNotification('Error uploading avatar', 'error');
+    } finally {
       stopLoading();
-      return null; // Return null if no token
     }
   };
 
@@ -106,7 +151,6 @@ export const UsersProvider = ({ children }) => {
       showNotification('User fetched successfully!', 'success');
       return data;
     } catch (error) {
-      console.error('Error fetching user by ID:', error);
       setError('Error fetching user by ID.');
     } finally {
       stopLoading();
@@ -174,11 +218,10 @@ export const UsersProvider = ({ children }) => {
       stopLoading();
     }
   };
-
   useEffect(() => {
     fetchUsers();
+    fetchUserProfile();
   }, []);
-
   return (
     <UsersContext.Provider
       value={{
@@ -191,8 +234,8 @@ export const UsersProvider = ({ children }) => {
         getUserById,
         fetchUserProfile,
         updateUserProfile,
-        loading: startLoading,
-        error: setError,
+        uploadAvatar,
+        user,
       }}
     >
       {children}
