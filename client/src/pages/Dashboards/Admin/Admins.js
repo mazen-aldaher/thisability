@@ -62,8 +62,11 @@ const Users = () => {
 
   const handleViewOrEdit = async (userId, editMode = false) => {
     try {
-      updateUser()
-      setSelectedItem(userId);
+      const response = await axios.put(
+        `http://localhost:5000/api/user/${userId}`,
+        selectedItem
+      );
+      setSelectedItem(response);
       setIsEditMode(editMode);
       setIsModalOpen(true);
     } catch (error) {

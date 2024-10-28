@@ -52,6 +52,7 @@ import Admins from './pages/Dashboards/Admin/Admins';
 import Artists from './pages/Dashboards/Artists/Artists';
 import Clients from './pages/Dashboards/Clients/Clients';
 import Organizations from './pages/Dashboards/Organizations/Organizations';
+import { useAuth } from './context/AuthContext';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -61,7 +62,7 @@ const App = () => {
   const [showOnboarding, setShowOnboarding] = useState(false); // State to handle onboarding flow
   const token = localStorage.getItem('token');
   // eslint-disable-next-line
-  const [user, setUser] = useState(null);
+  const {user, setUser} = useAuth()
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -203,15 +204,18 @@ const App = () => {
                           <Routes>
                             <Route path="main" element={<Main />} />
                             <Route path="support" element={'support'} />
-                            <Route path="users/admins" element={<Admins/>} />
-                            <Route path="users/artists" element={<Artists/>} />
-                            <Route path="users/clients" element={<Clients/>} />
+                            <Route path="users/admins" element={<Admins />} />
+                            <Route path="users/artists" element={<Artists />} />
+                            <Route path="users/clients" element={<Clients />} />
                             <Route
                               path="users/organizations"
-                              element={<Organizations/>}
+                              element={<Organizations />}
                             />
                             <Route path="products" element={'products'} />
-                            <Route path="products/create" element={'products'} />
+                            <Route
+                              path="products/create"
+                              element={'products'}
+                            />
                             <Route path="products/orders" element={'orders'} />
                             <Route
                               path="products/bidding"
@@ -234,7 +238,7 @@ const App = () => {
                               path="blog/posts/categories"
                               element={'categories'}
                             />
-                            <Route path="profile" element={<Profile/>} />
+                            <Route path="profile" element={<Profile />} />
                             <Route path="settings" element={'settings'} />
                             <Route path="docs" element={'docs'} />
                           </Routes>

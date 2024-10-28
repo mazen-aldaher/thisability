@@ -11,7 +11,6 @@ import { Provider } from 'react-redux';
 import { OrderProvider } from './context/OrderContext';
 import { ModalProvider } from './context/ModalContext';
 import { NotificationProvider } from './context/NotificationContext';
-import { UserProvider } from './context/UserContext';
 import { UsersProvider } from './context/UsersContext';
 import { ButtonLoadingProvider } from './context/ButtonLoadingContext';
 import { LoadingProvider } from './context/LoadingContext';
@@ -25,38 +24,36 @@ import { SearchQueryProvider } from './context/SearchQueryContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <StrictMode>
-        <ErrorsProvider>
-          <NotificationProvider>
-            <LoadingProvider>
-              <ModalProvider>
-                <SelectedUserProvider>
-                  <UsersProvider>
-                    <UserProvider>
-                      <AuthProvider>
-                        <ButtonLoadingProvider>
-                          <ConfirmDialogProvider>
-                            <EditModeProvider>
-                              <NewUserProvider>
-                                <SearchQueryProvider>
-                                  <OrderProvider>
-                                    <App />
-                                  </OrderProvider>
-                                </SearchQueryProvider>
-                              </NewUserProvider>
-                            </EditModeProvider>
-                          </ConfirmDialogProvider>
-                        </ButtonLoadingProvider>
-                      </AuthProvider>
-                    </UserProvider>
-                  </UsersProvider>
-                </SelectedUserProvider>
-              </ModalProvider>
-            </LoadingProvider>
-          </NotificationProvider>
-        </ErrorsProvider>
-      </StrictMode>
-    </BrowserRouter>
+              <ErrorsProvider>
+    <NotificationProvider>
+      <LoadingProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <StrictMode>
+                <ModalProvider>
+                  <SelectedUserProvider>
+                    <UsersProvider>
+                      <ButtonLoadingProvider>
+                        <ConfirmDialogProvider>
+                          <EditModeProvider>
+                            <NewUserProvider>
+                              <SearchQueryProvider>
+                                <OrderProvider>
+                                  <App />
+                                </OrderProvider>
+                              </SearchQueryProvider>
+                            </NewUserProvider>
+                          </EditModeProvider>
+                        </ConfirmDialogProvider>
+                      </ButtonLoadingProvider>
+                    </UsersProvider>
+                  </SelectedUserProvider>
+                </ModalProvider>
+            </StrictMode>
+          </BrowserRouter>
+        </AuthProvider>
+      </LoadingProvider>
+    </NotificationProvider>
+              </ErrorsProvider>
   </Provider>
 );

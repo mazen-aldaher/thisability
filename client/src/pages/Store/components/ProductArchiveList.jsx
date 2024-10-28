@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { Box, Button, useTheme, Skeleton, useMediaQuery } from '@mui/material';
+import { Box, Button, useTheme, useMediaQuery } from '@mui/material';
 import ProductCard from './ProductCard';
 import ProductCardSkeleton from './ProductCardSkelton';
 
@@ -12,7 +12,6 @@ const ProductArchiveList = () => {
   const [loading, setLoading] = useState(true); // Control initial loading state
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   // Simulate data fetching
   useEffect(() => {

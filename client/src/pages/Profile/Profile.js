@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Box,
   Typography,
@@ -8,84 +7,45 @@ import {
   Container,
 } from '@mui/material';
 import ProfileLayout from './components/ProfileLayout';
-import AvatarComponent from '../../components/AvatarComponent';
+import { useAuth } from '../../context/AuthContext';
+import { useUsers } from '../../context/UsersContext';
+import { useLoading } from '../../context/LoadingContext';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { loading, stopLoading, startLoading } = useLoading();
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null); // For showing success message
+  const [successMessage, setSuccessMessage] = useState(null);
+  const { fetchUserProfile, updateUserProfile } = useUsers();
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const { data } = await axios.get(
-            'http://localhost:5000/api/user/profile',
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setUser(data);
-        } catch (err) {
-          console.error('Error fetching user', err);
-          localStorage.removeItem('token');
-          setError('Failed to fetch user profile. Please log in again.');
-          setUser(null);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setError('No token found. Please log in.');
-        setLoading(false);
+    const loadUserProfile = async () => {
+      startLoading();
+      try {
+        await fetchUserProfile(); // Call to fetch the user profile
+      } catch (err) {
+        console.error('Failed to fetch user profile:', err);
+        setError('Failed to load profile. Please try again later.');
+      } finally {
+        stopLoading();
       }
     };
 
-    fetchUserProfile();
+    loadUserProfile();
   }, []);
 
-  // Function to update the user profile
-  const updateUserProfile = async (updatedUserData) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const { data } = await axios.put(
-          'http://localhost:5000/api/user/profile',
-          updatedUserData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setUser(data); // Update the local user state with the new data
-        setSuccessMessage('Profile updated successfully.');
-        setTimeout(() => setSuccessMessage(null), 3000); // Clear success message after 3 seconds
-      } catch (err) {
-        console.error('Error updating user profile', err);
-        setError('Failed to update profile. Please try again.');
-        setTimeout(() => setError(null), 3000); // Clear error message after 3 seconds
-      }
+  // Function to handle profile update
+  const handleProfileUpdate = async (updatedUserData) => {
+    const result = await updateUserProfile(updatedUserData); // Call updateUserProfile
+    if (result) {
+      setSuccessMessage('Profile updated successfully.');
+      setTimeout(() => setSuccessMessage(null), 3000); // Clear success message after 3 seconds
+    } else {
+      setError('Failed to update profile. Please try again.');
+      setTimeout(() => setError(null), 3000); // Clear error message after 3 seconds
     }
   };
 
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <CircularProgress size={60} />
-      </Box>
-    );
-  }
 
   if (error) {
     return (
@@ -134,9 +94,8 @@ const Profile = () => {
               {successMessage}
             </Alert>
           )}
-          <AvatarComponent />
-          <ProfileLayout user={user} onSave={updateUserProfile} />{' '}
-          {/* Pass the update function to ProfileLayout */}
+          <ProfileLayout user={user} onSave={handleProfileUpdate} />{' '}
+          {/* Update function here */}
         </>
       ) : (
         <Typography variant="h6" sx={{ textAlign: 'center' }}>

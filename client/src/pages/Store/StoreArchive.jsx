@@ -1,4 +1,4 @@
-import { Box, Container, Typography, useTheme } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 import BreadcrumbsComponent from '../../components/BreadcrumbsComponent';
 import ProductArchiveList from './components/ProductArchiveList';
@@ -20,7 +20,7 @@ const StoreArchive = () => {
 
   return (
     <>
-      <Container maxWidth="xl" sx={{ height: '100%',minHeight:'100vh' }}>
+      <Container maxWidth="xl" sx={{ height: '100%', minHeight: '100vh' }}>
         <Box
           sx={{
             py: 5,

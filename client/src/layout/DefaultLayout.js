@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { DashFooter, DashHeader, DashSidebar } from '../components/Dashboard';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, useAuth } from '../context/AuthContext';
 import { useUsers } from '../context/UsersContext';
 
 const DefaultLayout = ({ children, onThemeChange, nav, admin }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { users } = useUsers();
   const [unfoldable, setUnfoldable] = useState(false);
   const [sidebarShow, setSidebarShow] = useState(false);

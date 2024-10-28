@@ -1,17 +1,16 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import {
   Avatar,
   Box,
   Button,
-  Chip,
   Container,
   Divider,
   Grid,
-  Paper,
   Typography,
   useTheme,
 } from '@mui/material';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link,  useNavigate } from 'react-router-dom';
 import ProductInfoTab from './components/ProductInfoTab';
 import { Flag } from '@mui/icons-material'; // Optional: If you want to use icons for country
 import StarIcon from '@mui/icons-material/Star';
