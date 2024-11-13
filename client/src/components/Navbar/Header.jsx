@@ -33,7 +33,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AvatarComponent from '../AvatarComponent';
 
 const navItems = [
-  { title: 'About Us', link: '/about-us' },
+  { title: 'About', link: '/about-us' },
   { title: 'Store', link: '/products' },
   { title: 'Community', link: '/our-community' },
   { title: 'Support', link: '/support' },
@@ -91,20 +91,28 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
     if (onLanguageChange) onLanguageChange(selectedLanguage);
   };
 
-  const renderNavButtons = useMemo(() => (
-    navItems.map((item) => (
-      <Button
-        key={item.link}
-        color="inherit"
-        onClick={() => navigate(item.link)}
-        sx={{
-          color: location.pathname === item.link ? theme.palette.warning.main : 'inherit',
-        }}
-      >
-        <Typography variant="navtext">{t(item.title)}</Typography>
-      </Button>
-    ))
-  ), [navItems, location.pathname, theme.palette.warning.main, t, navigate]);
+  const renderNavButtons = useMemo(
+    () =>
+      navItems.map((item) => (
+        <Box sx={{ display: 'flex', ml: 1 }}>
+          <Button
+            key={item.link}
+            color="inherit"
+            onClick={() => navigate(item.link)}
+            sx={{
+              color:
+                location.pathname === item.link
+                  ? theme.palette.warning.main
+                  : 'inherit',
+              textAlign: 'left',
+            }}
+          >
+            <Typography variant="navtext">{t(item.title)}</Typography>
+          </Button>
+        </Box>
+      )),
+    [navItems, location.pathname, theme.palette.warning.main, t, navigate]
+  );
 
   const renderUserMenu = () => (
     <>
@@ -148,11 +156,24 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
   return (
     <>
       <Container maxWidth="xl" sx={{ display: 'flex', my: 1 }}>
-        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: { xs: 1, sm: 2 } }}>
+        <Box
+          sx={{
+            ml: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: { xs: 1, sm: 2 },
+          }}
+        >
           <Select
             value={i18n.language}
             onChange={handleLanguageChange}
-            sx={{ color: 'inherit', bgcolor: 'background.paper', width: { xs: '100%', sm: 'auto', md: '110px' }, height: '40px' }}
+            sx={{
+              color: 'inherit',
+              bgcolor: 'background.paper',
+              width: { xs: '100%', sm: 'auto', md: '110px' },
+              height: '40px',
+            }}
           >
             {['en', 'es', 'fr', 'ar'].map((lang) => (
               <MenuItem key={lang} value={lang}>
@@ -167,18 +188,31 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
             {user ? (
               <>
                 <IconButton onClick={handleAvatarClick}>
-                <AvatarComponent />
+                  <AvatarComponent />
                 </IconButton>
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
                   {renderUserMenu()}
                 </Menu>
               </>
             ) : (
               <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
-                <Button color="inherit" fullWidth onClick={() => navigate('/login')}>
+                <Button
+                  color="inherit"
+                  fullWidth
+                  onClick={() => navigate('/login')}
+                >
                   {t('Sign In')}
                 </Button>
-                <Button variant="outlined" color="inherit" fullWidth onClick={() => navigate('/register')}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  fullWidth
+                  onClick={() => navigate('/register')}
+                >
                   {t('Register')}
                 </Button>
               </Box>
@@ -203,18 +237,37 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
           <Toolbar>
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
               <NavLink to="/">
-                <Box component="img" src={logo} alt="Thisability Logo" sx={{ height: '60px' }} />
+                <Box
+                  component="img"
+                  src={logo}
+                  alt="Thisability Logo"
+                  sx={{ height: '60px' }}
+                />
               </NavLink>
             </Box>
 
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: '20px' }}>
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                alignItems: 'center',
+                gap: '20px',
+              }}
+            >
               {renderNavButtons}
               {user ? (
                 <>
                   <IconButton onClick={handleAvatarClick}>
-                    <Avatar src={user?.profile?.avatar} alt="User Avatar" sx={{ height: '40px', width: '40px' }} />
+                    <Avatar
+                      src={user?.profile?.avatar}
+                      alt="User Avatar"
+                      sx={{ height: '40px', width: '40px' }}
+                    />
                   </IconButton>
-                  <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
                     {renderUserMenu()}
                   </Menu>
                 </>
@@ -223,7 +276,11 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                   <Button color="inherit" onClick={() => navigate('/login')}>
                     {t('Sign In')}
                   </Button>
-                  <Button variant="outlined" color="inherit" onClick={() => navigate('/register')}>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={() => navigate('/register')}
+                  >
                     {t('Register')}
                   </Button>
                 </Box>
@@ -233,23 +290,45 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
             <Fab
               color="primary"
               onClick={handleDrawerToggle}
-              sx={{ display: { md: 'none' }, position: 'fixed', right: '16px', bottom: '16px' }}
+              sx={{
+                display: { md: 'none' },
+                position: 'fixed',
+                right: '16px',
+                bottom: '16px',
+              }}
             >
               <MenuIcon />
             </Fab>
-
           </Toolbar>
         </Box>
       </AppBar>
 
-      <SwipeableDrawer anchor="right" open={drawerOpen} onClose={handleDrawerToggle}>
-        <List>
-          {renderNavButtons}
-        </List>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          '& .MuiDrawer-paper': {
+            position: 'absolute',
+            bottom: 0,
+            width: '50%',
+            height: '35vh',
+            borderEndEndRadius: '20px',
+            borderStartEndRadius: '20px',
+            border: 'none',
+            padding: 0,
+            pt: 2,
+          },
+        }}
+      >
+        <List>{renderNavButtons}</List>
       </SwipeableDrawer>
 
       {showBackToTop && (
-        <IconButton onClick={scrollToTop} sx={{ position: 'fixed', bottom: 16, right: 16, zIndex: 1000 }}>
+        <IconButton
+          onClick={scrollToTop}
+          sx={{ position: 'fixed', bottom: 16, right: 16, zIndex: 1000 }}
+        >
           <ArrowUpwardIcon />
         </IconButton>
       )}
