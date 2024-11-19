@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Box, CssBaseline, useTheme } from '@mui/material';
 import Sidebar from './components/Sidebar';
-import Topbar from './components/Topbar';
 import TestTopbar from './components/TestTopbar';
 
 const DashboardLayout = ({ children, onThemeChange }) => {

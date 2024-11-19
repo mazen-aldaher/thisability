@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Typography, Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';

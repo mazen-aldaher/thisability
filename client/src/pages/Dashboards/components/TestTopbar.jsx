@@ -8,12 +8,10 @@ import {
   Menu,
   MenuItem,
   Toolbar,
-  Typography,
   useMediaQuery,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Add as AddBoxIcon,
   NotificationsActiveOutlined as NotificationsIcon,
   MailOutline as MailIcon,
 } from '@mui/icons-material';
@@ -87,7 +85,9 @@ const TestTopbar = ({ handleDrawerToggle, open, onThemeChange }) => {
         sx={{
           zIndex: 1201,
           background: '#4dbd74',
-          width: open ? {xl:'86.2%',xs:'87.3%'} : {xl:'100%',xs:"87.3%"},
+          width: open
+            ? { xl: '86.2%', xs: '87.3%' }
+            : { xl: '100%', xs: '87.3%' },
           backgroundColor: theme.palette.primary.main,
           transition: 'width 10s ease', // Smooth transition
           borderBottom: '1px solid rgba(255, 255, 255, 0.35)', // White border with 35% opacity
@@ -183,31 +183,39 @@ const TestTopbar = ({ handleDrawerToggle, open, onThemeChange }) => {
         </Toolbar>
 
         {/* Menu for notifications, mail, profile */}
-        <Box sx={{display:"flex",justifyContent:"flex-end", alignContent:"flex-end",alignItems:'flex-end'}} >
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignContent: 'flex-end',
+            alignItems: 'flex-end',
+          }}
         >
-          {menuType === 'notifications' &&
-            notifications.map((notification) => (
-              <MenuItem key={notification.id}>{notification.message}</MenuItem>
-            ))}
-          {menuType === 'mail' &&
-            messages.map((message) => (
-              <MenuItem key={message.id}>
-                {message.sender}: {message.subject}
-              </MenuItem>
-            ))}
-          {menuType === 'profile' && (
-            <>
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </>
-          )}
-        </Menu>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            {menuType === 'notifications' &&
+              notifications.map((notification) => (
+                <MenuItem key={notification.id}>
+                  {notification.message}
+                </MenuItem>
+              ))}
+            {menuType === 'mail' &&
+              messages.map((message) => (
+                <MenuItem key={message.id}>
+                  {message.sender}: {message.subject}
+                </MenuItem>
+              ))}
+            {menuType === 'profile' && (
+              <>
+                <MenuItem>Profile</MenuItem>
+                <MenuItem>Settings</MenuItem>
+                <MenuItem>Logout</MenuItem>
+              </>
+            )}
+          </Menu>
         </Box>
       </AppBar>
     </>

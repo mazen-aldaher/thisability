@@ -7,9 +7,7 @@ import {
   CardMedia,
   Typography,
   AppBar,
-  Toolbar,
   CssBaseline,
-  Button,
   TextField,
   Tabs,
   Tab,
@@ -165,7 +163,9 @@ const Community = () => {
                         tabIndex="0"
                         sx={{ fontWeight: 'bold', marginBottom: '10px' }}
                       >
-                        <Link to={`/our-community/post/${post.id}`}>{post.title}</Link>
+                        <Link to={`/our-community/post/${post.id}`}>
+                          {post.title}
+                        </Link>
                       </Typography>
 
                       {/* Content */}

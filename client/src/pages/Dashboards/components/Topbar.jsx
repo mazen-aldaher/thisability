@@ -5,13 +5,7 @@ import {
   Notifications as NotificationsIcon,
   Mail as MailIcon,
   AccountCircle as AccountCircleIcon,
-  Home as HomeIcon,
-  Settings as SettingsIcon,
-  Logout as LogoutIcon,
-  ShoppingCart as ShoppingCartIcon,
-  History as HistoryIcon,
-  Gavel as GavelIcon,
-  Lock as LockIcon,
+
 } from '@mui/icons-material';
 const Topbar = () => {
   const [open, setOpen] = useState(false);

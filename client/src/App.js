@@ -53,6 +53,7 @@ import Artists from './pages/Dashboards/Artists/Artists';
 import Clients from './pages/Dashboards/Clients/Clients';
 import Organizations from './pages/Dashboards/Organizations/Organizations';
 import { useAuth } from './context/AuthContext';
+import VerificationPage from './pages/Disability Verification Page/VerificationPage';
 
 const App = () => {
   const [theme, setTheme] = useState(lightTheme);
@@ -191,6 +192,7 @@ const App = () => {
                     />
                     <Route path="/faq" element={<FAQPage />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/verfication-seller" element={<VerificationPage />} />
                     <Route path="/register" element={<Register />} />
                     <Route
                       path="/forgot-password"

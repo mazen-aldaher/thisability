@@ -31,6 +31,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AvatarComponent from '../AvatarComponent';
+import useAuth from '../../hooks/useAuth';
 
 const navItems = [
   { title: 'About', link: '/about-us' },
@@ -41,7 +42,8 @@ const navItems = [
 ];
 
 const Header = ({ onThemeChange, onLanguageChange }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext); // Using context to get user info
+  const { login, logout, error } = useAuth(); // Using the custom hook for login/logout
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -94,16 +96,12 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
   const renderNavButtons = useMemo(
     () =>
       navItems.map((item) => (
-        <Box sx={{ display: 'flex', ml: 1 }}>
+        <Box sx={{ display: 'flex', ml: 1 }} key={item.link}>
           <Button
-            key={item.link}
             color="inherit"
             onClick={() => navigate(item.link)}
             sx={{
-              color:
-                location.pathname === item.link
-                  ? theme.palette.warning.main
-                  : 'inherit',
+              color: location.pathname === item.link ? theme.palette.warning.main : 'inherit',
               textAlign: 'left',
             }}
           >
@@ -118,37 +116,37 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
     <>
       <MenuItem onClick={() => navigate('/my-profile')}>
         <AccountCircleIcon sx={{ marginRight: '8px' }} />
-        Profile
+        {t('Profile')}
       </MenuItem>
       <MenuItem onClick={() => navigate('/order-tracking')}>
         <TrackChangesIcon sx={{ marginRight: '8px' }} />
-        Track Order
+        {t('Track Order')}
       </MenuItem>
       <MenuItem onClick={() => navigate('/order-history')}>
         <NotificationsIcon sx={{ marginRight: '8px' }} />
-        Orders
+        {t('Orders')}
       </MenuItem>
       {user.role === 'admin' && (
         <MenuItem onClick={() => navigate('/dashboard/admin/main')}>
           <DashboardIcon sx={{ marginRight: '8px' }} />
-          Admin Dashboard
+          {t('Admin Dashboard')}
         </MenuItem>
       )}
       {user.role === 'artist' && (
         <MenuItem onClick={() => navigate('/seller-orders')}>
           <DashboardIcon sx={{ marginRight: '8px' }} />
-          Artist Dashboard
+          {t('Artist Dashboard')}
         </MenuItem>
       )}
       {user.role === 'organization' && (
         <MenuItem onClick={() => navigate('/dashboard/organization')}>
           <DashboardIcon sx={{ marginRight: '8px' }} />
-          Organization Dashboard
+          {t('Organization Dashboard')}
         </MenuItem>
       )}
       <MenuItem onClick={handleLogout}>
         <LogoutIcon sx={{ marginRight: '8px' }} />
-        Logout
+        {t('Logout')}
       </MenuItem>
     </>
   );
@@ -257,11 +255,7 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
               {user ? (
                 <>
                   <IconButton onClick={handleAvatarClick}>
-                    <Avatar
-                      src={user?.profile?.avatar}
-                      alt="User Avatar"
-                      sx={{ height: '40px', width: '40px' }}
-                    />
+                    <AvatarComponent />
                   </IconButton>
                   <Menu
                     anchorEl={anchorEl}
@@ -272,65 +266,58 @@ const Header = ({ onThemeChange, onLanguageChange }) => {
                   </Menu>
                 </>
               ) : (
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button color="inherit" onClick={() => navigate('/login')}>
-                    {t('Sign In')}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    onClick={() => navigate('/register')}
-                  >
-                    {t('Register')}
-                  </Button>
-                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate('/login')}
+                >
+                  {t('Sign In')}
+                </Button>
               )}
             </Box>
 
-            <Fab
-              color="primary"
-              onClick={handleDrawerToggle}
-              sx={{
-                display: { md: 'none' },
-                position: 'fixed',
-                right: '16px',
-                bottom: '16px',
-              }}
-            >
-              <MenuIcon />
-            </Fab>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton color="inherit" onClick={handleDrawerToggle}>
+                <MenuIcon />
+              </IconButton>
+            </Box>
           </Toolbar>
         </Box>
       </AppBar>
 
       <SwipeableDrawer
-        anchor="bottom"
         open={drawerOpen}
         onClose={handleDrawerToggle}
-        sx={{
-          '& .MuiDrawer-paper': {
-            position: 'absolute',
-            bottom: 0,
-            width: '50%',
-            height: '35vh',
-            borderEndEndRadius: '20px',
-            borderStartEndRadius: '20px',
-            border: 'none',
-            padding: 0,
-            pt: 2,
-          },
-        }}
+        onOpen={handleDrawerToggle}
+        anchor="left"
+        variant="temporary"
       >
-        <List>{renderNavButtons}</List>
+        <List>
+          {navItems.map((item) => (
+            <ListItem
+              button
+              key={item.link}
+              onClick={() => navigate(item.link)}
+            >
+              <ListItemText primary={t(item.title)} />
+            </ListItem>
+          ))}
+        </List>
       </SwipeableDrawer>
 
       {showBackToTop && (
-        <IconButton
-          onClick={scrollToTop}
-          sx={{ position: 'fixed', bottom: 16, right: 16, zIndex: 1000 }}
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 1000,
+          }}
         >
-          <ArrowUpwardIcon />
-        </IconButton>
+          <Fab color="primary" onClick={scrollToTop}>
+            <ArrowUpwardIcon />
+          </Fab>
+        </Box>
       )}
     </>
   );

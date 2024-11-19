@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false },
     emailVerificationToken: String,
     emailVerificationExpires: Date,
+    verificationMethod: { type: String },
+    disabilityVerificationStatus: { type: String, default: 'Pending' },
+    disabilityDocuments: [{ type: String }],
+    faceData: String,
   },
   { timestamps: true }
 );

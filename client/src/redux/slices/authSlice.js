@@ -1,60 +1,69 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Async actions for handling user registration
-export const registerUser = createAsyncThunk('auth/registerUser', async (userData, thunkAPI) => {
-  try {
-    const response = await axios.post('/api/user/register', userData);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+// Async actions
+
+// Register user
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (userData, thunkAPI) => {
+    try {
+      const response = await axios.post('/api/user/register', userData);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || 'Registration failed');
+    }
   }
-});
+);
 
-// Async actions for handling user login
-export const loginUser = createAsyncThunk('auth/loginUser', async (loginData, thunkAPI) => {
-  try {
-    const response = await axios.post('/api/user/login', loginData);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+// Login user
+export const loginUser = createAsyncThunk(
+  'auth/loginUser',
+  async (loginData, thunkAPI) => {
+    try {
+      const response = await axios.post('/api/user/login', loginData);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
+    }
   }
-});
+);
 
-// Async actions for fetching user profile
-export const getUserProfile = createAsyncThunk('auth/getUserProfile', async (token, thunkAPI) => {
-  try {
-    const response = await axios.get('/api/user/profile', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+// Get user profile
+export const getUserProfile = createAsyncThunk(
+  'auth/getUserProfile',
+  async (token, thunkAPI) => {
+    try {
+      const response = await axios.get('/api/user/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || 'Fetching profile failed');
+    }
   }
-});
+);
 
-// Async actions for updating user profile
-export const updateUserProfile = createAsyncThunk('/updateUserProfile', async (updatedUserData, thunkAPI) => {
-  try {
-    const token = thunkAPI.getState().auth.token;
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const response = await axios.put('/api/user/profile', updatedUserData, config);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+// Update user profile
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateUserProfile',
+  async (updatedUserData, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.token;
+      const response = await axios.put('/api/user/profile', updatedUserData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || 'Updating profile failed');
+    }
   }
-});
+);
 
-// Initial state for auth slice
+// Initial state
 const initialState = {
   user: null,
   token: null,
@@ -63,7 +72,7 @@ const initialState = {
   success: false,
 };
 
-// Auth slice with reducers and extra reducers
+// Auth slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -138,5 +147,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logoutUser } = authSlice.actions;
 export default authSlice.reducer;

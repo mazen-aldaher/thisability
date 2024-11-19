@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
@@ -24,7 +24,10 @@ const SellerOrdersPage = () => {
   const { orders, updateOrderStatus } = useOrderContext(); // Access orders from context
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [notification, setNotification] = useState({ open: false, message: '' });
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+  });
 
   const handleOpenDialog = (order) => {
     setSelectedOrder(order);
@@ -38,7 +41,10 @@ const SellerOrdersPage = () => {
 
   const handleStatusUpdate = (newStatus) => {
     updateOrderStatus(selectedOrder.id, newStatus);
-    setNotification({ open: true, message: `Order ${selectedOrder.id} status updated to ${newStatus}` });
+    setNotification({
+      open: true,
+      message: `Order ${selectedOrder.id} status updated to ${newStatus}`,
+    });
     handleCloseDialog();
   };
 
@@ -47,8 +53,15 @@ const SellerOrdersPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ padding: '20px', minHeight: '100vh', bgcolor: '#f9f9f9' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
+    <Container
+      maxWidth="lg"
+      sx={{ padding: '20px', minHeight: '100vh', bgcolor: '#f9f9f9' }}
+    >
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ fontWeight: 'bold', color: '#333' }}
+      >
         Seller Orders Management
       </Typography>
 
@@ -73,7 +86,10 @@ const SellerOrdersPage = () => {
                 <TableCell>{order.address}</TableCell>
                 <TableCell>{order.status}</TableCell>
                 <TableCell>
-                  <Button variant="outlined" onClick={() => handleOpenDialog(order)}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleOpenDialog(order)}
+                  >
                     Change Status
                   </Button>
                 </TableCell>
@@ -118,7 +134,11 @@ const SellerOrdersPage = () => {
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseNotification} severity="info" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseNotification}
+          severity="info"
+          sx={{ width: '100%' }}
+        >
           {notification.message}
         </Alert>
       </Snackbar>

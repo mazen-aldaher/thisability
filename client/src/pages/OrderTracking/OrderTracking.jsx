@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -20,7 +22,6 @@ import {
   TableContainer,
   Paper,
 } from '@mui/material';
-import A4Receipt from './A4Receipt'; // Import the A4Receipt component
 
 // Simulated tracking steps
 const trackingSteps = [

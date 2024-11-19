@@ -11,7 +11,7 @@ import cookieSession from "cookie-session";
 import path from "path";
 import { fileURLToPath } from "url";
 import routes from "./routes/index.js";
-
+import faceVerificationRoutes from "./routes/faceVerification.js";
 // Initialize Express app
 const app = express();
 
@@ -63,6 +63,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // API routes
 app.use("/api", routes);
+app.use("/api", faceVerificationRoutes);
 
 // Connect to MongoDB
 mongoose

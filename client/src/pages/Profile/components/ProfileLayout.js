@@ -1,22 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Typography,
-  Avatar,
-  Grid,
-  TextField,
-  Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import { Box, Typography, Divider, CircularProgress } from '@mui/material';
+
 import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useErrors } from '../../../context/ErrorsContext';
