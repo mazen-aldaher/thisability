@@ -23,17 +23,20 @@ const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 // Middleware Setup
+app.set("trust proxy", 1); // Trust first proxy if behind one (required for rate-limit middleware)
+
 app.use(morgan(NODE_ENV === "production" ? "common" : "dev")); // Logging middleware
 app.use(helmet()); // Security middleware to set HTTP headers
 app.use(xss()); // XSS protection middleware
-app.use(mongoSanitize()); // Prevents NoSQL injection attacks
-app.use(cors({origin:'http://localhost:3000'})); // Enable Cross-Origin Resource Sharing
+app.use(mongoSanitize()); // Prevent NoSQL injection attacks
+app.use(cors({ origin: "http://localhost:3000" })); // Enable Cross-Origin Resource Sharing
 
 // Rate limiting middleware
 app.use(
   rateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
+    keyGenerator: (req) => req.ip, // Use IP directly for rate limiting
   })
 );
 
@@ -58,17 +61,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api", routes);;
+// API routes
+app.use("/api", routes);
+
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB connection error:", err));
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-export default app
+export default app;

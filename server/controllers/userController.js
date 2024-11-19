@@ -9,7 +9,7 @@ import User from "../models/User.js";
 import Profile from "../models/Profile.js";
 import mongoose from "mongoose";
 import { sendEmail } from "../util/sendEmail.js";
-import {s3} from "../config/aws-config.js"
+import { s3 } from "../config/aws-config.js";
 const router = express.Router();
 
 // Generate JWT
@@ -161,8 +161,6 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const updateUserProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id; // Ensure you're fetching the user based on the token
   const user = await User.findById(userId).populate("profile");
@@ -177,7 +175,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
   // Delete the previous avatar if it exists and a new one is uploaded
   if (req.file && user.profile.avatar) {
-    const oldAvatarKey = user.profile.avatar.split('/').pop(); // Extract the file name
+    const oldAvatarKey = user.profile.avatar.split("/").pop(); // Extract the file name
     const oldAvatarParams = {
       Bucket: "thisability", // Your S3 bucket name
       Key: oldAvatarKey, // The key of the file in S3
@@ -408,11 +406,19 @@ export const sendOtp = asyncHandler(async (req, res) => {
   await user.save();
 
   const transporter = nodemailer.createTransport({
-    service: "Gmail",
+    host: "gmail", // Replace with your SMTP server
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_PASS,
     },
+  });
+
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error("Verification Error:", error);
+    } else {
+      console.log("Server is ready to send messages:", success);
+    }
   });
 
   await transporter.sendMail({

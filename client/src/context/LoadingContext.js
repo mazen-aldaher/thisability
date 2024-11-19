@@ -7,11 +7,19 @@ const LoadingContext = createContext();
 export const LoadingProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
-  // Show loading spinner
-  const startLoading = () => setLoading(true);
+  /**
+   * Start loading by setting the `loading` state to true.
+   */
+  const startLoading = () => {
+    if (!loading) setLoading(true);
+  };
 
-  // Hide loading spinner
-  const stopLoading = () => setLoading(false);
+  /**
+   * Stop loading by setting the `loading` state to false.
+   */
+  const stopLoading = () => {
+    if (loading) setLoading(false);
+  };
 
   return (
     <LoadingContext.Provider value={{ loading, startLoading, stopLoading }}>

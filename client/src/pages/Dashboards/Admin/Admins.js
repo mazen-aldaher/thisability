@@ -17,16 +17,18 @@ import {
 } from '@mui/material';
 import AdminTable from './AdminTable';
 import DashContainer from '../../../components/DashContainer/DashContainer';
-import { AuthContext } from '../../../context/AuthContext';
 import { useModal } from '../../../context/ModalContext';
 import { useNotification } from '../../../context/NotificationContext';
 import { useUsers } from '../../../context/UsersContext';
 import { useSearchQuery } from '../../../context/SearchQueryContext';
 import { useButtonLoading } from '../../../context/ButtonLoadingContext';
 import { useNewUser } from '../../../context/NewUserContext';
+import { useSelectedUser } from '../../../context/SelectedUserContext';
+import { useLoading } from '../../../context/LoadingContext';
 
 const Users = () => {
-  const { loading, selectedUser } = useContext(AuthContext);
+  const { loading } = useLoading();
+  const { selectedUser } = useSelectedUser();
 
   const {
     isEditMode,
@@ -38,7 +40,7 @@ const Users = () => {
     selectedItem,
     setSelectedItem,
   } = useModal();
-  const { fetchAdminUsers, users,updateUser } = useUsers();
+  const { fetchAdminUsers, users, updateUser } = useUsers();
 
   const { showNotification } = useNotification();
   const { searchQuery, setSearchQuery } = useSearchQuery(); // State for search query
@@ -276,70 +278,6 @@ const Users = () => {
           </Button>
           <Button onClick={confirmDialog.onConfirm} color="primary">
             Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* User Details Modal */}
-      <Dialog
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
-        <DialogContent>
-          {selectedUser ? (
-            <>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="User ID"
-                value={selectedUser._id}
-                InputProps={{ readOnly: true }}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Username"
-                name="username"
-                value={selectedUser?.username}
-                onChange={isEditMode ? handleInputChange : null}
-                InputProps={{ readOnly: !isEditMode }}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Email"
-                name="email"
-                value={selectedUser.email}
-                onChange={isEditMode ? handleInputChange : null}
-                InputProps={{ readOnly: !isEditMode }}
-              />
-              <Select
-                fullWidth
-                margin="normal"
-                name="role"
-                value={selectedUser.role}
-                onChange={isEditMode ? handleInputChange : null}
-                disabled={!isEditMode}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="user">User</MenuItem>
-              </Select>
-            </>
-          ) : (
-            <Typography>Loading user details...</Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          {isEditMode ? (
-            <Button onClick={handleUpdate} color="primary">
-              Update
-            </Button>
-          ) : null}
-          <Button onClick={handleCloseModal} color="primary">
-            Close
           </Button>
         </DialogActions>
       </Dialog>
